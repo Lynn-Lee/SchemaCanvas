@@ -13,6 +13,11 @@ import {
 } from "../../../hooks";
 import { useTranslation } from "react-i18next";
 import { fromDBML } from "../../../utils/importFrom/dbml";
+import {
+  validateDiagramImportObject,
+  validateImportFile,
+  validateImportText,
+} from "../../../features/import/importLimits";
 
 export default function ImportDiagram({
   setImportData,
@@ -66,6 +71,15 @@ export default function ImportDiagram({
         });
         return;
       }
+    }
+
+    const limitResult = validateDiagramImportObject(jsonObject);
+    if (!limitResult.ok) {
+      setError({
+        type: STATUS.ERROR,
+        message: limitResult.message,
+      });
+      return;
     }
 
     if (!jsonObject.database) {
@@ -128,6 +142,15 @@ export default function ImportDiagram({
   };
 
   const loadDBMLData = (e) => {
+    const limitResult = validateImportText(e.target.result, { label: "DBML" });
+    if (!limitResult.ok) {
+      setError({
+        type: STATUS.ERROR,
+        message: limitResult.message,
+      });
+      return;
+    }
+
     try {
       setImportData(fromDBML(e.target.result));
     } catch (error) {
@@ -167,6 +190,19 @@ export default function ImportDiagram({
           const f = fileList[0].fileInstance;
           if (!f) {
             return;
+          }
+          const limitResult = validateImportFile(f);
+          if (!limitResult.ok) {
+            setError({
+              type: STATUS.ERROR,
+              message: limitResult.message,
+            });
+            return {
+              autoRemove: true,
+              fileInstance: file.fileInstance,
+              status: "error",
+              shouldUpload: false,
+            };
           }
           const reader = new FileReader();
           reader.onload = async (e) => {
