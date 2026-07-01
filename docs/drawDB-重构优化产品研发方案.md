@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 当前正在收口安全与工程底座：测试、浏览器 smoke、导入限制、分享确认和部署层基础安全 headers 均按独立切片推进，未通过阶段退出门禁前不进入 Phase 1。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。下一阶段进入 Phase 1，先建立 Domain Model、命令历史和本地持久化 repository，不改变默认本地无账号体验。
 
 ## 2. 产品定位
 
