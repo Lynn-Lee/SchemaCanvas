@@ -32,15 +32,17 @@
 
 <h3 align="center"><img width="700" style="border-radius:5px;" alt="drawDB screenshot demo" src="drawdb.png"></h3>
 
-DrawDB is a robust and user-friendly database entity relationship diagram (ERD) editor right in your browser. Build diagrams with a few clicks, export and import SQL scripts, generate migrations, customize your editor, and more without creating an account. See the full set of features on [here](https://drawdb.app/).
+DrawDB is a robust and user-friendly database entity relationship diagram (ERD) editor right in your browser. Build diagrams with a few clicks, export and import SQL scripts, generate migrations, customize your editor, and more without creating an account.
+
+This repository is Lynn Lee's independent refactor baseline for drawDB. Current engineering work is tracked in `docs/` and is driven by the local-first, privacy-first roadmap documented there.
 
 ## Getting Started
 
 ### Local Development
 
 ```bash
-git clone https://github.com/drawdb-io/drawdb
-cd drawdb
+git clone https://github.com/Lynn-Lee/drawDB.git
+cd drawDB
 npm install
 npm run dev
 ```
@@ -48,8 +50,8 @@ npm run dev
 ### Build
 
 ```bash
-git clone https://github.com/drawdb-io/drawdb
-cd drawdb
+git clone https://github.com/Lynn-Lee/drawDB.git
+cd drawDB
 npm install
 npm run build
 ```
@@ -61,7 +63,7 @@ docker build -t drawdb .
 docker run -p 3000:80 drawdb
 ```
 
-If you want to enable sharing, set up the [server](https://github.com/drawdb-io/drawdb-server) and environment variables according to `.env.sample`. This is optional unless you need to share files.
+If you want to enable sharing, configure your own compatible sharing backend and environment variables according to `.env.sample`. This is optional unless you need to share files.
 
 ## Contributing
 

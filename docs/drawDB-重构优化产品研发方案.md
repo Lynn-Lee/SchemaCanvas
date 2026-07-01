@@ -6,7 +6,9 @@
 
 本文用于指导 drawDB 后续优化重构，覆盖产品边界、功能设计、技术架构、研发拆分、验收标准和测试策略。
 
-本方案基于当前开源仓库的真实状态：drawDB 是一个以浏览器端本地编辑为核心的数据库 ERD 编辑器，支持本地 IndexedDB 保存、模板、SQL/DBML/JSON 导入导出、图片/PDF/Markdown/Mermaid 导出，以及依赖可选后端的分享和版本功能。
+本方案基于当前独立重构仓库的真实状态：drawDB 是一个以浏览器端本地编辑为核心的数据库 ERD 编辑器，支持本地 IndexedDB 保存、模板、SQL/DBML/JSON 导入导出、图片/PDF/Markdown/Mermaid 导出，以及依赖可选后端的分享和版本功能。
+
+当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
 ## 2. 产品定位
 
