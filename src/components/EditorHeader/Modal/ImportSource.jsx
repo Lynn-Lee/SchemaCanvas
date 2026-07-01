@@ -2,6 +2,10 @@ import { Upload, Checkbox, Banner, Tabs, TabPane } from "@douyinfe/semi-ui";
 import { STATUS } from "../../../data/constants";
 import { useTranslation } from "react-i18next";
 import CodeEditor from "../../CodeEditor";
+import {
+  validateImportFile,
+  validateImportText,
+} from "../../../features/import/importLimits";
 
 export default function ImportSource({
   importData,
@@ -19,7 +23,15 @@ export default function ImportSource({
             height={224}
             language="sql"
             onChange={(value) => {
+              const limitResult = validateImportText(value, { label: "SQL" });
               setImportData((prev) => ({ ...prev, src: value }));
+              if (!limitResult.ok) {
+                setError({
+                  type: STATUS.ERROR,
+                  message: limitResult.message,
+                });
+                return;
+              }
               setError({
                 type: STATUS.NONE,
                 message: "",
@@ -35,8 +47,31 @@ export default function ImportSource({
               if (!f) {
                 return;
               }
+              const fileLimitResult = validateImportFile(f);
+              if (!fileLimitResult.ok) {
+                setError({
+                  type: STATUS.ERROR,
+                  message: fileLimitResult.message,
+                });
+                return {
+                  autoRemove: true,
+                  fileInstance: file.fileInstance,
+                  status: "error",
+                  shouldUpload: false,
+                };
+              }
               const reader = new FileReader();
               reader.onload = async (e) => {
+                const textLimitResult = validateImportText(e.target.result, {
+                  label: "SQL",
+                });
+                if (!textLimitResult.ok) {
+                  setError({
+                    type: STATUS.ERROR,
+                    message: textLimitResult.message,
+                  });
+                  return;
+                }
                 setImportData((prev) => ({ ...prev, src: e.target.result }));
               };
               reader.readAsText(f);

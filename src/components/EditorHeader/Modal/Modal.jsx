@@ -34,6 +34,7 @@ import Rename from "./Rename";
 import SetTableWidth from "./SetTableWidth";
 import Share from "./Share";
 import { mergeCustomTypes } from "../../../utils/customTypes";
+import { validateImportText } from "../../../features/import/importLimits";
 
 const extensionToLanguage = {
   md: "markdown",
@@ -101,6 +102,14 @@ export default function Modal({
 
   const parseSQLAndLoadDiagram = () => {
     const targetDatabase = database === DB.GENERIC ? importDb : database;
+    const limitResult = validateImportText(importSource.src, { label: "SQL" });
+    if (!limitResult.ok) {
+      setError({
+        type: STATUS.ERROR,
+        message: limitResult.message,
+      });
+      return;
+    }
 
     let ast = null;
     try {

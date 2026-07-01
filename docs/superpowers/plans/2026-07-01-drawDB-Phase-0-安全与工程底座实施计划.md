@@ -203,6 +203,8 @@ npm run test -- src/persistence/settingsRepository.test.js
 
 ### 0.5 导入输入限制
 
+状态：已完成，新增 `src/features/import/importLimits.js` 统一限制单个导入文件、SQL/DBML 文本长度、JSON/DDB 图表对象规模和字符串长度。红灯记录为缺失 `src/features/import/importLimits.js` 导致聚焦测试失败，补齐实现并接入导入弹窗后聚焦测试和全量测试通过。
+
 目标：对 JSON、DDB、DBML、SQL 导入增加大小和复杂度限制，避免超大输入导致浏览器卡死或内存暴涨。
 
 修改文件：
@@ -232,6 +234,15 @@ npm run build
 - 超限文件不会进入 parser。
 - 合法小文件仍可导入。
 - 导入失败不清空当前图。
+
+本轮验证：
+
+```bash
+npm run test -- src/features/import/importLimits.test.js
+npm run test
+```
+
+结果：通过，5 个聚焦用例覆盖 5 MB 文件限制、2 MB SQL/DBML 文本限制、表/字段/关系数量限制、字符串长度限制和合法小输入；全量 Vitest 3 个测试文件、10 个用例通过。
 
 ### 0.6 分享配置与外发确认
 
