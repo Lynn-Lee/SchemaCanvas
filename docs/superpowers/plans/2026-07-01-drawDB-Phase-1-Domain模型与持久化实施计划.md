@@ -197,7 +197,7 @@ describe("normalizeDiagram", () => {
 
 ### 1.5 Command reducer 与 command history
 
-状态：未开始。
+状态：已完成，新增 `src/domain/diagramCommands.js`、`src/domain/diagramHistory.js` 和对应聚焦测试。红灯记录为缺失 `./diagramCommands` / `./diagramHistory` 导致聚焦测试失败；补齐实现后聚焦测试和 lint 通过。
 
 目标：以纯函数实现 diagram command reducer 和 undo/redo，不先替换 React context 的所有逻辑。
 
@@ -226,10 +226,10 @@ export function dispatchHistory(state, command) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 `table.create`、`field.update`、`relationship.delete`、`undo`、`redo`。
-- [ ] 运行 `npm run test -- src/domain/diagramCommands.test.js src/domain/diagramHistory.test.js`，确认因模块缺失失败。
-- [ ] 实现 `applyCommand` 和 history helpers；所有返回 diagram 都必须保持 immutable update。
-- [ ] 运行 `npm run test -- src/domain/diagramCommands.test.js src/domain/diagramHistory.test.js` 和 `npm run lint`，确认通过。
+- [x] 写红灯测试，覆盖 `table.create`、`field.update`、`relationship.delete`、`undo`、`redo`，并补充 `note`、`area`、`enum`、`type`、`viewport` 命令族回归。
+- [x] 运行 `npm run test -- src/domain/diagramCommands.test.js src/domain/diagramHistory.test.js`，确认因模块缺失失败。
+- [x] 实现 `applyCommand` 和 history helpers；所有返回 diagram 都必须保持 immutable update。
+- [x] 运行 `npm run test -- src/domain/diagramCommands.test.js src/domain/diagramHistory.test.js` 和 `npm run lint`，确认通过。
 
 ### 1.6 localDiagramRepository
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.5 Command reducer 与 command history`，先以纯函数覆盖 table、field、relationship 的 command apply 和 undo/redo，不直接替换 React context。
+下一轮自动化默认执行 `1.6 localDiagramRepository`，封装 Dexie CRUD，所有读写都先经过 normalize，不直接重写 `Workspace.jsx`。
