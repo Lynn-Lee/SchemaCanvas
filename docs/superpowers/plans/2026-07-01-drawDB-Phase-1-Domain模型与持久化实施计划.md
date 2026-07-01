@@ -93,7 +93,7 @@ describe("diagramModel", () => {
 
 ### 1.2 normalizeDiagram 与旧数据兼容
 
-状态：未开始。
+状态：已完成，新增 `src/domain/normalizeDiagram.js` 和 `src/domain/normalizeDiagram.test.js`。红灯记录为缺失 `./normalizeDiagram` 导致聚焦测试失败；补齐实现后聚焦测试、全量测试、lint、build、audit 均通过。
 
 目标：把旧 IndexedDB、JSON、DDB、template、share payload 统一转换到 normalized diagram shape。
 
@@ -138,10 +138,10 @@ describe("normalizeDiagram", () => {
 
 步骤：
 
-- [ ] 写入上述红灯测试。
-- [ ] 运行 `npm run test -- src/domain/normalizeDiagram.test.js`，确认因 `normalizeDiagram` 缺失失败。
-- [ ] 实现 `normalizeDiagram(input)`，内部调用 `createDiagram`；显式处理 `input.relationships ?? input.references ?? []`、所有实体 id string 化、缺失 `database` 回退 `DB.GENERIC`、缺失 `pan` 回退 `{ x: 0, y: 0 }`、缺失 `zoom` 回退 `1`。
-- [ ] 运行 `npm run test -- src/domain/normalizeDiagram.test.js src/domain/diagramModel.test.js` 和 `npm run lint`，确认通过。
+- [x] 写入上述红灯测试。
+- [x] 运行 `npm run test -- src/domain/normalizeDiagram.test.js`，确认因 `normalizeDiagram` 缺失失败。
+- [x] 实现 `normalizeDiagram(input)`，内部调用 `createDiagram`；显式处理 `input.relationships ?? input.references ?? []`、所有实体 id string 化、缺失 `database` 回退 `DB.GENERIC`、缺失 `pan` 回退 `{ x: 0, y: 0 }`、缺失 `zoom` 回退 `1`。
+- [x] 运行 `npm run test -- src/domain/normalizeDiagram.test.js src/domain/diagramModel.test.js` 和 `npm run lint`，确认通过。
 
 ### 1.3 Diagram Schema 运行时校验
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.2 normalizeDiagram 与旧数据兼容`，把旧 IndexedDB、JSON、DDB、template、share payload 统一转换到 normalized diagram shape。
+下一轮自动化默认执行 `1.3 Diagram Schema 运行时校验`，给 repository、import service 和未来 cloud adapter 复用固定的 `{ valid, errors }` 校验结果。

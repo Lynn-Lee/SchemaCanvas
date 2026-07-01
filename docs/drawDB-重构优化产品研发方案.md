@@ -783,10 +783,10 @@ src/
 
 任务：
 
-1. 定义 normalized Diagram schema。
-2. 增加 schemaVersion。
-3. 编写 migrate/normalize。
-4. ID 统一为 string。
+1. 定义 normalized Diagram schema。（已完成 Phase 1.1 最小 domain shape。）
+2. 增加 schemaVersion。（已完成 Phase 1.1。）
+3. 编写 migrate/normalize。（已完成 Phase 1.2 纯函数入口，后续接入 repository/import service。）
+4. ID 统一为 string。（已完成 Phase 1.1/1.2 domain 入口。）
 5. 引入 command reducer。
 6. Undo/redo 从 ControlPanel 移入 command history。
 7. Workspace 拆出 loader/persistence hooks。
