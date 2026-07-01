@@ -45,7 +45,7 @@ Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出
 
 ### 2.1 支持范围文档与 fixture 目录
 
-状态：未开始。
+状态：已完成。
 
 目标：先建立导入导出支持范围文档和 fixture 目录结构，不改变运行时代码。
 
@@ -60,10 +60,10 @@ Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出
 
 步骤：
 
-- [ ] 记录每个 dialect 的支持矩阵：table、primary key、composite foreign key、index、unique、default、check、comment、enum、unsupported syntax。
-- [ ] 定义 fixtures 命名规则：`<dialect>-<capability>.sql`、`<dialect>-<capability>.expected.json`、`<format>-<capability>.golden.*`。
-- [ ] 明确 warning/error issue 口径，导入失败和部分支持的区别。
-- [ ] 运行 `git diff --check`、`npm run lint`、`npm run test`。
+- [x] 记录每个 dialect 的支持矩阵：table、primary key、composite foreign key、index、unique、default、check、comment、enum、unsupported syntax。
+- [x] 定义 fixtures 命名规则：`<dialect>-<capability>.sql`、`<dialect>-<capability>.expected.json`、`<format>-<capability>.golden.*`。
+- [x] 明确 warning/error issue 口径，导入失败和部分支持的区别。
+- [x] 运行 `git diff --check`、`npm run lint`、`npm run test`。
 
 完成标准：
 
@@ -295,4 +295,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.1：新增 `docs/engineering/导入导出支持范围.md` 和 fixture 目录说明，不改运行时代码。
+下一轮自动化默认执行 Phase 2.2：为 MySQL、PostgreSQL、SQLite、MariaDB、MSSQL、Oracle 建立第一批 `basic` SQL fixtures，并用当前 `importSQL` 入口形成 smoke tests。
