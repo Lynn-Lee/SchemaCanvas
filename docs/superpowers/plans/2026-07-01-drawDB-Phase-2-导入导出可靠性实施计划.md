@@ -285,7 +285,7 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 ### 2.8 全量本地备份导出修复
 
-状态：未开始。
+状态：已完成。
 
 目标：修复 `exportSavedData` 复用模块级 `JSZip`、文件名不安全和日期 `getMonth/getDay` 误导问题。
 
@@ -296,16 +296,21 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖连续两次导出不会复用前一次 zip 内容、文件名安全化、导出 zip 文件名使用 ISO 日期。
-- [ ] 实现每次调用创建新的 `JSZip` 实例。
-- [ ] 对 diagram/template 名称做文件名安全化。
-- [ ] 日期使用 `YYYY-MM-DDTHH-mm-ss` 或等价 ISO 安全格式。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖连续两次导出不会复用前一次 zip 内容、文件名安全化、导出 zip 文件名使用 ISO 日期。
+- [x] 实现每次调用创建新的 `JSZip` 实例。
+- [x] 对 diagram/template 名称做文件名安全化。
+- [x] 日期使用 `YYYY-MM-DDTHH-mm-ss` 或等价 ISO 安全格式。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 全量备份可重复执行且内容不串包。
 - 文件名在常见文件系统中安全。
+
+完成记录：
+
+- 已新增 `src/utils/exportSavedData.test.js`，使用真实 `JSZip` 读取导出 blob，覆盖连续两次导出隔离、diagram/template 文件名安全化和 `drawdb-backup-YYYY-MM-DDTHH-mm-ss.zip` 命名。
+- `exportSavedData` 已改为每次调用创建新的 `JSZip` 实例，并返回可等待的导出 Promise。
 
 ## 5. Phase 2 退出门禁
 
@@ -333,4 +338,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.8：全量本地备份导出修复。
+下一轮自动化默认执行 Phase 2 退出门禁复核；通过后生成 Phase 3 编辑器 UX、可访问性与产品清晰度实施计划。
