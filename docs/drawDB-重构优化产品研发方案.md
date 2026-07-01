@@ -762,8 +762,8 @@ src/
 
 1. 增加 `SECURITY.md` 和隐私说明。
 2. 修复 localStorage parse 崩溃。（已完成：`settingsRepository` 会在 `localStorage.settings` 损坏时回退默认设置并清理损坏值。）
-3. 导入文件增加大小和复杂度限制。
-4. 分享前增加数据外发确认。
+3. 导入文件增加大小和复杂度限制。（已完成：JSON/DDB/SQL/DBML 导入会先经过大小、文本长度、对象数量和字符串长度限制。）
+4. 分享前增加数据外发确认。（已完成：首次创建分享链接前提示图表数据会上传到配置后端，未配置后端时不发起网络请求并显示配置提示。）
 5. Docker nginx 增加安全 headers。
 6. CI 增加 audit、测试、bundle budget。
 7. 建立 Vitest 和 Playwright 基础。

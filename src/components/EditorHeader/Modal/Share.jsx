@@ -13,7 +13,13 @@ import {
 } from "../../../hooks";
 import { databases } from "../../../data/databases";
 import { MODAL } from "../../../data/constants";
-import { create, patch, SHARE_FILENAME } from "../../../api/gists";
+import {
+  create,
+  isSharingBackendConfigured,
+  patch,
+  SHARE_BACKEND_NOT_CONFIGURED,
+  SHARE_FILENAME,
+} from "../../../api/gists";
 import { getCustomTypes } from "../../../utils/customTypes";
 import { Slot, useExtensions } from "../../../context/ExtensionsContext";
 import { queryConfig } from "../../../utils/queryConfig";
@@ -29,9 +35,21 @@ export default function Share({ title, setModal }) {
   const { enums } = useEnums();
   const { transform } = useTransform();
   const [error, setError] = useState(null);
+  const [shareConfirmed, setShareConfirmed] = useState(Boolean(gistId));
 
   const extensions = useExtensions();
   const customContent = extensions?.["share-modal-content"];
+
+  const setBackendConfigurationError = useCallback(() => {
+    setError((currentError) => {
+      if (currentError?.code === SHARE_BACKEND_NOT_CONFIGURED) {
+        return currentError;
+      }
+      const backendError = new Error("Sharing backend is not configured.");
+      backendError.code = SHARE_BACKEND_NOT_CONFIGURED;
+      return backendError;
+    });
+  }, []);
 
   const [embedSettings, setEmbedSettings] = useState({
     theme: null,
@@ -105,29 +123,49 @@ export default function Share({ title, setModal }) {
     }
   }, [gistId, setModal, setGistId]);
 
+  const updateOrGenerateLink = useCallback(async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      if (!isSharingBackendConfigured()) {
+        setBackendConfigurationError();
+        return;
+      }
+
+      if (!gistId || gistId === "") {
+        const id = await create(SHARE_FILENAME, diagramToString());
+        setGistId(id);
+      } else {
+        await patch(gistId, SHARE_FILENAME, diagramToString());
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [diagramToString, gistId, setBackendConfigurationError, setGistId]);
+
   useEffect(() => {
     if (customContent) {
       setLoading(false);
       return;
     }
-    const updateOrGenerateLink = async () => {
-      try {
-        setLoading(true);
-        if (!gistId || gistId === "") {
-          const id = await create(SHARE_FILENAME, diagramToString());
-          setGistId(id);
-        } else {
-          await patch(gistId, SHARE_FILENAME, diagramToString());
-        }
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!isSharingBackendConfigured()) {
+      setBackendConfigurationError();
+      setLoading(false);
+      return;
+    }
+    if (!gistId || gistId === "") {
+      setLoading(false);
+      return;
+    }
     updateOrGenerateLink();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [customContent, gistId, setBackendConfigurationError, updateOrGenerateLink]);
+
+  const confirmShare = () => {
+    setShareConfirmed(true);
+    updateOrGenerateLink();
+  };
 
   const copyLink = () => {
     navigator.clipboard
@@ -155,13 +193,31 @@ export default function Share({ title, setModal }) {
       )}
       {!loading && error && (
         <Banner
-          description={t("oops_smth_went_wrong")}
+          description={
+            error.code === SHARE_BACKEND_NOT_CONFIGURED
+              ? t("share_backend_not_configured")
+              : t("oops_smth_went_wrong")
+          }
           type="danger"
           closeIcon={null}
           fullMode={false}
         />
       )}
-      {!loading && !error && (
+      {!loading && !error && !shareConfirmed && (!gistId || gistId === "") && (
+        <div className="space-y-3">
+          <Banner
+            title={t("share_data_disclosure_title")}
+            description={t("share_data_disclosure_description")}
+            type="warning"
+            closeIcon={null}
+            fullMode={false}
+          />
+          <Button block theme="solid" onClick={confirmShare}>
+            {t("confirm_share_upload")}
+          </Button>
+        </div>
+      )}
+      {!loading && !error && (shareConfirmed || gistId) && (
         <>
           <div className="flex gap-3">
             <Input value={url} size="large" readonly />

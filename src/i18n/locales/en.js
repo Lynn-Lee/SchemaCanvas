@@ -248,6 +248,12 @@ const en = {
     failed_to_load: "Failed to load. Make sure the link is correct.",
     share_info:
       "* Sharing this link will not create a live real-time collaboration session.",
+    share_backend_not_configured:
+      "Sharing is not configured. Set VITE_BACKEND_URL to enable upload-backed share links.",
+    share_data_disclosure_title: "Share diagram data",
+    share_data_disclosure_description:
+      "Creating a share link uploads the current diagram data to the configured backend service.",
+    confirm_share_upload: "Confirm and create share link",
     show_relationship_labels: "Show relationship labels",
     docs: "Docs",
     supported_types: "Supported file types:",

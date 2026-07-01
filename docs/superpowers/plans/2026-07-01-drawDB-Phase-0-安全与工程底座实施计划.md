@@ -246,6 +246,8 @@ npm run test
 
 ### 0.6 分享配置与外发确认
 
+状态：已完成，`src/api/gists.js` 在缺少 `VITE_BACKEND_URL` 时会先抛出结构化配置错误并避免调用网络请求；`Share` 弹窗首次创建分享链接前展示图表数据外发确认，已存在分享链接的更新流程继续保留。
+
 目标：明确分享功能的数据外发边界，未配置后端时给出可理解提示，首次上传前增加确认。
 
 修改文件：
@@ -274,6 +276,14 @@ npm run build
 - 未配置后端的分享弹窗不会泛化报错。
 - 首次分享前有确认步骤。
 - 本地模式不受影响。
+
+本轮验证：
+
+```bash
+npm run test -- src/api/gists.test.js src/components/EditorHeader/Modal/Share.test.jsx
+```
+
+结果：通过，2 个测试文件、3 个用例覆盖缺少分享后端时 API 不发起网络请求、分享弹窗直接显示配置提示，以及首次创建分享链接前必须先确认外发图表数据。
 
 ### 0.7 Docker/nginx 安全 headers 与外部资源治理
 

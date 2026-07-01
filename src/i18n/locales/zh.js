@@ -243,6 +243,12 @@ const zh = {
     failed_to_load: "加载失败。请确认链接是否正确。",
     share_info:
       "* 分享此链接不会创建实时协作会话。",
+    share_backend_not_configured:
+      "分享后端未配置。请设置 VITE_BACKEND_URL 后再创建上传型分享链接。",
+    share_data_disclosure_title: "分享图表数据",
+    share_data_disclosure_description:
+      "创建分享链接会把当前图表数据上传到已配置的后端服务。",
+    confirm_share_upload: "确认并创建分享链接",
     supported_types: "支持的文件类型：",
     bulk_update: "批量更新",
     multiselect: "多选",
