@@ -8,6 +8,8 @@
 
 Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出能力从“能跑”推进到 fixture-backed、可预览、可回归。所有导入输入仍按非可信输入处理，导入失败不得清空当前图，导出结果必须稳定到可以做 golden tests。
 
+当前状态：已完成，并已通过 Phase 2 退出门禁。Phase 3 编辑器体验与可访问性实施计划已生成。
+
 本阶段结束后，应满足：
 
 - MySQL、PostgreSQL、SQLite、MariaDB、MSSQL、Oracle、DBML、JSON、DDB 有明确 fixtures 和支持范围说明。
@@ -338,4 +340,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2 退出门禁复核；通过后生成 Phase 3 编辑器 UX、可访问性与产品清晰度实施计划。
+下一轮自动化默认执行 Phase 3.1 首次进入新建向导。
