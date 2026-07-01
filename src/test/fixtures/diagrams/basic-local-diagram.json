@@ -1,0 +1,28 @@
+{
+  "id": "fixture-local-diagram",
+  "name": "Local test diagram",
+  "database": "generic",
+  "tables": [
+    {
+      "id": "fixture-table-users",
+      "name": "users",
+      "x": 120,
+      "y": 80,
+      "fields": [
+        {
+          "id": "fixture-field-users-id",
+          "name": "id",
+          "type": "integer",
+          "primary": true,
+          "nullable": false
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "relationships": [],
+  "notes": [],
+  "areas": [],
+  "types": [],
+  "enums": []
+}
