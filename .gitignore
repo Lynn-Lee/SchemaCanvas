@@ -23,3 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Local agent/operator instructions
+AGENTS.md
+AGENTS.local.md
+TEAM_GUIDE.md
+.agents.md
