@@ -22,7 +22,7 @@
 
 ### 1.1 Diagram Model 常量与工厂
 
-状态：未开始。
+状态：已完成，新增 `src/domain/diagramModel.js` 和 `src/domain/diagramModel.test.js`。红灯记录为缺失 `./diagramModel` 导致聚焦测试失败；补齐实现后聚焦测试和 lint 通过。
 
 目标：定义 `CURRENT_SCHEMA_VERSION`、标准 diagram shape 和 table/field/relationship/note/area/type/enum 工厂，先不接入 UI。
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.1 Diagram Model 常量与工厂`，只新增 domain 工厂和聚焦测试，不修改 `Workspace.jsx`。
+下一轮自动化默认执行 `1.2 normalizeDiagram 与旧数据兼容`，把旧 IndexedDB、JSON、DDB、template、share payload 统一转换到 normalized diagram shape。
