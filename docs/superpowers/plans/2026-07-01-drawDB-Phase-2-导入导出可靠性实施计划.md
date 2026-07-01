@@ -106,7 +106,7 @@ Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出
 
 ### 2.3 JSON/DDB/DBML import service
 
-状态：未开始。
+状态：已完成。
 
 目标：把 JSON、DDB、DBML 导入解析从 `ImportDiagram.jsx` 抽成纯 service，并返回统一结果。
 
@@ -132,16 +132,22 @@ export function importDiagramFileContent({
 
 步骤：
 
-- [ ] 写红灯测试，覆盖合法 JSON、合法 DDB、合法 DBML、错误 JSON、数据库不匹配、关系引用缺失。
-- [ ] 确认 service 缺失导致聚焦测试失败。
-- [ ] 实现 service，内部复用 `validateImportText`、`validateDiagramImportObject`、`normalizeDiagram` 和 `validateDiagram`。
-- [ ] 让 `ImportDiagram.jsx` 只负责读取文件、调用 service、展示结果和设置 `importData`。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run e2e`。
+- [x] 写红灯测试，覆盖合法 JSON、合法 DDB、合法 DBML、错误 JSON、数据库不匹配、关系引用缺失。
+- [x] 确认 service 缺失导致聚焦测试失败。
+- [x] 实现 service，内部复用 `validateImportText`、`validateDiagramImportObject`、`normalizeDiagram` 和 `validateDiagram`。
+- [x] 让 `ImportDiagram.jsx` 只负责读取文件、调用 service、展示结果和设置 `importData`。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run e2e`。
 
 完成标准：
 
 - 导入失败返回 `{ ok: false, issues }`，不直接覆盖当前图。
 - 弹窗行为与 Phase 0 导入限制兼容。
+
+完成记录：
+
+- 已新增 `src/features/import/importDiagramService.js`，统一 JSON、DDB、DBML 导入结果为 `{ ok, diagram, preview, issues }`。
+- 已新增 `src/features/import/importDiagramService.test.js`，覆盖合法 JSON、合法 DDB、合法 DBML、错误 JSON、数据库不匹配和关系引用缺失。
+- `ImportDiagram.jsx` 已改为只读文件并调用 service；确认导入时兼容 normalized diagram 的 `areas` 和 `name` 字段。
 
 ### 2.4 SQL import service 与 preview
 
@@ -301,4 +307,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.3：抽取 JSON/DDB/DBML import service，返回统一 `{ ok, diagram, preview, issues }`，并保持导入失败不覆盖当前 diagram。
+下一轮自动化默认执行 Phase 2.4：抽取 SQL import service 与 preview，返回统一 `{ ok, diagram, preview, issues }`，并把 parser error、不支持语法和导入 preview 从 React state 中分离出来。

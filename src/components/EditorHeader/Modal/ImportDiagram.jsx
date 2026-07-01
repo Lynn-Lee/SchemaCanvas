@@ -1,9 +1,5 @@
-import {
-  ddbDiagramIsValid,
-  jsonDiagramIsValid,
-} from "../../../utils/validateSchema";
 import { Upload, Banner } from "@douyinfe/semi-ui";
-import { DB, IMPORT_FROM, STATUS } from "../../../data/constants";
+import { IMPORT_FROM, STATUS } from "../../../data/constants";
 import {
   useAreas,
   useEnums,
@@ -12,12 +8,10 @@ import {
   useTypes,
 } from "../../../hooks";
 import { useTranslation } from "react-i18next";
-import { fromDBML } from "../../../utils/importFrom/dbml";
 import {
-  validateDiagramImportObject,
   validateImportFile,
-  validateImportText,
 } from "../../../features/import/importLimits";
+import { importDiagramFileContent } from "../../../features/import/importDiagramService";
 
 export default function ImportDiagram({
   setImportData,
@@ -43,90 +37,25 @@ export default function ImportDiagram({
     );
   };
 
-  const loadJsonData = (file, e) => {
-    let jsonObject = null;
-    try {
-      jsonObject = JSON.parse(e.target.result);
-    } catch (error) {
-      setError({
-        type: STATUS.ERROR,
-        message: "The file contains an error.",
-      });
-      return;
-    }
-
-    if (file.type === "application/json") {
-      if (!jsonDiagramIsValid(jsonObject)) {
-        setError({
-          type: STATUS.ERROR,
-          message: "The file is missing necessary properties for a diagram.",
-        });
-        return;
-      }
-    } else if (file.name.split(".").pop() === "ddb") {
-      if (!ddbDiagramIsValid(jsonObject)) {
-        setError({
-          type: STATUS.ERROR,
-          message: "The file is missing necessary properties for a diagram.",
-        });
-        return;
-      }
-    }
-
-    const limitResult = validateDiagramImportObject(jsonObject);
-    if (!limitResult.ok) {
-      setError({
-        type: STATUS.ERROR,
-        message: limitResult.message,
-      });
-      return;
-    }
-
-    if (!jsonObject.database) {
-      jsonObject.database = DB.GENERIC;
-    }
-
-    if (jsonObject.database !== database) {
-      setError({
-        type: STATUS.ERROR,
-        message:
-          "The imported diagram and the open diagram don't use matching databases.",
-      });
-      return;
-    }
-
-    let ok = true;
-    jsonObject.relationships.forEach((rel) => {
-      const startTable = jsonObject.tables.find(
-        (t) => t.id === rel.startTableId,
-      );
-      const endTable = jsonObject.tables.find((t) => t.id === rel.endTableId);
-
-      if (!startTable || !endTable) {
-        setError({
-          type: STATUS.ERROR,
-          message: `Relationship ${rel.name} references a table that does not exist.`,
-        });
-        ok = false;
-        return;
-      }
-
-      if (
-        !startTable.fields.find((f) => f.id === rel.startFieldId) ||
-        !endTable.fields.find((f) => f.id === rel.endFieldId)
-      ) {
-        setError({
-          type: STATUS.ERROR,
-          message: `Relationship ${rel.name} references a field that does not exist.`,
-        });
-        ok = false;
-        return;
-      }
+  const loadDiagramData = (file, e) => {
+    const result = importDiagramFileContent({
+      content: e.target.result,
+      fileName: file.name,
+      fileType: file.type,
+      importFrom,
+      currentDatabase: database,
     });
 
-    if (!ok) return;
+    if (!result.ok) {
+      setImportData(null);
+      setError({
+        type: STATUS.ERROR,
+        message: result.issues[0]?.message ?? "The file contains an error.",
+      });
+      return;
+    }
 
-    setImportData(jsonObject);
+    setImportData(result.diagram);
     if (diagramIsEmpty()) {
       setError({
         type: STATUS.OK,
@@ -138,25 +67,6 @@ export default function ImportDiagram({
         message:
           "The current diagram is not empty. Importing a new diagram will overwrite the current changes.",
       });
-    }
-  };
-
-  const loadDBMLData = (e) => {
-    const limitResult = validateImportText(e.target.result, { label: "DBML" });
-    if (!limitResult.ok) {
-      setError({
-        type: STATUS.ERROR,
-        message: limitResult.message,
-      });
-      return;
-    }
-
-    try {
-      setImportData(fromDBML(e.target.result));
-    } catch (error) {
-      const message = `${error.diags[0].name} [Ln ${error.diags[0].location.start.line}, Col ${error.diags[0].location.start.column}]: ${error.diags[0].message}`;
-
-      setError({ type: STATUS.ERROR, message });
     }
   };
 
@@ -206,8 +116,7 @@ export default function ImportDiagram({
           }
           const reader = new FileReader();
           reader.onload = async (e) => {
-            if (importFrom == IMPORT_FROM.JSON) loadJsonData(f, e);
-            if (importFrom == IMPORT_FROM.DBML) loadDBMLData(e);
+            loadDiagramData(f, e);
           };
           reader.readAsText(f);
 

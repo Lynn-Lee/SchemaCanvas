@@ -84,10 +84,10 @@ export default function Modal({
   const overwriteDiagram = () => {
     setTables(importData.tables);
     setRelationships(importData.relationships);
-    setAreas(importData.subjectAreas ?? []);
+    setAreas(importData.areas ?? importData.subjectAreas ?? []);
     setNotes(importData.notes ?? []);
-    if (importData.title) {
-      setTitle(importData.title);
+    if (importData.name || importData.title) {
+      setTitle(importData.name || importData.title);
     }
     if (databases[database].hasEnums && importData.enums) {
       setEnums(importData.enums);
