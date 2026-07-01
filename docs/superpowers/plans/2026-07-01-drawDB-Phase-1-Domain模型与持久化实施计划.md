@@ -233,7 +233,7 @@ export function dispatchHistory(state, command) {
 
 ### 1.6 localDiagramRepository
 
-状态：未开始。
+状态：已完成，新增 `src/persistence/localDiagramRepository.js` 和 `src/persistence/localDiagramRepository.test.js`。红灯记录为缺失 `./localDiagramRepository` 导致聚焦测试失败；补齐实现后聚焦测试通过。
 
 目标：封装 Dexie CRUD，所有读写都 normalize，先提供给后续 `Workspace` 拆分使用。
 
@@ -259,10 +259,10 @@ export function createLocalDiagramRepository(database = db) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 `listRecentDiagrams({ limit: 10 })` 按 `lastModified` 倒序返回 normalized summary、`getDiagramById` 找不到返回 `null`、`saveDiagram` 保存前 normalize。
-- [ ] 运行 `npm run test -- src/persistence/localDiagramRepository.test.js`，确认因 repository 缺失失败。
-- [ ] 实现 `createLocalDiagramRepository(database = db)`；所有返回 diagram 的方法都调用 `normalizeDiagram`；错误不在 repository 中吞掉。
-- [ ] 运行 `npm run test -- src/persistence/localDiagramRepository.test.js`、`npm run test` 和 `npm run lint`，确认通过。
+- [x] 写红灯测试，覆盖 `listRecentDiagrams({ limit: 10 })` 按 `lastModified` 倒序返回 normalized summary、`getDiagramById` 找不到返回 `null`、`saveDiagram` 保存前 normalize。
+- [x] 运行 `npm run test -- src/persistence/localDiagramRepository.test.js`，确认因 repository 缺失失败。
+- [x] 实现 `createLocalDiagramRepository(database = db)`；所有返回 diagram 的方法都调用 `normalizeDiagram`；错误不在 repository 中吞掉。
+- [x] 运行 `npm run test -- src/persistence/localDiagramRepository.test.js`、`npm run test` 和 `npm run lint`，确认通过。
 
 ### 1.7 useDiagramLoader 与 useDiagramPersistence 初步抽离
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.6 localDiagramRepository`，封装 Dexie CRUD，所有读写都先经过 normalize，不直接重写 `Workspace.jsx`。
+下一轮自动化默认执行 `1.7 useDiagramLoader 与 useDiagramPersistence 初步抽离`，把 `Workspace.jsx` 中的本地读取和保存组装抽到 hooks，并最小接入 `localDiagramRepository`。
