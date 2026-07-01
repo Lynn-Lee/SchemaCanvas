@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。下一阶段进入 Phase 1，先建立 Domain Model、命令历史和本地持久化 repository，不改变默认本地无账号体验。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验和结构化 validation issues，下一步继续 command reducer、command history 和本地持久化 repository，不改变默认本地无账号体验。
 
 ## 2. 产品定位
 
@@ -788,9 +788,10 @@ src/
 3. 编写 migrate/normalize。（已完成 Phase 1.2 纯函数入口，后续接入 repository/import service。）
 4. ID 统一为 string。（已完成 Phase 1.1/1.2 domain 入口。）
 5. 增加 Diagram Schema 运行时 shape 校验。（已完成 Phase 1.3。）
-6. 引入 command reducer。
-7. Undo/redo 从 ControlPanel 移入 command history。
-8. Workspace 拆出 loader/persistence hooks。
+6. 增加结构化 validation issues，并保留旧 Issues 面板字符串输出兼容。（已完成 Phase 1.4。）
+7. 引入 command reducer。
+8. Undo/redo 从 ControlPanel 移入 command history。
+9. Workspace 拆出 loader/persistence hooks。
 
 验收：
 
