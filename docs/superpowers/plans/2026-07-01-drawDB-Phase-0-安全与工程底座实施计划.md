@@ -287,6 +287,8 @@ npm run test -- src/api/gists.test.js src/components/EditorHeader/Modal/Share.te
 
 ### 0.7 Docker/nginx 安全 headers 与外部资源治理
 
+状态：已完成。Docker 生产镜像改为复制独立 `nginx.conf`，静态站点响应增加 `X-Content-Type-Options`、`Referrer-Policy` 和 `Permissions-Policy`；`bootstrap-icons` CDN 样式补齐固定版本 SRI 和 `crossorigin`。严格 CSP 暂未加入，避免破坏 Monaco、Vite 构建产物或现有 inline 资源，后续可在部署安全专项中单独评估。
+
 目标：补齐部署层面的基础安全 header，并处理 `index.html` 外部 CDN icon 的完整性风险。
 
 修改文件：
@@ -314,6 +316,15 @@ docker build -t drawdb-phase0-smoke .
 
 - Docker 可构建，或 Docker 不可用时记录真实错误。
 - 静态构建产物可正常生成。
+
+本轮验证：
+
+```bash
+npm run test -- src/deploy/dockerSecurity.test.js
+docker build -t drawdb-phase0-smoke .
+```
+
+结果：通过。聚焦测试 2 个用例覆盖 Dockerfile 复制 `nginx.conf`、nginx 低风险安全 headers 配置，以及外部 stylesheet 必须带 SRI 和 `crossorigin`；Docker 生产镜像构建成功。
 
 ## 4. 阶段退出门禁
 
