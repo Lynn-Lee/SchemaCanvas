@@ -255,7 +255,7 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 ### 2.7 Markdown、Mermaid、image、PDF 导出入口梳理
 
-状态：未开始。
+状态：已完成。
 
 目标：把非 SQL/DBML 导出入口纳入统一 service facade，先不重写底层生成逻辑。
 
@@ -267,14 +267,21 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 步骤：
 
-- [ ] 写测试覆盖 Markdown 和 Mermaid 导出返回稳定字符串。
-- [ ] 对 image/PDF 仅做 facade 参数校验和错误传播测试，不在 jsdom 中生成真实文件。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
+- [x] 写测试覆盖 Markdown 和 Mermaid 导出返回稳定字符串。
+- [x] 对 image/PDF 仅做 facade 参数校验和错误传播测试，不在 jsdom 中生成真实文件。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 后续 UI 只依赖 export service facade。
 - 浏览器专属导出能力在测试中有清晰边界。
+
+完成记录：
+
+- `exportDiagramService` 已增加 Markdown 和 Mermaid 文本导出，复用现有底层生成器并统一返回 `{ ok, format, extension, content, issues }`。
+- 新增 `exportCanvasImage` 和 `exportCanvasPdf` facade，通过注入 renderer/PDF adapter 覆盖 PNG/JPEG/SVG/PDF 的参数校验和错误传播。
+- `ControlPanel.jsx` 的 PNG、JPEG、SVG、PDF、Mermaid、Markdown 菜单已改为调用 export service facade。
+- 新增 Markdown 与 Mermaid golden fixtures，并在 `exportDiagramService.test.js` 中覆盖文本稳定输出和浏览器专属导出边界。
 
 ### 2.8 全量本地备份导出修复
 
@@ -326,4 +333,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.7：Markdown、Mermaid、image、PDF 导出入口梳理。
+下一轮自动化默认执行 Phase 2.8：全量本地备份导出修复。

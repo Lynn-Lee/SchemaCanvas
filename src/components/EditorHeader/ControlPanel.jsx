@@ -24,7 +24,7 @@ import {
   Toast,
   Popconfirm,
 } from "@douyinfe/semi-ui";
-import { toPng, toJpeg, toSvg } from "html-to-image";
+import { toPng } from "html-to-image";
 import {
   jsonToMySQL,
   jsonToPostgreSQL,
@@ -45,7 +45,6 @@ import {
   noteWidth,
   pngExportPixelRatio,
 } from "../../data/constants";
-import jsPDF from "jspdf";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Validator } from "jsonschema";
 import { areaSchema, noteSchema, tableSchema } from "../../data/schemas";
@@ -73,12 +72,14 @@ import Sidesheet from "./SideSheet/Sidesheet";
 import Modal from "./Modal/Modal";
 import { useTranslation } from "react-i18next";
 import { databases } from "../../data/databases";
-import { jsonToMermaid } from "../../utils/exportAs/mermaid";
 import { isRtl } from "../../i18n/utils/rtl";
-import { jsonToDocumentation } from "../../utils/exportAs/documentation";
 import { IdContext } from "../Workspace";
 import { socials } from "../../data/socials";
-import { exportDiagram } from "../../features/export/exportDiagramService";
+import {
+  exportCanvasImage,
+  exportCanvasPdf,
+  exportDiagram,
+} from "../../features/export/exportDiagramService";
 import { exportSavedData } from "../../utils/exportSavedData";
 import { nanoid } from "nanoid";
 import { getTableHeight } from "../../utils/utils";
@@ -578,6 +579,36 @@ export default function ControlPanel({
           Toast.error(t("oops_smth_went_wrong"));
         });
     });
+  };
+  const diagramForExport = () => ({
+    title,
+    name: title,
+    tables,
+    relationships,
+    notes,
+    areas,
+    types,
+    enums,
+    database,
+  });
+  const exportImage = async (format) => {
+    const result = await exportCanvasImage({
+      element: document.getElementById("canvas"),
+      format,
+      pixelRatio: pngExportPixelRatio,
+    });
+
+    if (!result.ok) {
+      Toast.error(t("oops_smth_went_wrong"));
+      return;
+    }
+
+    setExportData((prev) => ({
+      ...prev,
+      data: result.content,
+      extension: result.extension,
+    }));
+    openExportModal(MODAL.IMG);
   };
   const resetView = () =>
     setTransform((prev) => ({ ...prev, zoom: 1, pan: { x: 0, y: 0 } }));
@@ -1179,15 +1210,7 @@ export default function ControlPanel({
           openExportModal(MODAL.CODE);
           const result = exportDiagram({
             format: "sql",
-            diagram: {
-              title,
-              name: title,
-              tables: tables,
-              relationships,
-              types: types,
-              database: database,
-              enums: enums,
-            },
+            diagram: diagramForExport(),
           });
           setExportData((prev) => ({
             ...prev,
@@ -1201,47 +1224,19 @@ export default function ControlPanel({
           {
             name: "PNG",
             function: () => {
-              toPng(document.getElementById("canvas"), {
-                pixelRatio: pngExportPixelRatio,
-              }).then(function (dataUrl) {
-                setExportData((prev) => ({
-                  ...prev,
-                  data: dataUrl,
-                  extension: "png",
-                }));
-              });
-              openExportModal(MODAL.IMG);
+              exportImage("png");
             },
           },
           {
             name: "JPEG",
             function: () => {
-              toJpeg(document.getElementById("canvas"), { quality: 0.95 }).then(
-                function (dataUrl) {
-                  setExportData((prev) => ({
-                    ...prev,
-                    data: dataUrl,
-                    extension: "jpeg",
-                  }));
-                },
-              );
-              openExportModal(MODAL.IMG);
+              exportImage("jpeg");
             },
           },
           {
             name: "SVG",
             function: () => {
-              const filter = (node) => node.tagName !== "i";
-              toSvg(document.getElementById("canvas"), { filter: filter }).then(
-                function (dataUrl) {
-                  setExportData((prev) => ({
-                    ...prev,
-                    data: dataUrl,
-                    extension: "svg",
-                  }));
-                },
-              );
-              openExportModal(MODAL.IMG);
+              exportImage("svg");
             },
           },
           {
@@ -1275,14 +1270,7 @@ export default function ControlPanel({
               openExportModal(MODAL.CODE);
               const result = exportDiagram({
                 format: "dbml",
-                diagram: {
-                  title,
-                  name: title,
-                  tables,
-                  relationships,
-                  enums,
-                  database,
-                },
+                diagram: diagramForExport(),
               });
               setExportData((prev) => ({
                 ...prev,
@@ -1294,22 +1282,11 @@ export default function ControlPanel({
           {
             name: "PDF",
             function: () => {
-              const canvas = document.getElementById("canvas");
-              const filename = `${title}_${new Date().toISOString()}`;
-              toJpeg(canvas).then(function (dataUrl) {
-                const doc = new jsPDF("l", "px", [
-                  canvas.offsetWidth,
-                  canvas.offsetHeight,
-                ]);
-                doc.addImage(
-                  dataUrl,
-                  "jpeg",
-                  0,
-                  0,
-                  canvas.offsetWidth,
-                  canvas.offsetHeight,
-                );
-                doc.save(`${filename}.pdf`);
+              exportCanvasPdf({
+                element: document.getElementById("canvas"),
+                title,
+              }).then((result) => {
+                if (!result.ok) Toast.error(t("oops_smth_went_wrong"));
               });
             },
           },
@@ -1317,18 +1294,14 @@ export default function ControlPanel({
             name: "Mermaid",
             function: () => {
               openExportModal(MODAL.CODE);
-              const result = jsonToMermaid({
-                tables: tables,
-                relationships: relationships,
-                notes: notes,
-                subjectAreas: areas,
-                database: database,
-                title: title,
+              const result = exportDiagram({
+                format: "mermaid",
+                diagram: diagramForExport(),
               });
               setExportData((prev) => ({
                 ...prev,
-                data: result,
-                extension: "md",
+                data: result.content,
+                extension: result.extension,
               }));
             },
           },
@@ -1336,20 +1309,14 @@ export default function ControlPanel({
             name: "Markdown",
             function: () => {
               openExportModal(MODAL.CODE);
-              const result = jsonToDocumentation({
-                tables: tables,
-                relationships: relationships,
-                notes: notes,
-                subjectAreas: areas,
-                database: database,
-                title: title,
-                ...(databases[database].hasTypes && { types: types }),
-                ...(databases[database].hasEnums && { enums: enums }),
+              const result = exportDiagram({
+                format: "markdown",
+                diagram: diagramForExport(),
               });
               setExportData((prev) => ({
                 ...prev,
-                data: result,
-                extension: "md",
+                data: result.content,
+                extension: result.extension,
               }));
             },
           },

@@ -1,0 +1,12 @@
+erDiagram
+	posts }o--|| users : references
+
+	users {
+		INT id
+		VARCHAR(255) email
+	}
+
+	posts {
+		INT id
+		INT user_id
+	}
