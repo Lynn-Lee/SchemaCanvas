@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history 和 local diagram repository，下一步继续抽离 `Workspace` 的本地加载与保存 hooks，不改变默认本地无账号体验。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离；下一步进入 Phase 1 退出门禁和 Phase 2 细粒度计划生成。
 
 ## 2. 产品定位
 
@@ -789,9 +789,9 @@ src/
 4. ID 统一为 string。（已完成 Phase 1.1/1.2 domain 入口。）
 5. 增加 Diagram Schema 运行时 shape 校验。（已完成 Phase 1.3。）
 6. 增加结构化 validation issues，并保留旧 Issues 面板字符串输出兼容。（已完成 Phase 1.4。）
-7. 引入 command reducer。
-8. Undo/redo 从 ControlPanel 移入 command history。
-9. Workspace 拆出 loader/persistence hooks。
+7. 引入 command reducer。（已完成 Phase 1.5。）
+8. Undo/redo 从 ControlPanel 移入 command history。（已完成 Phase 1.5 纯函数入口。）
+9. Workspace 拆出 loader/persistence hooks。（已完成 Phase 1.7 本地加载与保存初步抽离。）
 
 验收：
 

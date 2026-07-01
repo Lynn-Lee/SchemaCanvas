@@ -266,7 +266,7 @@ export function createLocalDiagramRepository(database = db) {
 
 ### 1.7 useDiagramLoader 与 useDiagramPersistence 初步抽离
 
-状态：未开始。
+状态：已完成，新增 `src/editor/useDiagramLoader.js`、`src/editor/useDiagramPersistence.js` 和对应 hook 测试。红灯记录为缺失 hook 模块导致聚焦测试失败；补齐实现并接入 `Workspace.jsx` 后聚焦测试、全量测试和 lint 通过。
 
 目标：把 `Workspace.jsx` 中的本地读取和保存组装抽到 hooks，但不同时重写 UI 布局。
 
@@ -280,10 +280,10 @@ export function createLocalDiagramRepository(database = db) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 loader 读取最近本地图后调用 state setters、找不到 route diagram 时触发恢复提示状态、persistence 保存新本地图后返回新 `diagramId` 并设置 saved state。
-- [ ] 运行 `npm run test -- src/editor/useDiagramLoader.test.jsx src/editor/useDiagramPersistence.test.jsx`，确认因 hooks 缺失失败。
-- [ ] 实现 hooks 并最小接入 `Workspace.jsx`；云端 `extensions.cloudSave` 和分享读取逻辑暂时保留原位。
-- [ ] 运行 `npm run test -- src/editor/useDiagramLoader.test.jsx src/editor/useDiagramPersistence.test.jsx`、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`，确认本地 editor smoke 仍通过。
+- [x] 写红灯测试，覆盖 loader 读取最近本地图后调用 state setters、找不到 route diagram 时触发恢复提示状态、persistence 保存新本地图后返回新 `diagramId` 并设置 saved state。
+- [x] 运行 `npm run test -- src/editor/useDiagramLoader.test.jsx src/editor/useDiagramPersistence.test.jsx`，确认因 hooks 缺失失败。
+- [x] 实现 hooks 并最小接入 `Workspace.jsx`；云端 `extensions.cloudSave` 和分享读取逻辑暂时保留原位。
+- [x] 运行 `npm run test -- src/editor/useDiagramLoader.test.jsx src/editor/useDiagramPersistence.test.jsx`、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`，确认本地 editor smoke 仍通过。
 
 ## 3. Phase 1 退出门禁
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.7 useDiagramLoader 与 useDiagramPersistence 初步抽离`，把 `Workspace.jsx` 中的本地读取和保存组装抽到 hooks，并最小接入 `localDiagramRepository`。
+下一轮自动化默认执行 Phase 1 退出门禁复核；若门禁保持通过，则生成 `docs/superpowers/plans/2026-07-01-drawDB-Phase-2-导入导出可靠性实施计划.md`，暂不直接进入 Phase 2 源码切片。
