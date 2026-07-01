@@ -44,6 +44,7 @@ import { get, SHARE_FILENAME } from "../api/gists";
 import { nanoid } from "nanoid";
 import { mergeCustomTypes } from "../utils/customTypes";
 import { createLocalDiagramRepository } from "../persistence/localDiagramRepository";
+import NewDiagramWizard from "../features/onboarding/NewDiagramWizard";
 
 export const IdContext = createContext({
   gistId: "",
@@ -64,6 +65,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   const [width, setWidth] = useState(SIDEPANEL_MIN_WIDTH);
   const [lastSaved, setLastSaved] = useState("");
   const [showSelectDbModal, setShowSelectDbModal] = useState(false);
+  const [showNewDiagramWizard, setShowNewDiagramWizard] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [selectedDb, setSelectedDb] = useState("");
   const pendingNewIdRef = useRef(null);
@@ -115,6 +117,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     setRedoStack,
     setSaveState,
     setShowSelectDbModal,
+    setShowEmptyState: setShowNewDiagramWizard,
     setLayout,
     navigate,
   });
@@ -468,6 +471,75 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     setVersion(null);
   };
 
+  const createBlankDiagram = useCallback(
+    async (nextDatabase) => {
+      const nextTitle = "Untitled Diagram";
+      const emptyTransform = { zoom: 1, pan: { x: 0, y: 0 } };
+
+      setDatabase(nextDatabase);
+      setTitle(nextTitle);
+      setGistId("");
+      setLoadedFromGistId("");
+      setTables([]);
+      setRelationships([]);
+      setAreas([]);
+      setNotes([]);
+      setTypes([]);
+      setEnums([]);
+      setUndoStack([]);
+      setRedoStack([]);
+      setTransform(emptyTransform);
+      setLayout((prev) => ({ ...prev, readOnly: false }));
+      setSelectedDb(nextDatabase);
+      setShowNewDiagramWizard(false);
+
+      await saveLocalDiagram({
+        isNew: true,
+        loadedDiagramId: null,
+        database: nextDatabase,
+        title: nextTitle,
+        gistId: "",
+        loadedFromGistId: "",
+        tables: [],
+        relationships: [],
+        notes: [],
+        areas: [],
+        transform: emptyTransform,
+        types: [],
+        enums: [],
+      });
+    },
+    [
+      saveLocalDiagram,
+      setAreas,
+      setDatabase,
+      setEnums,
+      setGistId,
+      setLayout,
+      setLoadedFromGistId,
+      setNotes,
+      setRedoStack,
+      setRelationships,
+      setTables,
+      setTitle,
+      setTransform,
+      setTypes,
+      setUndoStack,
+    ],
+  );
+
+  const openTemplatesFromWizard = useCallback(() => {
+    setShowNewDiagramWizard(false);
+    navigate("/templates");
+  }, [navigate]);
+
+  const openImportFromWizard = useCallback(() => {
+    setShowNewDiagramWizard(false);
+    searchParams.set("importAsNew", "1");
+    setSearchParams(searchParams, { replace: true });
+    window.dispatchEvent(new CustomEvent("drawdb:open-import"));
+  }, [searchParams, setSearchParams]);
+
   useEffect(() => {
     if (
       tables?.length === 0 &&
@@ -539,6 +611,13 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
           <CanvasContextProvider className="h-full w-full">
             <Canvas saveState={saveState} setSaveState={setSaveState} />
           </CanvasContextProvider>
+          {showNewDiagramWizard && (
+            <NewDiagramWizard
+              onCreateBlank={createBlankDiagram}
+              onOpenTemplates={openTemplatesFromWizard}
+              onOpenImport={openImportFromWizard}
+            />
+          )}
           <Slot name="canvas-overlay" />
           {layout.toolbar && (
             <div

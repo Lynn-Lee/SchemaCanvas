@@ -21,6 +21,10 @@ test.describe("app smoke", () => {
     await page.goto("/editor");
 
     await expect(page).toHaveTitle(/Editor \| drawDB/);
+    await expect(
+      page.getByRole("heading", { name: "Create a local diagram" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Create blank diagram" }).click();
     await expect(page.getByText("File").first()).toBeVisible();
   });
 });

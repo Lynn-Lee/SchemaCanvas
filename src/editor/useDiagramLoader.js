@@ -46,6 +46,7 @@ export function useDiagramLoader({
   repository,
   navigate,
   setShowSelectDbModal,
+  setShowEmptyState,
   setSaveState,
   setDatabase,
   setGistId,
@@ -117,7 +118,9 @@ export function useDiagramLoader({
       const latestDiagramId = recentDiagrams[0]?.diagramId;
 
       if (!latestDiagramId) {
-        if (selectedDb === "") setShowSelectDbModal(true);
+        if (selectedDb === "") {
+          (setShowEmptyState ?? setShowSelectDbModal)(true);
+        }
         return false;
       }
 
@@ -161,6 +164,7 @@ export function useDiagramLoader({
       setRelationships,
       setSaveState,
       setShowSelectDbModal,
+      setShowEmptyState,
       setTables,
       setTitle,
       setTransform,

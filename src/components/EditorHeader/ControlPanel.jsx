@@ -146,6 +146,18 @@ export default function ControlPanel({
   const navigate = useNavigateWithParams();
   const extensions = useExtensions();
 
+  useEffect(() => {
+    const openImportModal = () => {
+      setImportFrom(IMPORT_FROM.JSON);
+      setModal(MODAL.IMPORT);
+    };
+
+    window.addEventListener("drawdb:open-import", openImportModal);
+    return () => {
+      window.removeEventListener("drawdb:open-import", openImportModal);
+    };
+  }, []);
+
   const undo = () => {
     if (undoStack.length === 0) return;
     const a = undoStack[undoStack.length - 1];

@@ -49,7 +49,7 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 3.1 首次进入新建向导
 
-状态：未开始。
+状态：已完成。
 
 目标：首次打开 `/editor` 且没有最近本地图表时，展示清晰的新建向导，提供空白数据库、模板、导入三条路径。
 
@@ -63,16 +63,18 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖没有最近图时显示新建向导、选择数据库创建空白图、进入模板、进入导入。
-- [ ] 实现向导 UI，明确提示“默认保存到当前浏览器本地”。
-- [ ] 接入 `/editor` empty state，不影响有最近图的自动恢复路径。
-- [ ] 增加 Playwright smoke，覆盖无账号进入 editor 后可以看到或完成新建入口。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖没有最近图时显示新建向导、选择数据库创建空白图、进入模板、进入导入。
+- [x] 实现向导 UI，明确提示“默认保存到当前浏览器本地”。
+- [x] 接入 `/editor` empty state，不影响有最近图的自动恢复路径。
+- [x] 增加 Playwright smoke，覆盖无账号进入 editor 后可以看到或完成新建入口。
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 新用户不需要登录即可从 `/editor` 创建第一个空白 diagram。
 - 有最近图时仍按原路径恢复，不被新建向导打断。
+
+验证记录：`npm run test -- src/features/onboarding/NewDiagramWizard.test.jsx src/editor/useDiagramLoader.test.jsx`、`npm run test`、`npm run e2e`、`npm run build` 已通过；桌面 1280px 和移动 390px 浏览器 smoke 确认新建向导可见、无横向溢出，创建空白图可跳转到 `/editor/diagrams/:id`。
 
 ### 3.2 最近图恢复提示与保存状态文案
 
@@ -275,4 +277,4 @@ npm run accessibility
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 3.1 首次进入新建向导。
+下一轮自动化默认执行 Phase 3.2 最近图恢复提示与保存状态文案。
