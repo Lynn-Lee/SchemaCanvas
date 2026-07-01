@@ -8,12 +8,13 @@ import {
   useTypes,
 } from "../../../hooks";
 import { useTranslation } from "react-i18next";
-import {
-  validateImportFile,
-} from "../../../features/import/importLimits";
+import { validateImportFile } from "../../../features/import/importLimits";
 import { importDiagramFileContent } from "../../../features/import/importDiagramService";
+import { IMPORT_MODE } from "../../../features/import/applyImportMode";
+import ImportModeSelector from "./ImportModeSelector";
 
 export default function ImportDiagram({
+  importData,
   setImportData,
   error,
   setError,
@@ -55,7 +56,12 @@ export default function ImportDiagram({
       return;
     }
 
-    setImportData(result.diagram);
+    setImportData((prev) => ({
+      mode: prev?.mode ?? IMPORT_MODE.OVERWRITE,
+      diagram: result.diagram,
+      preview: result.preview,
+      issues: result.issues,
+    }));
     if (diagramIsEmpty()) {
       setError({
         type: STATUS.OK,
@@ -65,7 +71,7 @@ export default function ImportDiagram({
       setError({
         type: STATUS.WARNING,
         message:
-          "The current diagram is not empty. Importing a new diagram will overwrite the current changes.",
+          "The current diagram is not empty. Choose an import mode before confirming.",
       });
     }
   };
@@ -131,12 +137,13 @@ export default function ImportDiagram({
         dragMainText={t("drag_and_drop_files")}
         dragSubText={getDragSubText()}
         accept={getAcceptableFileTypes()}
-        onRemove={() =>
+        onRemove={() => {
+          setImportData(null);
           setError({
             type: STATUS.NONE,
             message: "",
-          })
-        }
+          });
+        }}
         onFileChange={() =>
           setError({
             type: STATUS.NONE,
@@ -166,6 +173,17 @@ export default function ImportDiagram({
           />
         )
       )}
+      <div className="mt-2">
+        <ImportModeSelector
+          value={importData?.mode ?? IMPORT_MODE.OVERWRITE}
+          onChange={(mode) =>
+            setImportData((prev) => ({
+              ...(prev ?? {}),
+              mode,
+            }))
+          }
+        />
+      </div>
     </div>
   );
 }

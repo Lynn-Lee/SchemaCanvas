@@ -190,7 +190,7 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 ### 2.5 导入模式：覆盖、合并、作为新图
 
-状态：未开始。
+状态：已完成。
 
 目标：导入确认时支持三种明确模式，避免当前单一 overwrite checkbox 语义不清。
 
@@ -204,15 +204,22 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖覆盖当前图、合并当前图、作为新图导入三种模式。
-- [ ] 实现纯函数 `applyImportMode(currentDiagram, importedDiagram, mode)`，合并时必须处理 id 冲突。
-- [ ] UI 从 checkbox 改为 radio/segmented control，文案明确说明每种模式。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖覆盖当前图、合并当前图、作为新图导入三种模式。
+- [x] 实现纯函数 `applyImportMode(currentDiagram, importedDiagram, mode)`，合并时必须处理 id 冲突。
+- [x] UI 从 checkbox 改为 radio/segmented control，文案明确说明每种模式。
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 导入失败或取消不改变当前图。
 - 三种模式有测试覆盖，并通过浏览器 smoke。
+
+完成记录：
+
+- 已新增 `src/features/import/applyImportMode.js` 和聚焦测试，覆盖覆盖、合并、作为新图三种模式。
+- 合并模式会重映射导入表、字段、关系、notes、areas、types、enums 的冲突 id，并同步修正关系引用。
+- `ImportSource.jsx` 和 `ImportDiagram.jsx` 已使用同一导入模式选择器；`Modal.jsx` 确认导入时统一调用 `applyImportMode`。
+- “作为新图”使用 `/editor?importAsNew=1` 跳过最近图自动恢复，后续保存会创建新的本地图表。
 
 ### 2.6 SQL/DBML 导出 service 与 golden tests
 
@@ -313,4 +320,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.5：导入模式支持覆盖、合并、作为新图，先抽纯函数 `applyImportMode(currentDiagram, importedDiagram, mode)`，再调整 UI 控件。
+下一轮自动化默认执行 Phase 2.6：SQL/DBML 导出 service 与 golden tests。

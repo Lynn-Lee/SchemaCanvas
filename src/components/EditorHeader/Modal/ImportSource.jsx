@@ -1,4 +1,4 @@
-import { Upload, Checkbox, Banner, Tabs, TabPane } from "@douyinfe/semi-ui";
+import { Upload, Banner, Tabs, TabPane } from "@douyinfe/semi-ui";
 import { STATUS } from "../../../data/constants";
 import { useTranslation } from "react-i18next";
 import CodeEditor from "../../CodeEditor";
@@ -7,6 +7,7 @@ import {
   validateImportText,
 } from "../../../features/import/importLimits";
 import { importSqlText } from "../../../features/import/importSqlService";
+import ImportModeSelector from "./ImportModeSelector";
 
 export default function ImportSource({
   importData,
@@ -144,18 +145,15 @@ export default function ImportSource({
       </Tabs>
 
       <div className="mt-2">
-        <Checkbox
-          aria-label="overwrite checkbox"
-          checked={importData.overwrite}
-          onChange={(e) =>
+        <ImportModeSelector
+          value={importData.mode}
+          onChange={(mode) =>
             setImportData((prev) => ({
               ...prev,
-              overwrite: e.target.checked,
+              mode,
             }))
           }
-        >
-          {t("overwrite_existing_diagram")}
-        </Checkbox>
+        />
         <div className="mt-2">
           {error.type === STATUS.ERROR ? (
             <Banner

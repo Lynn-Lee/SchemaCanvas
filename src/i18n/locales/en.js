@@ -176,6 +176,16 @@ const en = {
     upload_sql_to_generate_diagrams:
       "Upload an sql file to autogenerate your tables and columns.",
     overwrite_existing_diagram: "Overwrite existing diagram",
+    import_mode: "Import mode",
+    import_mode_overwrite: "Overwrite current diagram",
+    import_mode_overwrite_description:
+      "Replace the open diagram with the imported content.",
+    import_mode_merge: "Merge into current diagram",
+    import_mode_merge_description:
+      "Add imported objects and automatically rename conflicting ids.",
+    import_mode_new: "Import as new diagram",
+    import_mode_new_description:
+      "Open the imported content as an unsaved local diagram.",
     only_mysql_supported:
       "*For the time being loading only MySQL scripts is supported.",
     blank: "Blank",

@@ -136,6 +136,10 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
       searchParams.delete("shareId");
       setSearchParams(searchParams, { replace: true });
     }
+    if (searchParams.has("importAsNew")) {
+      searchParams.delete("importAsNew");
+      setSearchParams(searchParams, { replace: true });
+    }
 
     if (cloudOnly) {
       const isNew = !loadedDiagramId || isTemplate;
@@ -397,6 +401,9 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     }
 
     if (!loadedDiagramId) {
+      if (searchParams.get("importAsNew") === "1") {
+        return;
+      }
       if (cloudOnly) {
         if (previousLoadedId != null) {
           setTables([]);

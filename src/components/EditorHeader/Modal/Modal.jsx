@@ -31,6 +31,10 @@ import Rename from "./Rename";
 import SetTableWidth from "./SetTableWidth";
 import Share from "./Share";
 import { mergeCustomTypes } from "../../../utils/customTypes";
+import {
+  IMPORT_MODE,
+  applyImportMode,
+} from "../../../features/import/applyImportMode";
 
 const extensionToLanguage = {
   md: "markdown",
@@ -50,12 +54,19 @@ export default function Modal({
   importFrom,
 }) {
   const { t, i18n } = useTranslation();
-  const { setTables, setRelationships, database } = useDiagram();
-  const { setNotes } = useNotes();
-  const { setAreas } = useAreas();
-  const { setTypes } = useTypes();
-  const { setEnums } = useEnums();
-  const { setTransform } = useTransform();
+  const {
+    tables,
+    relationships,
+    setTables,
+    setRelationships,
+    database,
+    setDatabase,
+  } = useDiagram();
+  const { notes, setNotes } = useNotes();
+  const { areas, setAreas } = useAreas();
+  const { types, setTypes } = useTypes();
+  const { enums, setEnums } = useEnums();
+  const { transform, setTransform } = useTransform();
   const { setUndoStack, setRedoStack } = useUndoRedo();
   const { settings, setSettings } = useSettings();
   const [uncontrolledTitle, setUncontrolledTitle] = useState(title);
@@ -65,7 +76,7 @@ export default function Modal({
   const [tempTableWidth, setTempTableWidth] = useState(settings.tableWidth);
   const [importSource, setImportSource] = useState({
     src: "",
-    overwrite: false,
+    mode: IMPORT_MODE.OVERWRITE,
     diagram: null,
     preview: null,
     issues: [],
@@ -80,61 +91,71 @@ export default function Modal({
   const [saveAsTitle, setSaveAsTitle] = useState(title);
   const navigate = useNavigateWithParams();
 
-  const overwriteDiagram = () => {
-    setTables(importData.tables);
-    setRelationships(importData.relationships);
-    setAreas(importData.areas ?? importData.subjectAreas ?? []);
-    setNotes(importData.notes ?? []);
-    if (importData.name || importData.title) {
-      setTitle(importData.name || importData.title);
-    }
-    if (databases[database].hasEnums && importData.enums) {
-      setEnums(importData.enums);
-    }
-    if (databases[database].hasTypes && importData.types) {
-      setTypes(importData.types);
-    }
-    if (importData.customTypes) {
-      mergeCustomTypes(importData.customTypes);
-    }
+  const getCurrentDiagram = () => {
+    return {
+      name: title,
+      database,
+      tables,
+      relationships,
+      notes,
+      areas,
+      types,
+      enums,
+      pan: transform.pan,
+      zoom: transform.zoom,
+    };
   };
 
-  const parseSQLAndLoadDiagram = () => {
-    if (!importSource.diagram) {
+  const applyImportedDiagram = ({ importedDiagram, mode }) => {
+    if (!importedDiagram) {
       setError({
         type: STATUS.ERROR,
-        message: "SQL import failed.",
+        message: "Import failed.",
       });
       return;
     }
 
     try {
-      const diagramData = importSource.diagram;
+      const result = applyImportMode({
+        currentDiagram: getCurrentDiagram(),
+        importedDiagram,
+        mode,
+      });
+      const nextDiagram = result.diagram;
+      const nextDatabase = nextDiagram.database ?? database;
 
-      if (importSource.overwrite) {
-        setTables(diagramData.tables);
-        setRelationships(diagramData.relationships);
-        if (databases[database].hasTypes) setTypes(diagramData.types ?? []);
-        if (databases[database].hasEnums) setEnums(diagramData.enums ?? []);
-        setTransform((prev) => ({ ...prev, pan: { x: 0, y: 0 } }));
-        setNotes([]);
-        setAreas([]);
+      setDatabase(nextDatabase);
+      setTitle(nextDiagram.name || nextDiagram.title || title);
+      setTables(nextDiagram.tables);
+      setRelationships(nextDiagram.relationships);
+      setAreas(nextDiagram.areas ?? nextDiagram.subjectAreas ?? []);
+      setNotes(nextDiagram.notes ?? []);
+      setTransform({
+        pan: nextDiagram.pan ?? { x: 0, y: 0 },
+        zoom: nextDiagram.zoom ?? 1,
+      });
+
+      if (databases[nextDatabase].hasTypes) {
+        setTypes(nextDiagram.types ?? []);
       } else {
-        setTables((prev) => [...prev, ...diagramData.tables]);
-        setRelationships((prev) =>
-          [...prev, ...diagramData.relationships].map((r, i) => ({
-            ...r,
-            id: i,
-          })),
-        );
-        if (databases[database].hasTypes && diagramData.types.length)
-          setTypes((prev) => [...prev, ...diagramData.types]);
-        if (databases[database].hasEnums && diagramData.enums.length)
-          setEnums((prev) => [...prev, ...diagramData.enums]);
+        setTypes([]);
       }
 
+      if (databases[nextDatabase].hasEnums) {
+        setEnums(nextDiagram.enums ?? []);
+      } else {
+        setEnums([]);
+      }
+
+      if (importedDiagram.customTypes) {
+        mergeCustomTypes(importedDiagram.customTypes);
+      }
       setUndoStack([]);
       setRedoStack([]);
+
+      if (result.isNewDiagram) {
+        navigate("/editor?importAsNew=1", { replace: true });
+      }
 
       setModal(MODAL.NONE);
     } catch (e) {
@@ -162,16 +183,18 @@ export default function Modal({
       }
       case MODAL.IMPORT:
         if (error.type !== STATUS.ERROR) {
-          setTransform((prev) => ({ ...prev, pan: { x: 0, y: 0 } }));
-          overwriteDiagram();
+          applyImportedDiagram({
+            importedDiagram: importData.diagram,
+            mode: importData.mode,
+          });
           setImportData(null);
-          setModal(MODAL.NONE);
-          setUndoStack([]);
-          setRedoStack([]);
         }
         return;
       case MODAL.IMPORT_SRC:
-        parseSQLAndLoadDiagram();
+        applyImportedDiagram({
+          importedDiagram: importSource.diagram,
+          mode: importSource.mode,
+        });
         return;
       case MODAL.OPEN:
         if (!selectedDiagramId) return;
@@ -209,6 +232,7 @@ export default function Modal({
       case MODAL.IMPORT:
         return (
           <ImportDiagram
+            importData={importData}
             setImportData={setImportData}
             error={error}
             setError={setError}
@@ -327,7 +351,7 @@ export default function Modal({
         setImportData(null);
         setImportSource({
           src: "",
-          overwrite: false,
+          mode: IMPORT_MODE.OVERWRITE,
           diagram: null,
           preview: null,
           issues: [],
@@ -346,7 +370,7 @@ export default function Modal({
         disabled:
           (error && error?.type === STATUS.ERROR) ||
           (modal === MODAL.IMPORT &&
-            (error.type === STATUS.ERROR || !importData)) ||
+            (error.type === STATUS.ERROR || !importData?.diagram)) ||
           (modal === MODAL.RENAME && title === "") ||
           ((modal === MODAL.IMG || modal === MODAL.CODE) && !exportData.data) ||
           (modal === MODAL.SAVEAS && saveAsTitle === "") ||
