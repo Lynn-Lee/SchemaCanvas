@@ -60,6 +60,8 @@ npm audit --audit-level=high
 
 ### 0.2 Vitest 与 Testing Library 基线
 
+状态：已完成，建立 `npm run test`、`npm run test:watch` 和 `npm run coverage` 脚本，新增 Vitest/jsdom setup、coverage provider、基础 diagram fixture 和测试工具。红灯记录为缺失 `src/test/utils/diagramFixtures.js` 导致聚焦测试失败，补齐实现后聚焦测试通过。
+
 目标：建立可以测试纯函数、repository 和轻量 React 组件的单元测试基础设施。
 
 修改文件：
@@ -102,6 +104,15 @@ npm run build
 - 至少有 1 个真实测试覆盖新建的测试环境。
 - `npm run test` 可在本地稳定执行。
 - 不引入与 Vite/React 当前版本冲突的依赖。
+
+本轮验证：
+
+```bash
+npm run test -- src/test/utils/diagramFixture.test.js
+npm run coverage -- src/test/utils/diagramFixture.test.js
+```
+
+结果：通过，1 个测试文件、1 个测试用例；coverage smoke 可生成报告，本地 `coverage/` 产物不提交。
 
 ### 0.3 Playwright 与浏览器 smoke 基线
 
