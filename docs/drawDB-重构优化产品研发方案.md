@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 导入导出可靠性细粒度实施计划已生成，支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview，以及导入模式：覆盖、合并、作为新图已完成；下一步实现 SQL/DBML 导出 service 与 golden tests。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 导入导出可靠性细粒度实施计划已生成，支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图，以及 SQL/DBML 导出 service 与 golden tests 已完成；下一步梳理 Markdown、Mermaid、image、PDF 导出 facade。
 
 ## 2. 产品定位
 
@@ -806,10 +806,10 @@ src/
 任务：
 
 1. 为 JSON/DDB/DBML/SQL 建 fixture。（SQL basic fixtures 已完成，DBML/JSON/DDB 深度 fixtures 待补。）
-2. 为每个数据库建立 import/export golden tests。
+2. 为每个数据库建立 import/export golden tests。（SQL/DBML 基础导出 golden tests 已完成，更多 dialect 和复杂能力 fixtures 待补。）
 3. SQL 导入增加预览和错误列表。
 4. SQL 导出前接入 validation。
-5. DBML 导出完善转义和 schemaVersion。
+5. DBML 导出完善转义和 schemaVersion。（基础 DBML 导出已接入 service 和 golden tests。）
 6. 修复全量本地导出 zip 的文件名和复用 zip 实例问题。
 
 验收：

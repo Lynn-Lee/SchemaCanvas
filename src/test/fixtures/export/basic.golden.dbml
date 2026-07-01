@@ -1,0 +1,13 @@
+Table users [headercolor: #175e7a] {
+	id int [ pk, increment, not null ]
+	email varchar(255) [ not null, unique ]
+}
+
+Table posts [headercolor: #175e7a] {
+	id int [ pk, increment, not null ]
+	user_id int [ not null ]
+}
+
+Ref fk_posts_users {
+	posts.user_id > users.id [ delete: cascade, update: cascade ]
+}

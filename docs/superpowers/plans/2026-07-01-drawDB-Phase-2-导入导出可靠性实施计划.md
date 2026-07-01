@@ -223,7 +223,7 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 ### 2.6 SQL/DBML 导出 service 与 golden tests
 
-状态：未开始。
+状态：已完成。
 
 目标：把 SQL、DBML 导出收敛到 service，建立稳定 golden tests。
 
@@ -237,15 +237,21 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 MySQL、PostgreSQL、SQLite、DBML 的稳定输出。
-- [ ] 建立 golden fixture，统一换行和尾随换行策略。
-- [ ] 实现 service，导出前 normalize diagram。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖 MySQL、PostgreSQL、SQLite、DBML 的稳定输出。
+- [x] 建立 golden fixture，统一换行和尾随换行策略。
+- [x] 实现 service，导出前 normalize diagram。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - SQL/DBML 输出在没有行为变化时不会漂移。
 - golden fixture 可读，失败 diff 能定位具体变更。
+
+完成记录：
+
+- 已新增 `src/features/export/exportDiagramService.js`，统一 SQL 和 DBML 导出入口，导出前先 normalize diagram，并兼容现有 SQL exporter 的 `references` 字段。
+- 已新增 `src/features/export/exportDiagramService.test.js` 与 `src/test/fixtures/export/` golden fixtures，覆盖 MySQL、PostgreSQL、SQLite 和 DBML 基础输出。
+- `ControlPanel.jsx` 的标准 SQL 与 DBML 导出已改为调用 export service；Generic 转指定 SQL 的旧菜单和图片/PDF/Markdown/Mermaid 仍留给后续切片。
 
 ### 2.7 Markdown、Mermaid、image、PDF 导出入口梳理
 
@@ -320,4 +326,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.6：SQL/DBML 导出 service 与 golden tests。
+下一轮自动化默认执行 Phase 2.7：Markdown、Mermaid、image、PDF 导出入口梳理。
