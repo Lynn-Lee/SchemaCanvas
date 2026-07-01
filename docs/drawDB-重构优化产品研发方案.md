@@ -787,9 +787,10 @@ src/
 2. 增加 schemaVersion。（已完成 Phase 1.1。）
 3. 编写 migrate/normalize。（已完成 Phase 1.2 纯函数入口，后续接入 repository/import service。）
 4. ID 统一为 string。（已完成 Phase 1.1/1.2 domain 入口。）
-5. 引入 command reducer。
-6. Undo/redo 从 ControlPanel 移入 command history。
-7. Workspace 拆出 loader/persistence hooks。
+5. 增加 Diagram Schema 运行时 shape 校验。（已完成 Phase 1.3。）
+6. 引入 command reducer。
+7. Undo/redo 从 ControlPanel 移入 command history。
+8. Workspace 拆出 loader/persistence hooks。
 
 验收：
 

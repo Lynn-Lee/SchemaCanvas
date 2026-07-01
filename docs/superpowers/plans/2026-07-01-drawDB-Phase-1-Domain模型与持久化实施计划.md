@@ -145,7 +145,7 @@ describe("normalizeDiagram", () => {
 
 ### 1.3 Diagram Schema 运行时校验
 
-状态：未开始。
+状态：已完成，新增 `src/domain/diagramSchema.js` 和 `src/domain/diagramSchema.test.js`。红灯记录为缺失 `./diagramSchema` 导致聚焦测试失败；补齐实现后聚焦测试和 lint 通过。
 
 目标：新增轻量 schema 校验，给 repository、import service 和未来 cloud adapter 复用。
 
@@ -156,10 +156,10 @@ describe("normalizeDiagram", () => {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 normalized diagram 返回 `{ valid: true, errors: [] }`、缺少 `diagramId` 返回 `{ valid: false }`、`tables` 不是数组时返回错误路径 `tables`。
-- [ ] 运行 `npm run test -- src/domain/diagramSchema.test.js`，确认因 schema 模块缺失失败。
-- [ ] 实现 `validateDiagramShape(diagram)`，输出固定为 `{ valid: boolean, errors: [{ path, message }] }`；可使用现有 `jsonschema` 依赖，也可用显式校验。
-- [ ] 运行 `npm run test -- src/domain/diagramSchema.test.js` 和 `npm run lint`，确认通过。
+- [x] 写红灯测试，覆盖 normalized diagram 返回 `{ valid: true, errors: [] }`、缺少 `diagramId` 返回 `{ valid: false }`、`tables` 不是数组时返回错误路径 `tables`。
+- [x] 运行 `npm run test -- src/domain/diagramSchema.test.js`，确认因 schema 模块缺失失败。
+- [x] 实现 `validateDiagramShape(diagram)`，输出固定为 `{ valid: boolean, errors: [{ path, message }] }`；使用显式校验以保持 domain 层轻量。
+- [x] 运行 `npm run test -- src/domain/diagramSchema.test.js` 和 `npm run lint`，确认通过。
 
 ### 1.4 结构化 validation issues
 
