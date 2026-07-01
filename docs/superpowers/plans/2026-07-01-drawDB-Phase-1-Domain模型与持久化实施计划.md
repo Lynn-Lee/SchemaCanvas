@@ -163,7 +163,7 @@ describe("normalizeDiagram", () => {
 
 ### 1.4 结构化 validation issues
 
-状态：未开始。
+状态：已完成，新增 `src/domain/validateDiagram.js` 和 `src/domain/validateDiagram.test.js`，并把 `src/utils/issues.js` 改为兼容 wrapper。红灯记录为缺失 `./validateDiagram` 导致聚焦测试失败；补齐实现后聚焦测试通过。
 
 目标：新增 `validateDiagram` 返回结构化 issue，同时保留 `src/utils/issues.js` 的字符串输出兼容旧 UI。
 
@@ -189,11 +189,11 @@ describe("normalizeDiagram", () => {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖重复表名、空字段名、无主键三类 issue。
-- [ ] 运行 `npm run test -- src/domain/validateDiagram.test.js`，确认因模块缺失失败。
-- [ ] 实现 `validateDiagram(diagram)`，每个 issue 都包含 `id`、`severity`、`objectType`、`objectId`、`messageKey`、`message`、`fixHint`。
-- [ ] 修改 `src/utils/issues.js`，保留 `getIssues(diagram)` 导出，内部返回 `validateDiagram(diagram).map((issue) => issue.message)`。
-- [ ] 运行 `npm run test -- src/domain/validateDiagram.test.js`、`npm run test` 和 `npm run lint`，确认通过。
+- [x] 写红灯测试，覆盖重复表名、空字段名、无主键三类 issue。
+- [x] 运行 `npm run test -- src/domain/validateDiagram.test.js`，确认因模块缺失失败。
+- [x] 实现 `validateDiagram(diagram)`，每个 issue 都包含 `id`、`severity`、`objectType`、`objectId`、`messageKey`、`message`、`fixHint`。
+- [x] 修改 `src/utils/issues.js`，保留 `getIssues(diagram)` 导出，内部返回 `validateDiagram(diagram).map((issue) => issue.message)`。
+- [x] 运行 `npm run test -- src/domain/validateDiagram.test.js`，确认通过；全量验证记录见本轮 run log。
 
 ### 1.5 Command reducer 与 command history
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 `1.3 Diagram Schema 运行时校验`，给 repository、import service 和未来 cloud adapter 复用固定的 `{ valid, errors }` 校验结果。
+下一轮自动化默认执行 `1.5 Command reducer 与 command history`，先以纯函数覆盖 table、field、relationship 的 command apply 和 undo/redo，不直接替换 React context。
