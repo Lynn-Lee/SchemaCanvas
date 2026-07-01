@@ -72,7 +72,7 @@ Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出
 
 ### 2.2 基础 fixtures 与 importSQL smoke tests
 
-状态：未开始。
+状态：已完成。
 
 目标：为 MySQL、PostgreSQL、SQLite、MariaDB、MSSQL、Oracle 建立第一批小型 SQL fixtures，并用当前 `importSQL` 入口形成回归测试。
 
@@ -88,15 +88,21 @@ Phase 2 的目标是把 drawDB 的 SQL、DBML、JSON、DDB 和文档导入导出
 
 步骤：
 
-- [ ] 写红灯测试，覆盖每个 dialect 至少能导入两张表、一个主键和一个关系。
-- [ ] 运行聚焦测试，确认当前缺少 fixtures 或 service 入口导致失败。
-- [ ] 补齐 fixtures 和最小测试 helper；暂不改变 UI。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`。
+- [x] 写红灯测试，覆盖每个 dialect 至少能导入两张表、一个主键和一个关系。
+- [x] 运行聚焦测试，确认当前缺少 fixtures 或 service 入口导致失败。
+- [x] 补齐 fixtures 和最小测试 helper；暂不改变 UI。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`。
 
 完成标准：
 
 - SQL fixtures 可被测试稳定读取。
 - 当前支持能力有第一层回归保护。
+
+完成记录：
+
+- 已新增 MySQL、PostgreSQL、SQLite、MariaDB、MSSQL、Oracle 的 `basic` SQL fixtures。
+- 已新增 `src/utils/importSQL/importSQL.test.js`，覆盖 6 个 dialect 的两表、主键和关系导入 smoke。
+- MSSQL 当前 parser 对 foreign key SQL 语法支持有限，测试 helper 只在 fixture 层把 `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY` 映射为现有 `fromMSSQL` 支持的 alter AST；Phase 2.4 SQL import service 需要把该边界转为用户可见 warning/error 或 parser 兼容层。
 
 ### 2.3 JSON/DDB/DBML import service
 
@@ -295,4 +301,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.2：为 MySQL、PostgreSQL、SQLite、MariaDB、MSSQL、Oracle 建立第一批 `basic` SQL fixtures，并用当前 `importSQL` 入口形成 smoke tests。
+下一轮自动化默认执行 Phase 2.3：抽取 JSON/DDB/DBML import service，返回统一 `{ ok, diagram, preview, issues }`，并保持导入失败不覆盖当前 diagram。
