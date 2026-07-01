@@ -1,7 +1,5 @@
 import { Image, Input, Modal as SemiUIModal, Spin } from "@douyinfe/semi-ui";
 import { saveAs } from "file-saver";
-import { Parser } from "node-sql-parser";
-import { Parser as OracleParser } from "oracle-sql-parser";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DB, MODAL, STATUS } from "../../../data/constants";
@@ -18,7 +16,6 @@ import {
   useUndoRedo,
 } from "../../../hooks";
 import { isRtl } from "../../../i18n/utils/rtl";
-import { importSQL } from "../../../utils/importSQL";
 import {
   getModalTitle,
   getModalWidth,
@@ -34,7 +31,6 @@ import Rename from "./Rename";
 import SetTableWidth from "./SetTableWidth";
 import Share from "./Share";
 import { mergeCustomTypes } from "../../../utils/customTypes";
-import { validateImportText } from "../../../features/import/importLimits";
 
 const extensionToLanguage = {
   md: "markdown",
@@ -70,6 +66,9 @@ export default function Modal({
   const [importSource, setImportSource] = useState({
     src: "",
     overwrite: false,
+    diagram: null,
+    preview: null,
+    issues: [],
   });
   const [importData, setImportData] = useState(null);
   const [error, setError] = useState({
@@ -101,44 +100,16 @@ export default function Modal({
   };
 
   const parseSQLAndLoadDiagram = () => {
-    const targetDatabase = database === DB.GENERIC ? importDb : database;
-    const limitResult = validateImportText(importSource.src, { label: "SQL" });
-    if (!limitResult.ok) {
+    if (!importSource.diagram) {
       setError({
         type: STATUS.ERROR,
-        message: limitResult.message,
+        message: "SQL import failed.",
       });
       return;
     }
 
-    let ast = null;
     try {
-      if (targetDatabase === DB.ORACLESQL) {
-        const oracleParser = new OracleParser();
-
-        ast = oracleParser.parse(importSource.src);
-      } else {
-        const parser = new Parser();
-
-        ast = parser.astify(importSource.src, {
-          database: targetDatabase,
-        });
-      }
-    } catch (error) {
-      const message = error.location
-        ? `${error.name} [Ln ${error.location.start.line}, Col ${error.location.start.column}]: ${error.message}`
-        : error.message;
-
-      setError({ type: STATUS.ERROR, message });
-      return;
-    }
-
-    try {
-      const diagramData = importSQL(
-        ast,
-        database === DB.GENERIC ? importDb : database,
-        database,
-      );
+      const diagramData = importSource.diagram;
 
       if (importSource.overwrite) {
         setTables(diagramData.tables);
@@ -251,6 +222,8 @@ export default function Modal({
             setImportData={setImportSource}
             error={error}
             setError={setError}
+            dialect={database === DB.GENERIC ? importDb : database}
+            diagramDatabase={database}
           />
         );
       case MODAL.NEW:
@@ -355,6 +328,9 @@ export default function Modal({
         setImportSource({
           src: "",
           overwrite: false,
+          diagram: null,
+          preview: null,
+          issues: [],
         });
       }}
       onCancel={() => {
@@ -374,7 +350,8 @@ export default function Modal({
           (modal === MODAL.RENAME && title === "") ||
           ((modal === MODAL.IMG || modal === MODAL.CODE) && !exportData.data) ||
           (modal === MODAL.SAVEAS && saveAsTitle === "") ||
-          (modal === MODAL.IMPORT_SRC && importSource.src === ""),
+          (modal === MODAL.IMPORT_SRC &&
+            (importSource.src === "" || !importSource.diagram)),
         hidden: modal === MODAL.SHARE,
       }}
       hasCancel={modal !== MODAL.SHARE}

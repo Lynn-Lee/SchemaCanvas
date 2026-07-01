@@ -151,7 +151,7 @@ export function importDiagramFileContent({
 
 ### 2.4 SQL import service 与 preview
 
-状态：未开始。
+状态：已完成。
 
 目标：把 SQL 文本导入封装为 service，返回 diagram preview 和结构化 issues。
 
@@ -172,15 +172,21 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
 步骤：
 
-- [ ] 写红灯测试，覆盖合法 SQL、空 SQL、超长 SQL、parser error、不支持语法 warning。
-- [ ] 实现 service，内部调用现有 parser 和 `importSQL`，再 normalize 和 validate。
-- [ ] 在弹窗中展示表数量、关系数量、warning 数量。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run e2e`。
+- [x] 写红灯测试，覆盖合法 SQL、空 SQL、超长 SQL、parser error、不支持语法 warning。
+- [x] 实现 service，内部调用现有 parser 和 `importSQL`，再 normalize 和 validate。
+- [x] 在弹窗中展示表数量、关系数量、warning 数量。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run e2e`。
 
 完成标准：
 
 - SQL 导入逻辑不再散落在 React state 中。
 - 用户确认前只预览，不改当前 diagram。
+
+完成记录：
+
+- 已新增 `src/features/import/importSqlService.js`，统一 SQL 导入结果为 `{ ok, diagram, preview, issues }`。
+- 已新增 `src/features/import/importSqlService.test.js`，覆盖合法 SQL、空 SQL、超长 SQL、parser error 和 unsupported statement warning。
+- `ImportSource.jsx` 已在输入和文件读取后生成 preview，`Modal.jsx` 确认时只应用已预览的 diagram；MSSQL `ALTER TABLE ... FOREIGN KEY` 兼容层已从测试 helper 收敛进 service。
 
 ### 2.5 导入模式：覆盖、合并、作为新图
 
@@ -307,4 +313,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 2.4：抽取 SQL import service 与 preview，返回统一 `{ ok, diagram, preview, issues }`，并把 parser error、不支持语法和导入 preview 从 React state 中分离出来。
+下一轮自动化默认执行 Phase 2.5：导入模式支持覆盖、合并、作为新图，先抽纯函数 `applyImportMode(currentDiagram, importedDiagram, mode)`，再调整 UI 控件。
