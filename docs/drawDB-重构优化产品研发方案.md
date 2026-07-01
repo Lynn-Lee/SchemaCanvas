@@ -761,7 +761,7 @@ src/
 任务：
 
 1. 增加 `SECURITY.md` 和隐私说明。
-2. 修复 localStorage parse 崩溃。
+2. 修复 localStorage parse 崩溃。（已完成：`settingsRepository` 会在 `localStorage.settings` 损坏时回退默认设置并清理损坏值。）
 3. 导入文件增加大小和复杂度限制。
 4. 分享前增加数据外发确认。
 5. Docker nginx 增加安全 headers。

@@ -1,22 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { tableWidth } from "../data/constants";
-import { queryConfig } from "../utils/queryConfig";
-
-const defaultSettings = {
-  strictMode: false,
-  showFieldSummary: true,
-  showGrid: true,
-  snapToGrid: false,
-  showDataTypes: true,
-  mode: "light",
-  autosave: true,
-  showCardinality: true,
-  showRelationshipLabels: true,
-  tableWidth: tableWidth,
-  showDebugCoordinates: false,
-  showComments: false,
-};
+import {
+  defaultSettings,
+  readSettings,
+  writeSettings,
+} from "../persistence/settingsRepository";
 
 export const SettingsContext = createContext({
   settings: defaultSettings,
@@ -27,17 +15,7 @@ export default function SettingsContextProvider({ children }) {
   const [searchParams] = useSearchParams();
 
   const [settings, setSettings] = useState(() => {
-    const savedSettings = localStorage.getItem("settings");
-    let baseSettings = savedSettings
-      ? { ...defaultSettings, ...JSON.parse(savedSettings) }
-      : defaultSettings;
-
-    const theme = searchParams.get(queryConfig.theme.key);
-    if (queryConfig.theme.isValid(theme)) {
-      baseSettings = { ...baseSettings, mode: theme };
-    }
-
-    return baseSettings;
+    return readSettings(searchParams).settings;
   });
 
   useEffect(() => {
@@ -45,7 +23,7 @@ export default function SettingsContextProvider({ children }) {
   }, [settings.mode]);
 
   useEffect(() => {
-    localStorage.setItem("settings", JSON.stringify(settings));
+    writeSettings(settings);
   }, [settings]);
 
   return (

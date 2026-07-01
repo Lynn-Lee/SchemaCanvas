@@ -163,6 +163,8 @@ npm run e2e
 
 ### 0.4 settingsRepository 与损坏配置恢复
 
+状态：已完成，新增 `settingsRepository` 封装 settings 读取和写入，`SettingsContext` 不再直接解析 `localStorage.settings`。红灯记录为缺失 `src/persistence/settingsRepository.js` 导致聚焦测试失败，补齐实现后聚焦测试通过。
+
 目标：修复 `localStorage.settings` 损坏导致初始化阶段 `JSON.parse` 抛错、页面白屏的问题。
 
 修改文件：
@@ -190,6 +192,14 @@ npm run build
 
 - 损坏 JSON 的测试先红后绿。
 - 页面初始化不再因为 settings 损坏白屏。
+
+本轮验证：
+
+```bash
+npm run test -- src/persistence/settingsRepository.test.js
+```
+
+结果：通过，4 个测试用例覆盖损坏 JSON 恢复、URL theme 优先级、无效 theme 忽略和写入失败不阻断渲染。
 
 ### 0.5 导入输入限制
 
