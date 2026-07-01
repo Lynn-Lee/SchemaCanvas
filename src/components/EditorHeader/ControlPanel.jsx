@@ -72,14 +72,13 @@ import LayoutDropdown from "./LayoutDropdown";
 import Sidesheet from "./SideSheet/Sidesheet";
 import Modal from "./Modal/Modal";
 import { useTranslation } from "react-i18next";
-import { exportSQL } from "../../utils/exportSQL";
 import { databases } from "../../data/databases";
 import { jsonToMermaid } from "../../utils/exportAs/mermaid";
 import { isRtl } from "../../i18n/utils/rtl";
 import { jsonToDocumentation } from "../../utils/exportAs/documentation";
 import { IdContext } from "../Workspace";
 import { socials } from "../../data/socials";
-import { toDBML } from "../../utils/exportAs/dbml";
+import { exportDiagram } from "../../features/export/exportDiagramService";
 import { exportSavedData } from "../../utils/exportSavedData";
 import { nanoid } from "nanoid";
 import { getTableHeight } from "../../utils/utils";
@@ -1178,17 +1177,22 @@ export default function ControlPanel({
         function: () => {
           if (database === DB.GENERIC) return;
           openExportModal(MODAL.CODE);
-          const src = exportSQL({
-            tables: tables,
-            references: relationships,
-            types: types,
-            database: database,
-            enums: enums,
+          const result = exportDiagram({
+            format: "sql",
+            diagram: {
+              title,
+              name: title,
+              tables: tables,
+              relationships,
+              types: types,
+              database: database,
+              enums: enums,
+            },
           });
           setExportData((prev) => ({
             ...prev,
-            data: src,
-            extension: "sql",
+            data: result.content,
+            extension: result.extension,
           }));
         },
       },
@@ -1269,16 +1273,21 @@ export default function ControlPanel({
             name: "DBML",
             function: () => {
               openExportModal(MODAL.CODE);
-              const result = toDBML({
-                tables,
-                relationships,
-                enums,
-                database,
+              const result = exportDiagram({
+                format: "dbml",
+                diagram: {
+                  title,
+                  name: title,
+                  tables,
+                  relationships,
+                  enums,
+                  database,
+                },
               });
               setExportData((prev) => ({
                 ...prev,
-                data: result,
-                extension: "dbml",
+                data: result.content,
+                extension: result.extension,
               }));
             },
           },
