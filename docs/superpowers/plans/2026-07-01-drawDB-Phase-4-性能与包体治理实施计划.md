@@ -123,7 +123,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.4 Image/PDF export libraries 按需加载
 
-状态：未开始。
+状态：已完成。
 
 目标：`html-to-image`、`jspdf` 等导出重型依赖只在对应导出动作触发时加载。
 
@@ -135,15 +135,15 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 image/PDF export facade 在动态依赖加载成功和失败时的结果。
-- [ ] 将重型依赖动态导入，失败时返回可展示 error。
-- [ ] 保留 Markdown、Mermaid、SQL、DBML 导出稳定路径。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。
+- [x] 写红灯测试，覆盖 image/PDF export facade 在动态依赖加载成功和失败时的结果。（Phase 4.4 已完成，新增 `src/build/exportLibrariesLazyBoundary.test.js` 并扩展 `exportDiagramService.test.js`。）
+- [x] 将重型依赖动态导入，失败时返回可展示 error。（Phase 4.4 已完成，`html-to-image` 和 `jspdf` 不再顶层静态导入。）
+- [x] 保留 Markdown、Mermaid、SQL、DBML 导出稳定路径。（Phase 4.4 已通过全量测试覆盖。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。（Phase 4.4 已完成并记录到 run log。）
 
 完成标准：
 
-- 未触发 image/PDF export 时不加载对应库。
-- 触发后导出行为和错误提示保持稳定。
+- 未触发 image/PDF export 时不加载对应库。（Phase 4.4 已完成，静态边界测试覆盖 service 和 Header entry。）
+- 触发后导出行为和错误提示保持稳定。（Phase 4.4 已完成，动态加载成功/失败和注入 adapter 路径均有测试。）
 
 ### 4.5 Landing tweet/social widgets 延迟加载
 
@@ -290,4 +290,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.4 Image/PDF export libraries 按需加载。
+下一轮自动化默认执行 Phase 4.5 Landing tweet/social widgets 延迟加载。

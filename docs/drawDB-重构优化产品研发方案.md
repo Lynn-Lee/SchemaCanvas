@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性已完成并通过阶段退出门禁：首次进入新建向导、最近图恢复提示与保存状态文案、Open modal 本地图表列表增强、菜单配置与快捷键入口抽离、icon button 可访问名称与焦点恢复、axe smoke 基线、Landing 390px 移动端横向溢出修复、Editor 移动端体验提示均已有验证记录。Phase 4 性能与包体治理已完成 Bundle budget 脚本、当前构建基线记录、Monaco 按需加载和 SQL parser 按需加载，下一步执行 Phase 4.4 Image/PDF export libraries 按需加载。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性已完成并通过阶段退出门禁：首次进入新建向导、最近图恢复提示与保存状态文案、Open modal 本地图表列表增强、菜单配置与快捷键入口抽离、icon button 可访问名称与焦点恢复、axe smoke 基线、Landing 390px 移动端横向溢出修复、Editor 移动端体验提示均已有验证记录。Phase 4 性能与包体治理已完成 Bundle budget 脚本、当前构建基线记录、Monaco 按需加载、SQL parser 按需加载和图片/PDF 导出库按需加载，下一步执行 Phase 4.5 Landing tweet/social widgets 延迟加载。
 
 ## 2. 产品定位
 
@@ -848,7 +848,7 @@ src/
 
 1. Monaco 动态加载。（Phase 4.2 已完成。）
 2. SQL parser 按导入时动态加载。（Phase 4.3 已完成，SQL import service 动态加载 parser，主 JS chunk 降至约 13682.29 KB。）
-3. 图片/PDF 导出库动态加载。
+3. 图片/PDF 导出库动态加载。（Phase 4.4 已完成，`html-to-image` 和 `jspdf` 改为导出动作触发时动态加载，主 JS chunk 降至约 13279.33 KB。）
 4. Landing 动画和 tweet 延迟加载。
 5. 画布组件 memo 和选择器优化。
 6. 大图 benchmark。

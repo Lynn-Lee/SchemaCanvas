@@ -167,6 +167,52 @@ describe("exportDiagram", () => {
 });
 
 describe("exportCanvasImage", () => {
+  test("loads default image renderers only when image export runs", async () => {
+    const element = document.createElement("div");
+    const toPng = vi.fn().mockResolvedValue("data:image/png;base64,lazy");
+    const loadImageRenderers = vi.fn().mockResolvedValue({ toPng });
+
+    const result = await exportCanvasImage({
+      element,
+      format: "png",
+      loadImageRenderers,
+      pixelRatio: 4,
+    });
+
+    expect(loadImageRenderers).toHaveBeenCalledTimes(1);
+    expect(toPng).toHaveBeenCalledWith(element, { pixelRatio: 4 });
+    expect(result).toEqual({
+      ok: true,
+      format: "png",
+      extension: "png",
+      content: "data:image/png;base64,lazy",
+      issues: [],
+    });
+  });
+
+  test("returns a structured issue when dynamic image renderer loading fails", async () => {
+    const result = await exportCanvasImage({
+      element: document.createElement("div"),
+      format: "png",
+      loadImageRenderers: vi.fn().mockRejectedValue(new Error("renderer module missing")),
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      format: "png",
+      extension: "png",
+      content: "",
+      issues: [
+        {
+          id: "image-export-failed",
+          severity: "error",
+          objectType: "export",
+          message: "renderer module missing",
+        },
+      ],
+    });
+  });
+
   test("exports PNG through an injected renderer", async () => {
     const element = document.createElement("div");
     const toPng = vi.fn().mockResolvedValue("data:image/png;base64,abc");
@@ -226,6 +272,70 @@ describe("exportCanvasImage", () => {
 });
 
 describe("exportCanvasPdf", () => {
+  test("loads the default PDF adapter only when PDF export runs", async () => {
+    const element = document.createElement("div");
+    Object.defineProperty(element, "offsetWidth", { value: 800 });
+    Object.defineProperty(element, "offsetHeight", { value: 600 });
+    const addImage = vi.fn();
+    const save = vi.fn();
+    const PdfDocument = vi.fn(function () {
+      return { addImage, save };
+    });
+    const loadPdfDocument = vi.fn().mockResolvedValue(PdfDocument);
+
+    const result = await exportCanvasPdf({
+      element,
+      title: "Lazy PDF",
+      renderers: { toJpeg: vi.fn().mockResolvedValue("data:image/jpeg;base64,lazy") },
+      loadPdfDocument,
+      now: () => new Date("2026-07-02T00:00:00.000Z"),
+    });
+
+    expect(loadPdfDocument).toHaveBeenCalledTimes(1);
+    expect(PdfDocument).toHaveBeenCalledWith("l", "px", [800, 600]);
+    expect(addImage).toHaveBeenCalledWith(
+      "data:image/jpeg;base64,lazy",
+      "jpeg",
+      0,
+      0,
+      800,
+      600,
+    );
+    expect(save).toHaveBeenCalledWith("Lazy PDF_2026-07-02T00:00:00.000Z.pdf");
+    expect(result).toEqual({
+      ok: true,
+      format: "pdf",
+      extension: "pdf",
+      content: null,
+      issues: [],
+    });
+  });
+
+  test("returns a structured issue when dynamic PDF adapter loading fails", async () => {
+    const element = document.createElement("div");
+
+    const result = await exportCanvasPdf({
+      element,
+      loadPdfDocument: vi.fn().mockRejectedValue(new Error("pdf module missing")),
+      renderers: { toJpeg: vi.fn().mockResolvedValue("data:image/jpeg;base64,abc") },
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      format: "pdf",
+      extension: "pdf",
+      content: null,
+      issues: [
+        {
+          id: "pdf-export-failed",
+          severity: "error",
+          objectType: "export",
+          message: "pdf module missing",
+        },
+      ],
+    });
+  });
+
   test("exports PDF through injected image and PDF adapters", async () => {
     const element = document.createElement("div");
     Object.defineProperty(element, "offsetWidth", { value: 640 });

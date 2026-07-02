@@ -24,7 +24,6 @@ import {
   Toast,
   Popconfirm,
 } from "@douyinfe/semi-ui";
-import { toPng } from "html-to-image";
 import {
   jsonToMySQL,
   jsonToPostgreSQL,
@@ -590,20 +589,27 @@ export default function ControlPanel({
       showFieldSummary: !prev.showFieldSummary,
     }));
   };
-  const copyAsImage = () => {
-    toPng(document.getElementById("canvas"), {
+  const copyAsImage = async () => {
+    const result = await exportCanvasImage({
+      element: document.getElementById("canvas"),
+      format: "png",
       pixelRatio: pngExportPixelRatio,
-    }).then(function (dataUrl) {
-      const blob = dataURItoBlob(dataUrl);
-      navigator.clipboard
-        .write([new ClipboardItem({ "image/png": blob })])
-        .then(() => {
-          Toast.success(t("copied_to_clipboard"));
-        })
-        .catch(() => {
-          Toast.error(t("oops_smth_went_wrong"));
-        });
     });
+
+    if (!result.ok) {
+      Toast.error(t("oops_smth_went_wrong"));
+      return;
+    }
+
+    const blob = dataURItoBlob(result.content);
+    navigator.clipboard
+      .write([new ClipboardItem({ "image/png": blob })])
+      .then(() => {
+        Toast.success(t("copied_to_clipboard"));
+      })
+      .catch(() => {
+        Toast.error(t("oops_smth_went_wrong"));
+      });
   };
   const diagramForExport = () => ({
     title,

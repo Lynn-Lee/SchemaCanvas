@@ -1,6 +1,3 @@
-import { toJpeg, toPng, toSvg } from "html-to-image";
-import jsPDF from "jspdf";
-
 import { DB } from "../../data/constants";
 import { normalizeDiagram } from "../../domain/normalizeDiagram";
 import { toDBML } from "../../utils/exportAs/dbml";
@@ -131,11 +128,15 @@ export function exportDiagram({ diagram, format }) {
   };
 }
 
-const defaultImageRenderers = {
-  toPng,
-  toJpeg,
-  toSvg,
-};
+async function loadDefaultImageRenderers() {
+  const { toJpeg, toPng, toSvg } = await import("html-to-image");
+  return { toJpeg, toPng, toSvg };
+}
+
+async function loadDefaultPdfDocument() {
+  const module = await import("jspdf");
+  return module.default;
+}
 
 const imageExportOptions = {
   png: (pixelRatio) => ({ pixelRatio }),
@@ -153,6 +154,7 @@ export async function exportCanvasImage({
   element,
   format,
   renderers = {},
+  loadImageRenderers = loadDefaultImageRenderers,
   pixelRatio = 2,
 }) {
   const normalizedFormat = String(format ?? "").toLowerCase();
@@ -176,12 +178,15 @@ export async function exportCanvasImage({
     });
   }
 
-  const renderer = {
-    ...defaultImageRenderers,
-    ...renderers,
-  }[rendererName];
-
   try {
+    const loadedRenderers = renderers[rendererName]
+      ? {}
+      : await loadImageRenderers();
+    const renderer = {
+      ...loadedRenderers,
+      ...renderers,
+    }[rendererName];
+
     return {
       ok: true,
       format: normalizedFormat,
@@ -206,7 +211,9 @@ export async function exportCanvasPdf({
   element,
   title = "diagram",
   renderers = {},
-  PdfDocument = jsPDF,
+  PdfDocument,
+  loadImageRenderers = loadDefaultImageRenderers,
+  loadPdfDocument = loadDefaultPdfDocument,
   now = () => new Date(),
 }) {
   if (!element) {
@@ -219,14 +226,15 @@ export async function exportCanvasPdf({
     });
   }
 
-  const renderer = {
-    ...defaultImageRenderers,
-    ...renderers,
-  }.toJpeg;
-
   try {
+    const loadedRenderers = renderers.toJpeg ? {} : await loadImageRenderers();
+    const renderer = {
+      ...loadedRenderers,
+      ...renderers,
+    }.toJpeg;
+    const PdfAdapter = PdfDocument ?? await loadPdfDocument();
     const dataUrl = await renderer(element);
-    const doc = new PdfDocument("l", "px", [
+    const doc = new PdfAdapter("l", "px", [
       element.offsetWidth,
       element.offsetHeight,
     ]);
