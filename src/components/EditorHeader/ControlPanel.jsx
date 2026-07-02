@@ -90,6 +90,7 @@ import {
   getEditorMenuShortcut,
 } from "../../editor/menuConfig";
 import { useEditorHotkeys } from "../../editor/useEditorHotkeys";
+import CloudAccountEntry from "./CloudAccountEntry";
 
 export default function ControlPanel({
   title,
@@ -1706,6 +1707,7 @@ export default function ControlPanel({
             {header()}
             <div className="flex items-center gap-2 me-7">
               <Slot name="header-actions-start" />
+              <CloudAccountEntry />
               {!isTemplate && (
                 <Button
                   type="primary"

@@ -69,7 +69,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.2 cloud capability 配置与账号入口显隐
 
-状态：未开始。
+状态：已完成（2026-07-02）。
 
 目标：仅在 cloud capability 配置可用时展示账号入口；未配置时不误导用户登录。
 
@@ -81,15 +81,15 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖未配置云端时 Header 不显示账号入口，配置云端时显示入口。
-- [ ] 增加 cloud capability 读取和稳定默认值。
-- [ ] Header 中的账号入口只负责打开账号状态 UI，不自动登录或上传。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖未配置云端时 Header 不显示账号入口，配置云端时显示入口。（Phase 5.2 已完成，`CloudAccountEntry.test.jsx` 先确认 Header 账号入口组件缺失后红灯。）
+- [x] 增加 cloud capability 读取和稳定默认值。（Phase 5.2 已完成，`getCloudCapability` 默认返回 unavailable，仅显式 `cloudCapability.enabled` 或 cloud backend/api/base URL 配置后启用。）
+- [x] Header 中的账号入口只负责打开账号状态 UI，不自动登录或上传。（Phase 5.2 已完成，点击只调用可选 `openCloudAccount`，不会调用 login 或 saveCloudDiagram。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。（Phase 5.2 已完成并记录到 run log。）
 
 完成标准：
 
-- 未配置云端时本地模式 UI 不出现误导性账号入口。
-- 配置云端时入口可见但不会阻塞 editor。
+- 未配置云端时本地模式 UI 不出现误导性账号入口。（Phase 5.2 已完成。）
+- 配置云端时入口可见但不会阻塞 editor。（Phase 5.2 已完成，入口本身无登录、上传或 editor 阻塞副作用。）
 
 ### 5.3 signed-out、signed-in、expired-session、unavailable 状态 UI
 
@@ -268,4 +268,4 @@ npm run bundle:check
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5.2 cloud capability 配置与账号入口显隐。
+下一轮自动化默认执行 Phase 5.3 signed-out、signed-in、expired-session、unavailable 状态 UI。
