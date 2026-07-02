@@ -10,6 +10,7 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "accessibility": "playwright test src/test/e2e/accessibility.spec.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -48,6 +49,7 @@
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.0.14",
     "@testing-library/jest-dom": "^6.9.1",

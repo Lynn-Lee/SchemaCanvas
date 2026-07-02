@@ -17,7 +17,7 @@ export default function Navbar() {
           </Link>
           <div className="md:hidden flex gap-12">
             <Link
-              className="text-lg font-semibold hover:text-sky-800 transition-colors duration-300"
+              className="text-lg font-semibold text-zinc-800 hover:text-sky-800 transition-colors duration-300"
               onClick={() =>
                 document
                   .getElementById("features")
@@ -28,19 +28,19 @@ export default function Navbar() {
             </Link>
             <Link
               to="/editor"
-              className="text-lg font-semibold hover:text-sky-800 transition-colors duration-300"
+              className="text-lg font-semibold text-zinc-800 hover:text-sky-800 transition-colors duration-300"
             >
               Editor
             </Link>
             <Link
               to="/templates"
-              className="text-lg font-semibold hover:text-sky-800 transition-colors duration-300"
+              className="text-lg font-semibold text-zinc-800 hover:text-sky-800 transition-colors duration-300"
             >
               Templates
             </Link>
             <Link
               to={socials.docs}
-              className="text-lg font-semibold hover:text-sky-800 transition-colors duration-300"
+              className="text-lg font-semibold text-zinc-800 hover:text-sky-800 transition-colors duration-300"
             >
               Docs
             </Link>
@@ -86,6 +86,7 @@ export default function Navbar() {
           </div>
         </div>
         <button
+          aria-label="Open navigation menu"
           onClick={() => setOpenMenu((prev) => !prev)}
           className="hidden md:inline-block h-[24px]"
         >

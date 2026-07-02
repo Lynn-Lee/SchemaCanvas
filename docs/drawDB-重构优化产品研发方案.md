@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性细粒度实施计划已生成；Phase 3.1 首次进入新建向导已完成，首次无最近图进入 `/editor` 可选择空白数据库、模板或导入路径。Phase 3.2 最近图恢复提示与保存状态文案已完成，返回用户进入 `/editor` 或 `/editor/diagrams/:id` 时 Header 会显示本地恢复来源，并保留未保存、保存中、已保存、保存失败状态。Phase 3.3 Open modal 本地图表列表增强已完成，本地图表列表会显示数据库、表数量、关系数量、最近修改时间，并支持搜索、复制、删除确认和 JSON 导出。Phase 3.4 菜单配置与快捷键入口抽离已完成，核心菜单、快捷键描述和禁用条件已有可测试配置，快捷键入口会避开输入框、Monaco 和 Lexical 编辑焦点。Phase 3.5 Icon button 可访问名称与焦点恢复已完成，浮动 toolbar 关键 icon-only button 可按名称定位，Share、Open、Import 等从 Header/Menu 打开的主要弹窗关闭后会尝试恢复触发点焦点。下一步执行 Phase 3.6 Axe smoke 基线。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性细粒度实施计划已生成；Phase 3.1 首次进入新建向导已完成，首次无最近图进入 `/editor` 可选择空白数据库、模板或导入路径。Phase 3.2 最近图恢复提示与保存状态文案已完成，返回用户进入 `/editor` 或 `/editor/diagrams/:id` 时 Header 会显示本地恢复来源，并保留未保存、保存中、已保存、保存失败状态。Phase 3.3 Open modal 本地图表列表增强已完成，本地图表列表会显示数据库、表数量、关系数量、最近修改时间，并支持搜索、复制、删除确认和 JSON 导出。Phase 3.4 菜单配置与快捷键入口抽离已完成，核心菜单、快捷键描述和禁用条件已有可测试配置，快捷键入口会避开输入框、Monaco 和 Lexical 编辑焦点。Phase 3.5 Icon button 可访问名称与焦点恢复已完成，浮动 toolbar 关键 icon-only button 可按名称定位，Share、Open、Import 等从 Header/Menu 打开的主要弹窗关闭后会尝试恢复触发点焦点。Phase 3.6 Axe smoke 基线已完成，landing、templates、editor、import dialog、share dialog 会阻断 serious/critical axe 回归；已知 Semi UI Tabs 第三方 DOM 告警作为排除项记录。下一步执行 Phase 3.7 Landing 390px 移动端横向溢出修复。
 
 ## 2. 产品定位
 
@@ -828,7 +828,7 @@ src/
 2. 本地图表管理增强。
 3. SidePanel 信息架构整理。
 4. Header/Menu 配置化。（Phase 3.4 已完成，核心菜单和快捷键入口已抽出配置与 hook。）
-5. 所有 icon-only 按钮补 aria-label。（Phase 3.5 已完成关键 Header/toolbar 范围，后续 axe 基线继续扩大扫描覆盖面。）
+5. 所有 icon-only 按钮补 aria-label。（Phase 3.5 已完成关键 Header/toolbar 范围；Phase 3.6 已用 axe smoke 覆盖 landing、templates、editor、import dialog、share dialog。）
 6. 快捷键帮助面板。
 7. Issue panel 支持定位和过滤。
 

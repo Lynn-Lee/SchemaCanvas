@@ -82,6 +82,7 @@ export default function Templates() {
                           {t.title}
                         </div>
                         <button
+                          aria-label={`Fork ${t.title}`}
                           className="border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
                           onClick={() => forkTemplate(t.templateId)}
                         >
@@ -115,6 +116,7 @@ export default function Templates() {
                           </div>
                           <div>
                             <button
+                              aria-label={`Fork ${c.title}`}
                               className="me-1 border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
                               onClick={() => forkTemplate(c.templateId)}
                             >
@@ -148,6 +150,7 @@ export default function Templates() {
                   <div className="grid grid-cols-5 sm:grid-cols-1 gap-4 place-content-center my-4">
                     <img
                       src={template_screenshot}
+                      alt="Editor menu path for saving a diagram as a template"
                       className="border col-span-3 sm:cols-span-1 rounded-sm"
                     />
                     <div className="col-span-2 sm:cols-span-1">

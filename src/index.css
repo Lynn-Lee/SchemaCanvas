@@ -51,6 +51,10 @@
   background-color: rgba(var(--semi-grey-1), 1);
 }
 
+.semi-button.semi-button-primary.semi-button-light {
+  color: #004fc4;
+}
+
 .semi-button.semi-button-light:hover {
   background-color: rgba(var(--semi-grey-2), 1);
 }
@@ -139,9 +143,20 @@
   color: var(--semi-color-text-1);
 }
 
+.segmented-item.opacity-60 {
+  color: var(--semi-color-text-0);
+  opacity: 0.9;
+}
+
 .segmented-item-active {
   background-color: var(--semi-color-bg-2);
   color: rgba(var(--semi-blue-5), 1);
+}
+
+.semi-tree-select-selection-TriggerSearchItem,
+.semi-tree-select-selection-TriggerSearchItem-placeholder {
+  color: #27272a !important;
+  opacity: 1 !important;
 }
 
 .hover-1:hover {

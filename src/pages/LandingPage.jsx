@@ -132,7 +132,11 @@ export default function LandingPage() {
               Build diagrams with a few clicks, see the full picture, export SQL
               scripts, customize your editor, and more.
             </div>
-            <img src={screenshot} className="mx-auto" />
+            <img
+              src={screenshot}
+              alt="drawDB editor showing a database diagram"
+              className="mx-auto"
+            />
           </div>
           <div className="flex justify-center items-center gap-28 md:block">
             <div className="text-center mb-4">
@@ -168,6 +172,7 @@ export default function LandingPage() {
               <img
                 key={"icon-" + i}
                 src={s.icon}
+                alt={s.name}
                 style={{ height: s.height }}
                 className="opacity-70 hover:opacity-100 transition-opacity duration-300 md:scale-[0.7] md:mx-auto"
               />
@@ -261,7 +266,7 @@ export default function LandingPage() {
               rel="noreferrer"
             >
               <div className="bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
-                <img src={github} className="h-8" />
+                <img src={github} alt="" className="h-8" />
                 <div className="text-lg text-white font-bold">
                   See the source
                 </div>
@@ -274,7 +279,7 @@ export default function LandingPage() {
               rel="noreferrer"
             >
               <div className="bg-[#5865f2] hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-8 py-4 rounded-lg">
-                <img src={discord} className="h-8" />
+                <img src={discord} alt="" className="h-8" />
                 <div className="text-lg text-white font-bold">
                   Join us on Discord
                 </div>
@@ -325,12 +330,12 @@ export default function LandingPage() {
 }
 
 const dbs = [
-  { icon: mysql_icon, height: 80 },
-  { icon: postgres_icon, height: 48 },
-  { icon: sqlite_icon, height: 64 },
-  { icon: mariadb_icon, height: 64 },
-  { icon: sql_server_icon, height: 64 },
-  { icon: oraclesql_icon, height: 172 },
+  { name: "MySQL", icon: mysql_icon, height: 80 },
+  { name: "PostgreSQL", icon: postgres_icon, height: 48 },
+  { name: "SQLite", icon: sqlite_icon, height: 64 },
+  { name: "MariaDB", icon: mariadb_icon, height: 64 },
+  { name: "SQL Server", icon: sql_server_icon, height: 64 },
+  { name: "Oracle SQL", icon: oraclesql_icon, height: 172 },
 ];
 
 const features = [

@@ -108,7 +108,7 @@ export default function Thumbnail({ diagram, i, zoom, theme }) {
                         ></div>
                         <div>{f.name}</div>
                       </div>
-                      <div className="text-zinc-500">{f.type}</div>
+                      <div className="text-zinc-700">{f.type}</div>
                     </div>
                   ))}
                 </div>
