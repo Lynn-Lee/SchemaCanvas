@@ -52,6 +52,7 @@ export default function Modal({
   setExportData,
   importDb,
   importFrom,
+  restoreFocusRef,
 }) {
   const { t, i18n } = useTranslation();
   const {
@@ -356,6 +357,7 @@ export default function Modal({
           preview: null,
           issues: [],
         });
+        restoreFocusRef?.current?.focus?.();
       }}
       onCancel={() => {
         if (modal === MODAL.RENAME) setUncontrolledTitle(title);

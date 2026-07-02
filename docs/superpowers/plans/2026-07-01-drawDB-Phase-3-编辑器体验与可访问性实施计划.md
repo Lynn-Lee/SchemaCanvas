@@ -159,7 +159,7 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 3.5 Icon button 可访问名称与焦点恢复
 
-状态：未开始。
+状态：已完成。
 
 目标：清理主要工作流中的无名 icon-only button，并确保导入、分享、Open 等弹窗关闭后恢复触发按钮焦点。
 
@@ -172,15 +172,17 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，扫描关键弹窗和 header 中的 icon-only button accessible name。
-- [ ] 补齐 `aria-label`、`aria-labelledby` 或可见文本，优先保持现有视觉设计。
-- [ ] 为主要弹窗补焦点恢复。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，扫描关键弹窗和 header 中的 icon-only button accessible name。
+- [x] 补齐 `aria-label`、`aria-labelledby` 或可见文本，优先保持现有视觉设计。
+- [x] 为主要弹窗补焦点恢复。
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 关键 header 和弹窗操作按钮可被 `getByRole(..., { name })` 定位。
 - 弹窗关闭后焦点回到合理触发点。
+
+验证记录：红灯 `npm run e2e -- --grep "editor toolbar icon buttons"` 首次失败于 `Zoom out` 无可访问名称；实现后同一聚焦 e2e 已通过。浮动 toolbar 的 Zoom out、Zoom in、Undo、Redo、Add table、Add area、Add note、Save、Versions、Theme 已可按 role/name 定位；`ControlPanel` 会记录 Header/Menu 弹窗触发点，通用 Modal 关闭后恢复焦点。
 
 ### 3.6 Axe smoke 基线
 
@@ -283,4 +285,4 @@ npm run accessibility
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 3.5 Icon button 可访问名称与焦点恢复。
+下一轮自动化默认执行 Phase 3.6 Axe smoke 基线。

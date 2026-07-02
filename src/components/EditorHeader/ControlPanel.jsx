@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Slot, useExtensions } from "../../context/ExtensionsContext";
 import { createPortal } from "react-dom";
 import {
@@ -103,6 +103,7 @@ export default function ControlPanel({
   const { id: diagramId } = useParams();
 
   const [modal, setModal] = useState(MODAL.NONE);
+  const modalTriggerRef = useRef(null);
   const [sidesheet, setSidesheet] = useState(SIDESHEET.NONE);
   const [showEditName, setShowEditName] = useState(false);
   const [importDb, setImportDb] = useState("");
@@ -112,12 +113,19 @@ export default function ControlPanel({
     extension: "",
   });
 
+  const openModal = useCallback((modalType, event) => {
+    const trigger = event?.currentTarget ?? document.activeElement;
+    if (modalType !== MODAL.NONE && trigger instanceof HTMLElement) {
+      modalTriggerRef.current = trigger;
+    }
+    setModal(modalType);
+  }, []);
   const openExportModal = (modalType) => {
     setExportData((prev) => ({
       ...prev,
       filename: `${title}_${new Date().toISOString()}`,
     }));
-    setModal(modalType);
+    openModal(modalType);
   };
   const [importFrom, setImportFrom] = useState(IMPORT_FROM.JSON);
   const { saveState, setSaveState } = useSaveState();
@@ -154,14 +162,14 @@ export default function ControlPanel({
   useEffect(() => {
     const openImportModal = () => {
       setImportFrom(IMPORT_FROM.JSON);
-      setModal(MODAL.IMPORT);
+      openModal(MODAL.IMPORT);
     };
 
     window.addEventListener("drawdb:open-import", openImportModal);
     return () => {
       window.removeEventListener("drawdb:open-import", openImportModal);
     };
-  }, []);
+  }, [openModal]);
 
   const undo = () => {
     if (undoStack.length === 0) return;
@@ -564,7 +572,7 @@ export default function ControlPanel({
     }
   };
 
-  const fileImport = () => setModal(MODAL.IMPORT);
+  const fileImport = () => openModal(MODAL.IMPORT);
   const viewGrid = () =>
     setSettings((prev) => ({ ...prev, showGrid: !prev.showGrid }));
   const snapToGrid = () =>
@@ -916,8 +924,8 @@ export default function ControlPanel({
     db.diagrams.orderBy("lastModified").reverse().limit(10).toArray(),
   );
 
-  const open = () => setModal(MODAL.OPEN);
-  const saveDiagramAs = () => setModal(MODAL.SAVEAS);
+  const open = () => openModal(MODAL.OPEN);
+  const saveDiagramAs = () => openModal(MODAL.SAVEAS);
   const fullscreen = useFullscreen();
   const menuShortcut = getEditorMenuShortcut;
 
@@ -929,7 +937,7 @@ export default function ControlPanel({
   const menu = {
     file: {
       new: {
-        function: () => setModal(MODAL.NEW),
+        function: () => openModal(MODAL.NEW),
       },
       new_window: {
         function: () => window.open("/editor", "_blank"),
@@ -999,7 +1007,7 @@ export default function ControlPanel({
       },
       rename: {
         function: () => {
-          setModal(MODAL.RENAME);
+          openModal(MODAL.RENAME);
         },
         disabled: layout.readOnly,
       },
@@ -1038,7 +1046,7 @@ export default function ControlPanel({
         children: [
           {
             function: () => {
-              setModal(MODAL.IMPORT);
+              openModal(MODAL.IMPORT);
               setImportFrom(IMPORT_FROM.JSON);
             },
             name: "JSON",
@@ -1046,7 +1054,7 @@ export default function ControlPanel({
           },
           {
             function: () => {
-              setModal(MODAL.IMPORT);
+              openModal(MODAL.IMPORT);
               setImportFrom(IMPORT_FROM.DBML);
             },
             name: "DBML",
@@ -1059,7 +1067,7 @@ export default function ControlPanel({
           children: [
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.MYSQL);
               },
               name: "MySQL",
@@ -1067,7 +1075,7 @@ export default function ControlPanel({
             },
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.POSTGRES);
               },
               name: "PostgreSQL",
@@ -1075,7 +1083,7 @@ export default function ControlPanel({
             },
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.SQLITE);
               },
               name: "SQLite",
@@ -1083,7 +1091,7 @@ export default function ControlPanel({
             },
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.MARIADB);
               },
               name: "MariaDB",
@@ -1091,7 +1099,7 @@ export default function ControlPanel({
             },
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.MSSQL);
               },
               name: "MSSQL",
@@ -1099,7 +1107,7 @@ export default function ControlPanel({
             },
             {
               function: () => {
-                setModal(MODAL.IMPORT_SRC);
+                openModal(MODAL.IMPORT_SRC);
                 setImportDb(DB.ORACLESQL);
               },
               name: "Oracle",
@@ -1111,7 +1119,7 @@ export default function ControlPanel({
         function: () => {
           if (database === DB.GENERIC) return;
 
-          setModal(MODAL.IMPORT_SRC);
+          openModal(MODAL.IMPORT_SRC);
         },
         disabled: layout.readOnly,
       },
@@ -1601,15 +1609,15 @@ export default function ControlPanel({
           setSettings((prev) => ({ ...prev, autosave: !prev.autosave })),
       },
       table_width: {
-        function: () => setModal(MODAL.TABLE_WIDTH),
+        function: () => openModal(MODAL.TABLE_WIDTH),
         disabled: layout.readOnly,
       },
       configure_custom_types: {
-        function: () => setModal(MODAL.CONFIG_CUSTOM_TYPES),
+        function: () => openModal(MODAL.CONFIG_CUSTOM_TYPES),
         disabled: layout.readOnly,
       },
       language: {
-        function: () => setModal(MODAL.LANGUAGE),
+        function: () => openModal(MODAL.LANGUAGE),
       },
       export_saved_data: {
         function: exportSavedData,
@@ -1698,7 +1706,7 @@ export default function ControlPanel({
                   className="!text-base !pe-6 !ps-5 !py-[18px] !rounded-md"
                   size="default"
                   icon={<IconShareStroked />}
-                  onClick={() => setModal(MODAL.SHARE)}
+                  onClick={(event) => openModal(MODAL.SHARE, event)}
                 >
                   {t("share")}
                 </Button>
@@ -1720,6 +1728,7 @@ export default function ControlPanel({
         setModal={setModal}
         importFrom={importFrom}
         importDb={importDb}
+        restoreFocusRef={modalTriggerRef}
       />
       <Sidesheet
         type={sidesheet}
@@ -1746,6 +1755,7 @@ export default function ControlPanel({
           <Tooltip content={t("zoom_out")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm text-lg"
+              aria-label={t("zoom_out")}
               onClick={() =>
                 setTransform((prev) => ({ ...prev, zoom: prev.zoom / 1.2 }))
               }
@@ -1809,6 +1819,7 @@ export default function ControlPanel({
           <Tooltip content={t("zoom_in")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm text-lg"
+              aria-label={t("zoom_in")}
               onClick={() =>
                 setTransform((prev) => ({ ...prev, zoom: prev.zoom * 1.2 }))
               }
@@ -1820,6 +1831,7 @@ export default function ControlPanel({
           <Tooltip content={t("undo")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              aria-label={t("undo")}
               disabled={undoStack.length === 0 || layout.readOnly}
               onClick={undo}
             >
@@ -1829,6 +1841,7 @@ export default function ControlPanel({
           <Tooltip content={t("redo")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              aria-label={t("redo")}
               disabled={redoStack.length === 0 || layout.readOnly}
               onClick={redo}
             >
@@ -1839,6 +1852,7 @@ export default function ControlPanel({
           <Tooltip content={t("add_table")} position="bottom">
             <button
               className="flex items-center py-1 px-2 hover-2 rounded-sm disabled:opacity-50"
+              aria-label={t("add_table")}
               onClick={() => addTable()}
               disabled={layout.readOnly}
             >
@@ -1848,6 +1862,7 @@ export default function ControlPanel({
           <Tooltip content={t("add_area")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              aria-label={t("add_area")}
               onClick={() => addArea()}
               disabled={layout.readOnly}
             >
@@ -1857,6 +1872,7 @@ export default function ControlPanel({
           <Tooltip content={t("add_note")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              aria-label={t("add_note")}
               onClick={() => addNote()}
               disabled={layout.readOnly}
             >
@@ -1867,6 +1883,7 @@ export default function ControlPanel({
           <Tooltip content={t("save")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm flex items-center disabled:opacity-50"
+              aria-label={t("save")}
               onClick={save}
               disabled={layout.readOnly}
             >
@@ -1877,6 +1894,7 @@ export default function ControlPanel({
           <Tooltip content={t("versions")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm text-xl -mt-0.5"
+              aria-label={t("versions")}
               onClick={() => setSidesheet(SIDESHEET.VERSIONS)}
             >
               <i className="fa-solid fa-code-branch" />
@@ -1886,6 +1904,7 @@ export default function ControlPanel({
           <Tooltip content={t("theme")} position="bottom">
             <button
               className="py-1 px-2 hover-2 rounded-sm text-xl -mt-0.5"
+              aria-label={t("theme")}
               onClick={() => {
                 const body = document.body;
                 if (body.hasAttribute("theme-mode")) {
@@ -1963,7 +1982,7 @@ export default function ControlPanel({
                   // https://stackoverflow.com/a/70976017/1137077
                   e.target.releasePointerCapture(e.pointerId);
                 }}
-                onClick={!layout.readOnly && (() => setModal(MODAL.RENAME))}
+                onClick={!layout.readOnly && (() => openModal(MODAL.RENAME))}
               >
                 <span>{(isTemplate ? "Templates" : "Diagrams")}</span>
                 <span className="select-none text-zinc-400 dark:text-zinc-500 mx-1">/</span>
