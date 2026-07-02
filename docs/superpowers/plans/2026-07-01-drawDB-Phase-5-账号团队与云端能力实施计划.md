@@ -43,7 +43,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.1 cloudRepository interface 与 no-backend adapter
 
-状态：未开始。
+状态：已完成（2026-07-02）。
 
 目标：先定义云端能力的最小 contract，并提供未配置后端时稳定返回 unavailable 的 adapter。
 
@@ -56,10 +56,10 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 no-backend adapter 的 `getSession`、`listCloudDiagrams`、`saveCloudDiagram` 返回 `{ ok: false, reason: "unavailable" }` 或等价结构化结果。
-- [ ] 定义 cloud repository interface：`getSession`、`login`、`logout`、`listCloudDiagrams`、`getCloudDiagram`、`saveCloudDiagram`、`deleteCloudDiagram`、`shareCloudDiagram`、`listTeams`、`getPermissions`。
-- [ ] no-backend adapter 不发起网络请求，不读取不存在的 token，不抛出未捕获异常。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`、`git diff --check`、`npm audit --audit-level=high`。
+- [x] 写红灯测试，覆盖 no-backend adapter 的 `getSession`、`listCloudDiagrams`、`saveCloudDiagram` 返回 `{ ok: false, reason: "unavailable" }` 或等价结构化结果。
+- [x] 定义 cloud repository interface：`getSession`、`login`、`logout`、`listCloudDiagrams`、`getCloudDiagram`、`saveCloudDiagram`、`deleteCloudDiagram`、`shareCloudDiagram`、`listTeams`、`getPermissions`。
+- [x] no-backend adapter 不发起网络请求，不读取不存在的 token，不抛出未捕获异常。
+- [x] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`、`git diff --check`、`npm audit --audit-level=high`。
 
 完成标准：
 
@@ -268,4 +268,4 @@ npm run bundle:check
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5.1 cloudRepository interface 与 no-backend adapter。
+下一轮自动化默认执行 Phase 5.2 cloud capability 配置与账号入口显隐。
