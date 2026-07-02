@@ -91,6 +91,9 @@ const en = {
     saving: "Saving...",
     failed_to_save: "Failed to save",
     restored_from_local: "Restored from this browser",
+    cloud_viewer_read_only_title: "Cloud viewer access",
+    cloud_viewer_read_only_description:
+      "You can inspect and export this cloud diagram, but editing, saving, importing, and destructive actions are disabled.",
     fit_window_reset: "Fit window / Reset",
     zoom: "Zoom",
     add_table: "Add table",

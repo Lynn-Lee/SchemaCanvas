@@ -86,6 +86,9 @@ const zh = {
     saving: "保存中...",
     failed_to_save: "保存失败",
     restored_from_local: "已从本地恢复",
+    cloud_viewer_read_only_title: "云端 viewer 只读访问",
+    cloud_viewer_read_only_description:
+      "你可以查看并导出这个云端图表，但编辑、保存、导入和破坏性操作已禁用。",
     fit_window_reset: "适应窗口/重置",
     zoom: "缩放",
     add_table: "添加表",

@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { DB, State } from "../data/constants";
 import { databases } from "../data/databases";
 import { normalizeDiagram } from "../domain/normalizeDiagram";
+import { getCloudPermissionState } from "../features/cloud/cloudPermissions";
 
 function valueOrDefault(value, fallback) {
   return value === undefined || value === null ? fallback : value;
@@ -11,8 +12,16 @@ function valueOrDefault(value, fallback) {
 function applyDiagramToState(diagram, setters) {
   const loadedDatabase = diagram.database ?? DB.GENERIC;
 
-  if (typeof diagram.canWrite === "boolean") {
-    setters.setLayout?.((prev) => ({ ...prev, readOnly: !diagram.canWrite }));
+  if (diagram.permission || typeof diagram.canWrite === "boolean") {
+    const permissionState = getCloudPermissionState(diagram.permission);
+    setters.setLayout?.((prev) => ({
+      ...prev,
+      readOnly:
+        typeof diagram.canWrite === "boolean"
+          ? !diagram.canWrite
+          : permissionState.readOnly,
+      cloudPermission: permissionState.permission,
+    }));
   }
 
   setters.setDatabase(loadedDatabase);
@@ -54,14 +63,15 @@ function normalizeCloudResult(result) {
     diagramId: diagram.diagramId ?? diagram.id,
   });
   const permission = diagram.permission ?? result?.permission;
+  const permissionState = getCloudPermissionState(permission);
 
   return {
     ...normalized,
     canWrite:
       typeof diagram.canWrite === "boolean"
         ? diagram.canWrite
-        : permission === undefined || permission === "owner" || permission === "editor",
-    permission,
+        : permissionState.canEdit,
+    permission: permissionState.permission,
     modifiedAt: diagram.modifiedAt ?? diagram.lastModified ?? result?.modifiedAt,
   };
 }

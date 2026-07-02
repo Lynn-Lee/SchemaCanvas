@@ -182,6 +182,97 @@ describe("useDiagramLoader", () => {
     expect(setters.setShowSelectDbModal).not.toHaveBeenCalled();
   });
 
+  it("maps cloud viewer permission to read-only editor layout", async () => {
+    const cloudRepository = {
+      getCloudDiagram: vi.fn().mockResolvedValue({
+        ok: true,
+        diagram: {
+          id: "cloud-viewer",
+          database: DB.POSTGRES,
+          name: "Read Only Billing",
+          tables: [],
+          relationships: [],
+          notes: [],
+          areas: [],
+          pan: { x: 0, y: 0 },
+          zoom: 1,
+          permission: "viewer",
+          modifiedAt: "2026-07-02T09:30:00Z",
+        },
+      }),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({
+        repository: {},
+        cloudRepository,
+        ...setters,
+      }),
+    );
+
+    const loaded = await result.current.loadCloudDiagramById("cloud-viewer");
+
+    expect(loaded).toBe(true);
+    const applyLayout = setters.setLayout.mock.calls[0][0];
+    expect(
+      applyLayout({
+        header: true,
+        sidebar: true,
+        toolbar: true,
+        readOnly: false,
+      }),
+    ).toMatchObject({
+      readOnly: true,
+      cloudPermission: "viewer",
+    });
+    expect(setters.setRestoreState).toHaveBeenCalledWith(
+      expect.objectContaining({
+        source: "cloud",
+        permission: "viewer",
+      }),
+    );
+  });
+
+  it("keeps cloud owner and editor permissions editable", async () => {
+    for (const permission of ["owner", "editor"]) {
+      const cloudRepository = {
+        getCloudDiagram: vi.fn().mockResolvedValue({
+          ok: true,
+          diagram: {
+            id: `cloud-${permission}`,
+            database: DB.POSTGRES,
+            name: `Cloud ${permission}`,
+            tables: [],
+            relationships: [],
+            notes: [],
+            areas: [],
+            pan: { x: 0, y: 0 },
+            zoom: 1,
+            permission,
+          },
+        }),
+      };
+      const setters = createSetters();
+
+      const { result } = renderHook(() =>
+        useDiagramLoader({
+          repository: {},
+          cloudRepository,
+          ...setters,
+        }),
+      );
+
+      await result.current.loadCloudDiagramById(`cloud-${permission}`);
+
+      const applyLayout = setters.setLayout.mock.calls[0][0];
+      expect(applyLayout({ readOnly: true })).toMatchObject({
+        readOnly: false,
+        cloudPermission: permission,
+      });
+    }
+  });
+
   it("falls back to local new diagram when cloud loading is unavailable", async () => {
     const cloudRepository = {
       getCloudDiagram: vi.fn().mockResolvedValue({
