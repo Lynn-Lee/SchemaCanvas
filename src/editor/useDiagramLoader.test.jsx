@@ -22,6 +22,7 @@ function createSetters(overrides = {}) {
     setSaveState: vi.fn(),
     setRestoreState: vi.fn(),
     setShowSelectDbModal: vi.fn(),
+    setShowEmptyState: vi.fn(),
     setLayout: vi.fn(),
     navigate: vi.fn(),
     ...overrides,
@@ -127,5 +128,112 @@ describe("useDiagramLoader", () => {
     expect(repository.getDiagramById).toHaveBeenCalledWith("missing");
     expect(setters.setSaveState).toHaveBeenCalledWith(State.FAILED_TO_LOAD);
     expect(setters.setShowSelectDbModal).toHaveBeenCalledWith(true);
+  });
+
+  it("loads a cloud diagram through the cloud repository", async () => {
+    const diagram = {
+      id: "cloud-1",
+      database: DB.POSTGRES,
+      name: "Cloud Billing",
+      tables: [{ id: "invoices", name: "invoices", fields: [] }],
+      relationships: [],
+      notes: [],
+      areas: [],
+      pan: { x: 8, y: 12 },
+      zoom: 0.9,
+      permission: "editor",
+      modifiedAt: "2026-07-02T09:00:00Z",
+    };
+    const cloudRepository = {
+      getCloudDiagram: vi.fn().mockResolvedValue({
+        ok: true,
+        diagram,
+      }),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({
+        repository: {},
+        cloudRepository,
+        ...setters,
+      }),
+    );
+
+    const loaded = await result.current.loadCloudDiagramById("cloud-1");
+
+    expect(loaded).toBe(true);
+    expect(cloudRepository.getCloudDiagram).toHaveBeenCalledWith("cloud-1");
+    expect(setters.setDatabase).toHaveBeenCalledWith(DB.POSTGRES);
+    expect(setters.setTitle).toHaveBeenCalledWith("Cloud Billing");
+    expect(setters.setTables).toHaveBeenCalledWith([
+      expect.objectContaining({
+        id: "invoices",
+        name: "invoices",
+      }),
+    ]);
+    expect(setters.setLayout).toHaveBeenCalledWith(expect.any(Function));
+    expect(setters.setRestoreState).toHaveBeenCalledWith({
+      source: "cloud",
+      diagramId: "cloud-1",
+      restoredAt: diagram.modifiedAt,
+      permission: "editor",
+    });
+    expect(setters.setShowSelectDbModal).not.toHaveBeenCalled();
+  });
+
+  it("falls back to local new diagram when cloud loading is unavailable", async () => {
+    const cloudRepository = {
+      getCloudDiagram: vi.fn().mockResolvedValue({
+        ok: false,
+        reason: "unavailable",
+        message: "Cloud unavailable",
+      }),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({
+        repository: {},
+        cloudRepository,
+        ...setters,
+      }),
+    );
+
+    const loaded = await result.current.loadCloudDiagramById("cloud-1");
+
+    expect(loaded).toBe(false);
+    expect(setters.setSaveState).toHaveBeenCalledWith(State.FAILED_TO_LOAD);
+    expect(setters.setShowEmptyState).toHaveBeenCalledWith(true);
+    expect(setters.setTables).not.toHaveBeenCalled();
+    expect(setters.setRelationships).not.toHaveBeenCalled();
+  });
+
+  it("does not overwrite local editor state when cloud loading is unauthorized", async () => {
+    const cloudRepository = {
+      getCloudDiagram: vi.fn().mockResolvedValue({
+        ok: false,
+        reason: "unauthorized",
+        message: "Sign in before opening this cloud diagram.",
+      }),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({
+        repository: {},
+        cloudRepository,
+        ...setters,
+      }),
+    );
+
+    const loaded = await result.current.loadCloudDiagramById("cloud-private");
+
+    expect(loaded).toBe(false);
+    expect(setters.setSaveState).toHaveBeenCalledWith(State.FAILED_TO_LOAD);
+    expect(setters.setShowEmptyState).toHaveBeenCalledWith(true);
+    expect(setters.setDatabase).not.toHaveBeenCalled();
+    expect(setters.setTitle).not.toHaveBeenCalled();
+    expect(setters.setTables).not.toHaveBeenCalled();
   });
 });

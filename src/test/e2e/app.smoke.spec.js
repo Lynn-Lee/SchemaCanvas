@@ -82,6 +82,19 @@ test.describe("app smoke", () => {
     await expect(page.getByText("Small screen editor mode")).toBeHidden();
   });
 
+  test("cloud diagram load failure falls back to local editor mode", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto("/editor?cloudDiagramId=missing-cloud-diagram");
+
+    await expect(
+      page.getByRole("heading", { name: "Create a local diagram" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Create blank diagram" }).click();
+    await expect(page.getByText("File").first()).toBeVisible();
+  });
+
   test("editor shows a mobile experience hint on small screens", async ({
     page,
   }) => {

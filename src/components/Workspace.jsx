@@ -101,28 +101,30 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   const extensions = useMemo(() => extensionValues ?? {}, [extensionValues]);
   const cloudOnly = typeof extensions.cloudSave === "function";
   const localDiagramRepository = useMemo(() => createLocalDiagramRepository(db), []);
-  const { loadLatestLocalDiagram, loadLocalDiagramById } = useDiagramLoader({
-    repository: localDiagramRepository,
-    setDatabase,
-    setGistId,
-    setLoadedFromGistId,
-    setTitle,
-    setTables,
-    setRelationships,
-    setNotes,
-    setAreas,
-    setTransform,
-    setTypes,
-    setEnums,
-    setUndoStack,
-    setRedoStack,
-    setSaveState,
-    setRestoreState,
-    setShowSelectDbModal,
-    setShowEmptyState: setShowNewDiagramWizard,
-    setLayout,
-    navigate,
-  });
+  const { loadCloudDiagramById, loadLatestLocalDiagram, loadLocalDiagramById } =
+    useDiagramLoader({
+      repository: localDiagramRepository,
+      cloudRepository: extensions.cloudRepository,
+      setDatabase,
+      setGistId,
+      setLoadedFromGistId,
+      setTitle,
+      setTables,
+      setRelationships,
+      setNotes,
+      setAreas,
+      setTransform,
+      setTypes,
+      setEnums,
+      setUndoStack,
+      setRedoStack,
+      setSaveState,
+      setRestoreState,
+      setShowSelectDbModal,
+      setShowEmptyState: setShowNewDiagramWizard,
+      setLayout,
+      navigate,
+    });
   const { saveLocalDiagram } = useDiagramPersistence({
     repository: localDiagramRepository,
     navigate,
@@ -405,6 +407,18 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
       return;
     }
 
+    const cloudDiagramId = searchParams.get("cloudDiagramId");
+    if (cloudDiagramId) {
+      const loadedCloudDiagram = await loadCloudDiagramById(cloudDiagramId);
+      if (!loadedCloudDiagram) {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete("cloudDiagramId");
+        setSearchParams(nextParams, { replace: true });
+        await loadLatestLocalDiagram({ selectedDb });
+      }
+      return;
+    }
+
     if (!loadedDiagramId) {
       if (searchParams.get("importAsNew") === "1") {
         return;
@@ -459,7 +473,9 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     setLayout,
     loadLatestLocalDiagram,
     loadLocalDiagramById,
+    loadCloudDiagramById,
     searchParams,
+    setSearchParams,
     navigate,
     isDiagram,
     isTemplate,

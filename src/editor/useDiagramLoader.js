@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { DB, State } from "../data/constants";
 import { databases } from "../data/databases";
+import { normalizeDiagram } from "../domain/normalizeDiagram";
 
 function valueOrDefault(value, fallback) {
   return value === undefined || value === null ? fallback : value;
@@ -42,8 +43,32 @@ function applyDiagramToState(diagram, setters) {
   }
 }
 
+function normalizeCloudResult(result) {
+  const diagram = result?.diagram ?? result?.cloudDiagram ?? result;
+  if (!diagram) {
+    return null;
+  }
+
+  const normalized = normalizeDiagram({
+    ...diagram,
+    diagramId: diagram.diagramId ?? diagram.id,
+  });
+  const permission = diagram.permission ?? result?.permission;
+
+  return {
+    ...normalized,
+    canWrite:
+      typeof diagram.canWrite === "boolean"
+        ? diagram.canWrite
+        : permission === undefined || permission === "owner" || permission === "editor",
+    permission,
+    modifiedAt: diagram.modifiedAt ?? diagram.lastModified ?? result?.modifiedAt,
+  };
+}
+
 export function useDiagramLoader({
   repository,
+  cloudRepository,
   navigate,
   setShowSelectDbModal,
   setShowEmptyState,
@@ -110,6 +135,85 @@ export function useDiagramLoader({
       setRelationships,
       setSaveState,
       setRestoreState,
+      setShowSelectDbModal,
+      setTables,
+      setTitle,
+      setTransform,
+      setTypes,
+      setUndoStack,
+    ],
+  );
+
+  const loadCloudDiagramById = useCallback(
+    async (cloudDiagramId) => {
+      if (typeof cloudRepository?.getCloudDiagram !== "function") {
+        setSaveState(State.FAILED_TO_LOAD);
+        (setShowEmptyState ?? setShowSelectDbModal)(true);
+        return false;
+      }
+
+      let result;
+      try {
+        result = await cloudRepository.getCloudDiagram(cloudDiagramId);
+      } catch (error) {
+        result = {
+          ok: false,
+          reason: "error",
+          message: error?.message,
+        };
+      }
+
+      if (!result?.ok) {
+        setSaveState(State.FAILED_TO_LOAD);
+        (setShowEmptyState ?? setShowSelectDbModal)(true);
+        return false;
+      }
+
+      const diagram = normalizeCloudResult(result);
+      if (!diagram) {
+        setSaveState(State.FAILED_TO_LOAD);
+        (setShowEmptyState ?? setShowSelectDbModal)(true);
+        return false;
+      }
+
+      applyDiagramToState(diagram, {
+        setDatabase,
+        setGistId,
+        setLoadedFromGistId,
+        setTitle,
+        setTables,
+        setRelationships,
+        setNotes,
+        setAreas,
+        setTransform,
+        setTypes,
+        setEnums,
+        setUndoStack,
+        setRedoStack,
+        setLayout,
+      });
+      setRestoreState?.({
+        source: "cloud",
+        diagramId: cloudDiagramId,
+        restoredAt: diagram.modifiedAt,
+        permission: diagram.permission,
+      });
+      return true;
+    },
+    [
+      cloudRepository,
+      setAreas,
+      setDatabase,
+      setEnums,
+      setGistId,
+      setLayout,
+      setLoadedFromGistId,
+      setNotes,
+      setRedoStack,
+      setRelationships,
+      setSaveState,
+      setRestoreState,
+      setShowEmptyState,
       setShowSelectDbModal,
       setTables,
       setTitle,
@@ -188,6 +292,7 @@ export function useDiagramLoader({
   );
 
   return {
+    loadCloudDiagramById,
     loadLatestLocalDiagram,
     loadLocalDiagramById,
   };

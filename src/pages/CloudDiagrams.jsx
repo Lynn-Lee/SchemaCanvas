@@ -238,9 +238,19 @@ export default function CloudDiagrams({
                           <span>{formatModifiedAt(diagram.modifiedAt)}</span>
                         </div>
                       </div>
-                      <span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
-                        {diagram.permission || "viewer"}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                          {diagram.permission || "viewer"}
+                        </span>
+                        <Link
+                          className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                          to={`/editor?cloudDiagramId=${encodeURIComponent(
+                            diagram.id,
+                          )}`}
+                        >
+                          {t("cloud_diagrams_open_cloud_diagram")}
+                        </Link>
+                      </div>
                     </div>
                   </article>
                 ))}

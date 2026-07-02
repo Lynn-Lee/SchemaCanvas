@@ -165,7 +165,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.6 云端加载与本地模式不阻塞
 
-状态：未开始。
+状态：已完成。
 
 目标：通过 route 或显式打开加载云端图表，但未登录、不可用或权限不足时不阻塞 `/editor` 本地模式。
 
@@ -177,15 +177,15 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 cloud diagram load 成功、unavailable、unauthorized 和 fallback local new diagram。
-- [ ] 接入 cloud repository `getCloudDiagram`，成功后 normalize，再进入 editor state。
-- [ ] 权限不足时给出只读或错误状态，不覆盖当前本地草稿。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖 cloud diagram load 成功、unavailable、unauthorized 和 fallback local new diagram。（Phase 5.6 已完成，红灯先确认为 `loadCloudDiagramById` 缺失。）
+- [x] 接入 cloud repository `getCloudDiagram`，成功后 normalize，再进入 editor state。（Phase 5.6 已完成，`/editor?cloudDiagramId=...` 作为显式打开入口。）
+- [x] 权限不足时给出只读或错误状态，不覆盖当前本地草稿。（Phase 5.6 已完成，unavailable/unauthorized/error 只设置加载失败和本地新建入口，不写入 diagram state。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。（Phase 5.6 已完成并记录到 run log。）
 
 完成标准：
 
-- `/editor` 默认本地模式不需要登录。
-- cloud route 或显式打开失败时不会清空本地数据。
+- `/editor` 默认本地模式不需要登录。（Phase 5.6 已完成。）
+- cloud route 或显式打开失败时不会清空本地数据。（Phase 5.6 已完成，新增 Playwright smoke 覆盖 fallback local editor mode。）
 
 ### 5.7 云端保存、冲突检测与 token 过期恢复
 

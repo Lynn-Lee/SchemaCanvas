@@ -285,6 +285,7 @@ const zh = {
     cloud_upload_confirm: "确认上传",
     cloud_upload_success: "已上传到云端",
     cloud_upload_failed: "云端上传失败",
+    cloud_diagrams_open_cloud_diagram: "在编辑器打开",
     supported_types: "支持的文件类型：",
     bulk_update: "批量更新",
     multiselect: "多选",

@@ -293,6 +293,7 @@ const en = {
     cloud_upload_confirm: "Confirm upload",
     cloud_upload_success: "Uploaded to cloud",
     cloud_upload_failed: "Cloud upload failed",
+    cloud_diagrams_open_cloud_diagram: "Open in editor",
     show_relationship_labels: "Show relationship labels",
     docs: "Docs",
     supported_types: "Supported file types:",

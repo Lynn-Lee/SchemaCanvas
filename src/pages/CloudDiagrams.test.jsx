@@ -76,6 +76,9 @@ describe("CloudDiagrams", () => {
     expect(screen.getByText("8 tables"));
     expect(screen.getByText("owner"));
     expect(screen.getByText("2026-07-02 08:30"));
+    expect(
+      screen.getByRole("link", { name: "cloud_diagrams_open_cloud_diagram" }),
+    ).toHaveAttribute("href", "/editor?cloudDiagramId=cloud-1");
   });
 
   it("filters diagrams by teams returned from the repository", async () => {
