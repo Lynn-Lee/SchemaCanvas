@@ -93,7 +93,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.3 signed-out、signed-in、expired-session、unavailable 状态 UI
 
-状态：未开始。
+状态：已完成（2026-07-02）。
 
 目标：为账号状态建立可测试的展示组件，明确区分未登录、已登录、session 过期和云端不可用。
 
@@ -105,15 +105,15 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖四种状态文案、主要 action 和本地模式提示。
-- [ ] 实现账号状态 UI，不在 unavailable 时暴露登录表单。
-- [ ] expired-session 状态必须提示本地未保存更改仍保留。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖四种状态文案、主要 action 和本地模式提示。（Phase 5.3 已完成，红灯记录为缺失 `CloudAccountStatus` 组件导致聚焦测试失败。）
+- [x] 实现账号状态 UI，不在 unavailable 时暴露登录表单。（Phase 5.3 已完成，`CloudAccountStatus` 覆盖 unavailable、signed-out、signed-in、expired-session。）
+- [x] expired-session 状态必须提示本地未保存更改仍保留。（Phase 5.3 已完成。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。（Phase 5.3 已完成并记录到 run log。）
 
 完成标准：
 
-- 用户能理解当前云端能力是否可用。
-- 未登录和 token 过期都不会影响本地编辑。
+- 用户能理解当前云端能力是否可用。（Phase 5.3 已完成。）
+- 未登录和 token 过期都不会影响本地编辑。（Phase 5.3 已完成，状态 UI 明确提示本地模式继续可用。）
 
 ### 5.4 云端图表列表与团队过滤骨架
 
@@ -268,4 +268,4 @@ npm run bundle:check
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5.3 signed-out、signed-in、expired-session、unavailable 状态 UI。
+下一轮自动化默认执行 Phase 5.4 云端图表列表与团队过滤骨架。

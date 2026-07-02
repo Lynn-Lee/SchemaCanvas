@@ -258,6 +258,24 @@ const zh = {
       "创建分享链接会把当前图表数据上传到已配置的后端服务。",
     confirm_share_upload: "确认并创建分享链接",
     cloud_account: "账号",
+    cloud_status_unavailable: "云端不可用",
+    cloud_status_unavailable_description:
+      "当前 drawDB 实例尚未配置云端能力。",
+    cloud_status_signed_out: "未登录",
+    cloud_status_signed_out_description:
+      "只有在使用可选云端能力时才需要登录。",
+    cloud_status_signed_in: "已登录",
+    cloud_status_signed_in_description:
+      "云端能力仅会在你显式触发云端操作时使用。",
+    cloud_status_expired_session: "会话已过期",
+    cloud_status_expired_session_description:
+      "继续使用云同步或团队功能前需要重新登录。",
+    cloud_status_local_mode_available:
+      "本浏览器内的本地编辑、保存、导入和导出仍可继续使用。",
+    cloud_status_local_changes_preserved:
+      "本地未保存的更改仍保留在当前浏览器中。",
+    cloud_action_sign_in: "登录",
+    cloud_action_sign_out: "退出登录",
     supported_types: "支持的文件类型：",
     bulk_update: "批量更新",
     multiselect: "多选",

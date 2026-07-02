@@ -266,6 +266,24 @@ const en = {
       "Creating a share link uploads the current diagram data to the configured backend service.",
     confirm_share_upload: "Confirm and create share link",
     cloud_account: "Account",
+    cloud_status_unavailable: "Cloud unavailable",
+    cloud_status_unavailable_description:
+      "Cloud features are not configured for this drawDB instance.",
+    cloud_status_signed_out: "Not signed in",
+    cloud_status_signed_out_description:
+      "Sign in only when you want to use optional cloud features.",
+    cloud_status_signed_in: "Signed in",
+    cloud_status_signed_in_description:
+      "Cloud features are available for explicit cloud actions.",
+    cloud_status_expired_session: "Session expired",
+    cloud_status_expired_session_description:
+      "Sign in again before using cloud sync or team features.",
+    cloud_status_local_mode_available:
+      "Local editing, saving, import, and export remain available in this browser.",
+    cloud_status_local_changes_preserved:
+      "Any unsaved local changes stay in this browser.",
+    cloud_action_sign_in: "Sign in",
+    cloud_action_sign_out: "Sign out",
     show_relationship_labels: "Show relationship labels",
     docs: "Docs",
     supported_types: "Supported file types:",

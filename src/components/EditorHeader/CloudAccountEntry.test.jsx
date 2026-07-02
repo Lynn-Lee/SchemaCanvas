@@ -20,6 +20,16 @@ vi.mock("@douyinfe/semi-ui", () => ({
       </button>
     );
   },
+  Modal: function Modal({ children, title, visible }) {
+    if (!visible) {
+      return null;
+    }
+    return (
+      <div role="dialog" aria-label={title}>
+        {children}
+      </div>
+    );
+  },
 }));
 
 vi.mock("react-i18next", () => ({
@@ -114,5 +124,25 @@ describe("CloudAccountEntry", () => {
     expect(openCloudAccount).toHaveBeenCalledTimes(1);
     expect(login).not.toHaveBeenCalled();
     expect(saveCloudDiagram).not.toHaveBeenCalled();
+  });
+
+  it("opens the built-in account status UI when no extension handler is provided", async () => {
+    render(
+      <ExtensionsContext.Provider
+        value={{
+          cloudCapability: { enabled: true },
+        }}
+      >
+        <CloudAccountEntry />
+      </ExtensionsContext.Provider>,
+    );
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "cloud_account" }),
+    );
+
+    expect(screen.getByRole("dialog", { name: "cloud_account" }));
+    expect(screen.getByRole("heading", { name: "cloud_status_signed_out" }));
+    expect(screen.getByText("cloud_status_local_mode_available"));
   });
 });
