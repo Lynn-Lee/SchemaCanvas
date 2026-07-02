@@ -10,13 +10,15 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性已完成并通过阶段退出门禁：首次进入新建向导、最近图恢复提示与保存状态文案、Open modal 本地图表列表增强、菜单配置与快捷键入口抽离、icon button 可访问名称与焦点恢复、axe smoke 基线、Landing 390px 移动端横向溢出修复、Editor 移动端体验提示均已有验证记录。Phase 4 性能与包体治理已完成并通过阶段退出门禁：Bundle budget 脚本、当前构建基线记录、Monaco 按需加载、SQL parser 按需加载、图片/PDF 导出库按需加载、Landing tweet/social widgets 延迟加载、100/500/1000 表大图 performance fixtures、Canvas/Table 稳定 props 与 memo 基线、拖拽期间 pointer movement state 隔离，以及 500 表加载与搜索定位 smoke 均已有验证记录。Phase 5 已启动并完成 cloudRepository interface 与 no-backend adapter、cloud capability 配置与账号入口显隐、signed-out/signed-in/expired-session/unavailable 状态 UI、云端图表列表与团队过滤骨架、显式上传当前本地图到云端、云端加载与本地模式不阻塞、云端保存冲突检测与 token 过期恢复，以及 owner/editor/viewer 权限到 editor 只读状态的映射；未配置云端时 repository 层和列表页稳定返回 unavailable，Header 不展示误导性账号入口，配置云端时账号入口只打开账号状态 UI，上传当前图必须由用户确认且会说明图表数据将发送到配置后端，云端加载失败不会覆盖本地编辑状态，云端保存 remote newer 冲突不会静默覆盖，token 过期会保留 pending diagram，viewer 权限会显示只读提示并禁用保存、导入、编辑和破坏性动作。下一步是 Phase 5 退出门禁复核。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性已完成并通过阶段退出门禁：首次进入新建向导、最近图恢复提示与保存状态文案、Open modal 本地图表列表增强、菜单配置与快捷键入口抽离、icon button 可访问名称与焦点恢复、axe smoke 基线、Landing 390px 移动端横向溢出修复、Editor 移动端体验提示均已有验证记录。Phase 4 性能与包体治理已完成并通过阶段退出门禁：Bundle budget 脚本、当前构建基线记录、Monaco 按需加载、SQL parser 按需加载、图片/PDF 导出库按需加载、Landing tweet/social widgets 延迟加载、100/500/1000 表大图 performance fixtures、Canvas/Table 稳定 props 与 memo 基线、拖拽期间 pointer movement state 隔离，以及 500 表加载与搜索定位 smoke 均已有验证记录。Phase 5 可选账号、团队与云端能力已完成并通过阶段退出门禁：cloudRepository interface 与 no-backend adapter、cloud capability 配置与账号入口显隐、signed-out/signed-in/expired-session/unavailable 状态 UI、云端图表列表与团队过滤骨架、显式上传当前本地图到云端、云端加载与本地模式不阻塞、云端保存冲突检测与 token 过期恢复，以及 owner/editor/viewer 权限到 editor 只读状态的映射均已有验证记录；未配置云端时 repository 层和列表页稳定返回 unavailable，Header 不展示误导性账号入口，配置云端时账号入口只打开账号状态 UI，上传当前图必须由用户确认且会说明图表数据将发送到配置后端，云端加载失败不会覆盖本地编辑状态，云端保存 remote newer 冲突不会静默覆盖，token 过期会保留 pending diagram，viewer 权限会显示只读提示并禁用保存、导入、编辑和破坏性动作。Phase 0-5 总控路线已完成，后续应进入产品验收、缺陷修复或新 roadmap 规划。
 
 Phase 5.6 已完成云端加载与本地模式不阻塞：云端列表提供显式“在编辑器打开”入口，`/editor?cloudDiagramId=...` 通过 cloud repository `getCloudDiagram` 加载并 normalize 后进入编辑器；云端 unavailable、unauthorized 或加载失败时不会覆盖当前本地编辑状态，并回退到本地新建/最近图路径。
 
 Phase 5.7 已完成云端保存、冲突检测与 token 过期恢复：`Workspace` 在云端图表加载后通过 cloud repository `saveCloudDiagram` 保存，并携带 `expectedModifiedAt`；remote newer 冲突进入显式冲突弹窗，提供保留本地、覆盖云端、另存为本地图三条恢复路径；token 过期和其他保存失败进入保存 Error，同时保留 pending diagram，避免丢失本地未保存更改。
 
 Phase 5.8 已完成权限模型与 viewer 只读 editor：新增统一 `cloudPermissions` helper，owner/editor 保持可编辑，viewer 和未知权限映射为 read-only editor；云端 viewer 图表加载后 Header、菜单、导入事件、保存模板、删除图表、侧栏、画布和浮动工具栏都会尊重 `layout.readOnly`，同时显示可被屏幕阅读器读取的只读提示，仍允许导出允许范围内的数据。
+
+Phase 5 退出门禁已通过：`npm run lint`、`npm run test`、`npm run e2e`、`npm run accessibility`、`npm run build`、`npm run bundle:check`、`git diff --check` 和 `npm audit --audit-level=high` 均通过；全量 Vitest 41 个文件、137 个用例通过，Playwright e2e 14 个用例通过，axe smoke 5 个用例通过，high audit 通过且保留 2 个 moderate 项。
 
 ## 2. 产品定位
 
@@ -874,12 +876,12 @@ src/
 
 1. 定义 cloud repository interface 和 no-backend adapter。（已完成）
 2. cloud capability 配置与账号入口显隐。（已完成）
-3. 登录状态和 session 管理。
+3. 登录状态和 session 管理。（已完成：账号状态 UI 覆盖 signed-out、signed-in、expired-session、unavailable；token 过期不丢本地未保存更改。）
 4. 云端 diagram list。（已完成：新增云端图表列表页面骨架，支持 unavailable、empty、我的图表和 repository 返回团队过滤。）
 5. 本地到云端上传。（已完成：新增上传 helper 和 Header 显式确认入口，上传前说明图表数据会发送到配置云端后端，成功后显示云端上传状态，失败不清空本地副本。）
 6. 权限模型。（已完成：owner/editor 可编辑，viewer/未知权限进入只读 editor。）
 7. 云端保存冲突处理。（已完成：remote newer 冲突需要显式选择，token 过期保留 pending diagram。）
-8. 分享链接权限升级。
+8. 分享链接权限升级。（后续 roadmap 再决策，Phase 5 当前范围已通过退出门禁。）
 
 验收：
 

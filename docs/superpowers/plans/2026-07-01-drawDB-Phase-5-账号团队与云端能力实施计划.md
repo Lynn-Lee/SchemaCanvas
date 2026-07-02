@@ -239,6 +239,8 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ## 5. Phase 5 退出门禁
 
+状态：已完成（2026-07-02）。
+
 Phase 5 所有切片完成后必须运行：
 
 ```bash
@@ -259,13 +261,24 @@ npm run bundle:check
 
 退出标准：
 
-- 未配置云端时 UI 明确说明不可用，本地 editor 不受影响。
-- 未登录用户仍可完整使用本地模式。
-- 登录后可显式上传和打开云端图表。
-- session 过期不丢本地未保存更改。
-- viewer 权限强制只读。
-- 本地/云端冲突必须确认后处理。
+- [x] 未配置云端时 UI 明确说明不可用，本地 editor 不受影响。
+- [x] 未登录用户仍可完整使用本地模式。
+- [x] 登录后可显式上传和打开云端图表。
+- [x] session 过期不丢本地未保存更改。
+- [x] viewer 权限强制只读。
+- [x] 本地/云端冲突必须确认后处理。
+
+验证记录：
+
+- `npm run lint`：通过。
+- `npm run test`：通过，41 个测试文件、137 个用例。
+- `npm run e2e`：通过，14 个 Playwright 用例。
+- `npm run accessibility`：通过，5 个 axe smoke 用例。
+- `npm run build`：通过，保留既有 `lottie-web` direct eval 和 chunk 过大警告。
+- `npm run bundle:check`：通过，最大 JS chunk 13270.94 KB，最大 CSS 393.37 KB，JS/CSS 总量 17046.41 KB。
+- `git diff --check`：通过。
+- `npm audit --audit-level=high`：通过，无 high/critical，保留 2 个 moderate 项。
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5 退出门禁复核。
+Phase 0-5 总控路线已完成。下一轮自动化若未发现新的产品 roadmap 或明确维护任务，应停止并记录 blocker，等待产品验收、缺陷修复或新阶段规划。
