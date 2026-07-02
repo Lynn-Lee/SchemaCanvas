@@ -73,22 +73,23 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.2 Monaco 按需加载
 
-状态：未开始。
+状态：已完成。
 
 目标：Monaco 只在 code/import/export/DBML 相关面板打开时加载，减少 editor 初始 bundle 压力。
 
 修改文件：
 
 - 修改 `src/components/CodeEditor/index.jsx`
-- 修改使用 CodeEditor 的 import/export/DBML 入口
-- 新增或修改相关测试
+- 新增 `src/components/CodeEditor/LazyMonaco.jsx`
+- 修改 `src/components/EditorHeader/SideSheet/Migration.jsx`
+- 新增 `src/build/monacoLazyBoundary.test.js`
 
 步骤：
 
-- [ ] 写红灯测试，覆盖未打开代码编辑器入口时不加载 Monaco chunk。
-- [ ] 将 Monaco 包装成 lazy/dynamic import，并提供稳定 loading 状态。
-- [ ] 确认 Import SQL、DBML 视图和 export 相关代码编辑流程仍可用。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。
+- [x] 写红灯测试，覆盖未打开代码编辑器入口时不加载 Monaco chunk。（Phase 4.2 已完成，`src/build/monacoLazyBoundary.test.js` 先确认 `CodeEditor` 静态导入 Monaco 后红灯。）
+- [x] 将 Monaco 包装成 lazy/dynamic import，并提供稳定 loading 状态。（Phase 4.2 已完成，`LazyMonaco.jsx` 统一提供 Editor、DiffEditor 和 fallback。）
+- [x] 确认 Import SQL、DBML 视图和 export 相关代码编辑流程仍可用。（Phase 4.2 已完成，Import SQL、DBML、export code modal 仍走 `CodeEditor`，Migration diff 改用 lazy DiffEditor。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。（Phase 4.2 已完成并记录到 run log。）
 
 完成标准：
 
@@ -288,4 +289,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.2 Monaco 按需加载。
+下一轮自动化默认执行 Phase 4.3 SQL parsers 按需加载。

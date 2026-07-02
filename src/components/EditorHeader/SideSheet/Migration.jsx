@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
 import { Tabs, TabPane, Modal, Input, Tag, Spin } from "@douyinfe/semi-ui";
-import { DiffEditor } from "@monaco-editor/react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../hooks";
@@ -11,6 +10,10 @@ import CodeEditor from "../../CodeEditor";
 import { generateMigrationSQL } from "../../../utils/migrations/diffToSQL";
 import * as JSZip from "jszip";
 import { saveAs } from "file-saver";
+import {
+  LazyMonacoDiffEditor,
+  MonacoLoadingFallback,
+} from "../../CodeEditor/LazyMonaco";
 
 export default function Migration({
   gistId,
@@ -157,14 +160,16 @@ export default function Migration({
 
         <TabPane tab={t("json_diff")} itemKey="2">
           {!loading && (
-            <DiffEditor
-              original={contentB}
-              modified={contentA}
-              options={{ readOnly: true }}
-              height="22rem"
-              theme={settings.mode === "light" ? "vs" : "vs-dark"}
-              language="json"
-            />
+            <Suspense fallback={<MonacoLoadingFallback height="22rem" />}>
+              <LazyMonacoDiffEditor
+                original={contentB}
+                modified={contentA}
+                options={{ readOnly: true }}
+                height="22rem"
+                theme={settings.mode === "light" ? "vs" : "vs-dark"}
+                language="json"
+              />
+            </Suspense>
           )}
           {loading && (
             <div className="text-blue-500 flex flex-col gap-2 justify-center items-center h-[24rem]">

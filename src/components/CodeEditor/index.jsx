@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Editor } from "@monaco-editor/react";
+import { Suspense, useState } from "react";
 import { useDiagram, useSettings } from "../../hooks";
 import { Button } from "@douyinfe/semi-ui";
 import { useTranslation } from "react-i18next";
 import { IconCopy, IconTick } from "@douyinfe/semi-icons";
 import { setUpDBML } from "./setUpDBML";
+import { LazyMonacoEditor, MonacoLoadingFallback } from "./LazyMonaco";
 
 export default function CodeEditor({
   showCopyButton,
@@ -55,11 +55,13 @@ export default function CodeEditor({
           </button>
         </div>
       )}
-      <Editor
-        {...props}
-        theme={settings.mode === "light" ? "vs" : "vs-dark"}
-        onMount={handleEditorMount}
-      />
+      <Suspense fallback={<MonacoLoadingFallback height={props.height} />}>
+        <LazyMonacoEditor
+          {...props}
+          theme={settings.mode === "light" ? "vs" : "vs-dark"}
+          onMount={handleEditorMount}
+        />
+      </Suspense>
       {showCopyButton && (
         <div className="absolute flex flex-col right-6 bottom-2 z-10 space-y-2">
           {extraControls}
