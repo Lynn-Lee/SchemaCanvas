@@ -268,6 +268,8 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ## 5. Phase 4 退出门禁
 
+状态：已完成。
+
 Phase 4 所有切片完成后必须运行：
 
 ```bash
@@ -283,13 +285,20 @@ npm audit --audit-level=high
 
 退出标准：
 
-- bundle budget 脚本存在并被验证。
-- Monaco、SQL parsers、image/PDF export libraries 和 tweet/social widgets 已按需或延迟加载。
-- build 前后 chunk size 记录在验证矩阵。
-- 100、500、1000 表 fixtures 存在。
-- 500 表加载和搜索 smoke 通过。
-- 本地无账号 editor 创建、保存、刷新恢复、导入导出和分享不可用提示无回归。
+- [x] bundle budget 脚本存在并被验证。
+- [x] Monaco、SQL parsers、image/PDF export libraries 和 tweet/social widgets 已按需或延迟加载。
+- [x] build 前后 chunk size 记录在验证矩阵。
+- [x] 100、500、1000 表 fixtures 存在。
+- [x] 500 表加载和搜索 smoke 通过。
+- [x] 本地无账号 editor 创建、保存、刷新恢复、导入导出和分享不可用提示无回归。
+
+验证记录：
+
+- 2026-07-02 运行 `npm run lint && npm run test && npm run e2e && npm run accessibility && npm run build && npm run bundle:check && git diff --check && npm audit --audit-level=high` 通过。
+- 全量 Vitest 33 个文件、103 个用例通过；Playwright e2e 13 个用例通过；axe accessibility 5 个 smoke 通过。
+- bundle check 当前最大 JS chunk 13250.51 KB、最大 CSS 390.89 KB、JS/CSS 总量 17023.50 KB，仍在 Phase 4 预算内。
+- 保留既有 `lottie-web` direct eval、chunk 过大、React Router/Semi UI/autofocus/defaultProps/findDOMNode console warning，以及 2 个 moderate audit 项；无 high/critical audit。
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4 退出门禁复核；通过后再按总控计划生成 Phase 5 可选账号、团队与云端能力实施计划。
+下一轮自动化默认执行 Phase 5.1 cloudRepository interface 与 no-backend adapter。
