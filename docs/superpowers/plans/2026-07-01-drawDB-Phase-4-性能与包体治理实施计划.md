@@ -245,7 +245,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.9 500 表加载与搜索 smoke
 
-状态：未开始。
+状态：已完成。
 
 目标：基于 performance fixtures 增加浏览器 smoke，覆盖 500 表打开、搜索、定位的最低可用性。
 
@@ -256,15 +256,15 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯 e2e，加载 500 表 fixture 后搜索目标表。
-- [ ] 补必要的测试数据注入或本地 repository seed helper。
-- [ ] 确认 smoke 不依赖网络或人工操作。
-- [ ] 运行 `npm run e2e`、`npm run test`、`npm run build`。
+- [x] 写红灯 e2e，加载 500 表 fixture 后搜索目标表。（Phase 4.9 已完成，`src/test/e2e/performance.spec.js` 先因缺少 seed helper 红灯。）
+- [x] 补必要的测试数据注入或本地 repository seed helper。（Phase 4.9 已完成，`src/test/e2e/support/localDiagramSeed.js` 在应用 origin 下写入 IndexedDB `diagrams` store。）
+- [x] 确认 smoke 不依赖网络或人工操作。（Phase 4.9 已完成，使用 deterministic performance fixture 和本地 IndexedDB seed。）
+- [x] 运行 `npm run e2e`、`npm run test`、`npm run build`。（Phase 4.9 已完成，聚焦 e2e、全量 e2e/test/lint/build/bundle/audit 门禁记录见 run log 和验证矩阵。）
 
 完成标准：
 
-- 500 表图能打开并搜索定位目标表。
-- 该 smoke 可以作为后续性能优化防回归门禁。
+- 500 表图能打开并搜索定位目标表。（Phase 4.9 已完成。）
+- 该 smoke 可以作为后续性能优化防回归门禁。（Phase 4.9 已完成。）
 
 ## 5. Phase 4 退出门禁
 
@@ -292,4 +292,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.9 500 表加载与搜索 smoke。
+下一轮自动化默认执行 Phase 4 退出门禁复核；通过后再按总控计划生成 Phase 5 可选账号、团队与云端能力实施计划。
