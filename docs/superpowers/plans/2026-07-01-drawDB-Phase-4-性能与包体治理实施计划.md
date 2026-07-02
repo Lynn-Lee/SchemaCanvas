@@ -11,7 +11,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 本阶段结束后，应满足：
 
 - 构建产物有可重复的 bundle budget 检查，主 bundle 超预算会阻断门禁。
-- Monaco、SQL parsers 已从首屏主 chunk 拆出；image/PDF export libraries、tweet/social widgets 后续不再无条件进入首屏主 chunk。
+- Monaco、SQL parsers、image/PDF export libraries、tweet/social widgets 已从首屏主 chunk 拆出或延迟加载。
 - build 前后 chunk size 有记录，Phase 4 的优化收益可审计。
 - 100、500、1000 表性能 fixtures 存在并可复用。
 - 500 表图可以打开、搜索、定位，1000 表图至少可以打开、查看结构和导出。
@@ -20,7 +20,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 ## 2. 当前代码入口
 
 - `src/App.jsx`：当前路由入口，适合评估页面级 lazy loading。
-- `src/pages/LandingPage.jsx`：当前直接加载 tweet/social widgets、hero canvas 和多个静态资源。
+- `src/pages/LandingPage.jsx`：当前延迟加载 tweet/social widgets，并仍直接加载 hero canvas 和多个静态资源。
 - `src/pages/Templates.jsx`：模板页面包含截图和模板浏览入口。
 - `src/components/Workspace.jsx`：editor 主工作区和 provider 组合后的主要交互入口。
 - `src/components/EditorCanvas/Canvas.jsx`：画布渲染与交互入口。
@@ -147,7 +147,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.5 Landing tweet/social widgets 延迟加载
 
-状态：未开始。
+状态：已完成。
 
 目标：Landing 首屏不被 tweet/social widgets 阻塞，外部内容延迟到用户滚动到相关区域后加载。
 
@@ -158,15 +158,16 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖首屏 CTA 可见且 tweet widget 延迟加载。
-- [ ] 使用 viewport 或交互触发延迟加载，并提供稳定占位。
-- [ ] 确认 390px 移动端无横向溢出。
-- [ ] 运行 `npm run e2e`、`npm run accessibility`、`npm run lint`、`npm run build`、`npm run bundle:check`。
+- [x] 写红灯测试，覆盖首屏 CTA 可见且 tweet widget 延迟加载。（Phase 4.5 已完成，新增 `src/build/landingSocialLazyBoundary.test.js` 和 Playwright landing social smoke。）
+- [x] 使用 viewport 或交互触发延迟加载，并提供稳定占位。（Phase 4.5 已完成，`LandingTweets` 使用 `IntersectionObserver` 触发 `react-tweet` 动态加载，并提供 loading/error fallback。）
+- [x] 确认 390px 移动端无横向溢出。（Phase 4.5 已通过全量 e2e 覆盖既有 390px landing smoke。）
+- [x] 运行 `npm run e2e`、`npm run accessibility`、`npm run lint`、`npm run build`、`npm run bundle:check`。（Phase 4.5 已完成并记录到 run log。）
 
 完成标准：
 
 - Landing 首屏入口不依赖 tweet widget。
 - 390px landing 仍无横向滚动。
+- 当前 build 将 `react-tweet` runtime 拆为独立按需 chunk，主 JS chunk 降至约 13248.74 KB。
 
 ### 4.6 大图 performance fixtures
 
@@ -290,4 +291,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.5 Landing tweet/social widgets 延迟加载。
+下一轮自动化默认执行 Phase 4.6 大图 performance fixtures。

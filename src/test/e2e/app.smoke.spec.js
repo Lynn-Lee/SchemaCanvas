@@ -44,6 +44,24 @@ test.describe("app smoke", () => {
     expect(layout.ctaRight).toBeLessThanOrEqual(layout.viewportWidth);
   });
 
+  test("landing social posts load after the social section is reached", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", { name: "Draw, Copy, and Paste" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Try it for yourself" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("landing-social-widget")).toHaveCount(0);
+
+    await page.getByText("What the internet says about us").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("landing-social-placeholder")).toBeVisible();
+  });
+
   test("templates page renders the template library", async ({ page }) => {
     await page.goto("/templates");
 

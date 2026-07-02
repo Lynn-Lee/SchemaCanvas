@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import SimpleCanvas from "../components/SimpleCanvas";
 import Navbar from "../components/Navbar";
@@ -16,7 +16,6 @@ import screenshot from "../assets/screenshot.png";
 import FadeIn from "../animations/FadeIn";
 import axios from "axios";
 import { languages } from "../i18n/i18n";
-import { Tweet } from "react-tweet";
 import { socials } from "../data/socials";
 
 function shortenNumber(number) {
@@ -225,15 +224,7 @@ export default function LandingPage() {
         <div className="text-center text-2xl md:text-xl font-medium">
           What the internet says about us
         </div>
-        <div
-          data-theme="light"
-          className="grid grid-cols-2 place-items-center md:grid-cols-1"
-        >
-          <Tweet id="1816111365125218343" />
-          <Tweet id="1817933406337905021" />
-          <Tweet id="1785457354777006524" />
-          <Tweet id="1776842268042756248" />
-        </div>
+        <LandingTweets />
       </div>
 
       {/* Contact us */}
@@ -325,6 +316,86 @@ export default function LandingPage() {
         &copy; {new Date().getFullYear()} <strong>drawDB</strong> - All rights
         reserved.
       </div>
+    </div>
+  );
+}
+
+const tweetIds = [
+  "1816111365125218343",
+  "1817933406337905021",
+  "1785457354777006524",
+  "1776842268042756248",
+];
+
+function LandingTweets() {
+  const containerRef = useRef(null);
+  const [shouldLoadTweets, setShouldLoadTweets] = useState(false);
+  const [TweetComponent, setTweetComponent] = useState(null);
+  const [tweetLoadError, setTweetLoadError] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoadTweets(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadTweets(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "160px 0px" },
+    );
+
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadTweets || TweetComponent) return undefined;
+
+    let active = true;
+    import("react-tweet")
+      .then((module) => {
+        if (active) setTweetComponent(() => module.Tweet);
+      })
+      .catch(() => {
+        if (active) setTweetLoadError(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [shouldLoadTweets, TweetComponent]);
+
+  return (
+    <div
+      ref={containerRef}
+      data-theme="light"
+      className="grid grid-cols-2 place-items-center md:grid-cols-1 min-h-[420px]"
+    >
+      {!TweetComponent ? (
+        <div
+          data-testid="landing-social-placeholder"
+          className="col-span-2 md:col-span-1 w-full rounded-xl border border-zinc-200 bg-white p-8 text-center text-sm font-medium text-zinc-500"
+        >
+          {tweetLoadError
+            ? "Community posts could not be loaded."
+            : "Loading community posts when this section is visible."}
+        </div>
+      ) : (
+        tweetIds.map((id) => (
+          <div data-testid="landing-social-widget" key={id}>
+            <TweetComponent id={id} />
+          </div>
+        ))
+      )}
     </div>
   );
 }
