@@ -117,7 +117,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.4 云端图表列表与团队过滤骨架
 
-状态：未开始。
+状态：已完成（2026-07-02）。
 
 目标：新增云端图表列表页面或弹窗骨架，支持我的图表、团队过滤和 unavailable 空状态。
 
@@ -129,15 +129,15 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 unavailable、empty、mine、team filtered 四种列表状态。
-- [ ] 接入 cloud repository list 方法，保留 loading/error/empty 状态。
-- [ ] 团队过滤只基于 repository 返回团队列表，不写死团队。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖 unavailable、empty、mine、team filtered 四种列表状态。（Phase 5.4 已完成，红灯先确认为缺失 `CloudDiagrams` 页面。）
+- [x] 接入 cloud repository list 方法，保留 loading/error/empty 状态。（Phase 5.4 已完成，默认 no-backend adapter 返回 unavailable，配置 repository 后显示列表。）
+- [x] 团队过滤只基于 repository 返回团队列表，不写死团队。（Phase 5.4 已完成，filter option 由 `listTeams` 结果生成。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。（Phase 5.4 已完成并记录到 run log。）
 
 完成标准：
 
-- 未配置云端时列表页面可解释不可用，不崩溃。
-- 已配置 mock repository 时能展示图表、权限和团队过滤。
+- 未配置云端时列表页面可解释不可用，不崩溃。（Phase 5.4 已完成。）
+- 已配置 mock repository 时能展示图表、权限和团队过滤。（Phase 5.4 已完成。）
 
 ### 5.5 上传当前本地图到云端
 
@@ -268,4 +268,4 @@ npm run bundle:check
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5.4 云端图表列表与团队过滤骨架。
+下一轮自动化默认执行 Phase 5.5 上传当前本地图到云端。
