@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Slot } from "../../context/ExtensionsContext";
 import {
   Action,
@@ -36,6 +36,12 @@ import { areFieldsCompatible, getTableHeight } from "../../utils/utils";
 import { getRectFromEndpoints, isInsideRect } from "../../utils/rect";
 import { State, noteWidth } from "../../data/constants";
 import { nanoid } from "nanoid";
+import {
+  applyDragPreviewToElements,
+  buildDragUndoElements,
+  commitDragPreview,
+  createDragPreview,
+} from "./canvasDragPreview";
 
 export default function Canvas() {
   const { t } = useTranslation();
@@ -68,6 +74,7 @@ export default function Canvas() {
     grabOffset: { x: 0, y: 0 },
   };
   const [dragging, setDragging] = useState(notDragging);
+  const [dragPreviewElements, setDragPreviewElements] = useState([]);
   const [linking, setLinking] = useState(false);
   const [linkingLine, setLinkingLine] = useState({
     startTableId: -1,
@@ -110,6 +117,25 @@ export default function Canvas() {
     tableId: null,
     fieldId: null,
   });
+  const previewTables = useMemo(
+    () =>
+      applyDragPreviewToElements(
+        tables,
+        dragPreviewElements,
+        ObjectType.TABLE,
+      ),
+    [tables, dragPreviewElements],
+  );
+  const previewAreas = useMemo(
+    () =>
+      applyDragPreviewToElements(areas, dragPreviewElements, ObjectType.AREA),
+    [areas, dragPreviewElements],
+  );
+  const previewNotes = useMemo(
+    () =>
+      applyDragPreviewToElements(notes, dragPreviewElements, ObjectType.NOTE),
+    [notes, dragPreviewElements],
+  );
   const [panning, setPanning] = useState({
     isPanning: false,
     panStart: { x: 0, y: 0 },
@@ -282,6 +308,7 @@ export default function Canvas() {
         setBulkSelectedElements([...bulkSelectedElements, elementInBulk]);
       }
       setDragging(notDragging);
+      setDragPreviewElements([]);
       return;
     }
 
@@ -296,6 +323,7 @@ export default function Canvas() {
         y: pointer.spaces.diagram.y - element.y,
       },
     });
+    setDragPreviewElements([]);
   };
 
   const coordinatesAfterSnappingToGrid = ({ x, y }) => {
@@ -343,41 +371,14 @@ export default function Canvas() {
     }
 
     if (isDragging()) {
-      const { x: mainElementFinalX, y: mainElementFinalY } =
-        coordinatesAfterSnappingToGrid({
-          x: pointer.spaces.diagram.x - dragging.grabOffset.x,
-          y: pointer.spaces.diagram.y - dragging.grabOffset.y,
-        });
-
-      const { currentCoords } = bulkSelectedElements.find((el) =>
-        isSameElement(el, dragging),
+      setDragPreviewElements(
+        createDragPreview({
+          selectedElements: bulkSelectedElements,
+          dragging,
+          pointerDiagram: pointer.spaces.diagram,
+          snapToGrid: coordinatesAfterSnappingToGrid,
+        }),
       );
-
-      const deltaX = mainElementFinalX - currentCoords.x;
-      const deltaY = mainElementFinalY - currentCoords.y;
-
-      const newBulkSelectedElements = [];
-      bulkSelectedElements.forEach((el) => {
-        const elementFinalCoords = {
-          x: el.currentCoords.x + deltaX,
-          y: el.currentCoords.y + deltaY,
-        };
-        if (el.type === ObjectType.TABLE) {
-          updateTable(el.id, { ...elementFinalCoords });
-        }
-        if (el.type === ObjectType.AREA) {
-          updateArea(el.id, { ...elementFinalCoords });
-        }
-        if (el.type === ObjectType.NOTE) {
-          updateNote(el.id, { ...elementFinalCoords });
-        }
-        newBulkSelectedElements.push({
-          ...el,
-          currentCoords: elementFinalCoords,
-        });
-      });
-
-      setBulkSelectedElements(newBulkSelectedElements);
       return;
     }
 
@@ -492,10 +493,10 @@ export default function Canvas() {
     return dragging.type !== ObjectType.NONE && dragging.id !== -1;
   };
 
-  const didDrag = () => {
+  const didDrag = (dragElements) => {
     if (!isDragging()) return false;
     // checking any element is sufficient
-    const { currentCoords, initialCoords } = bulkSelectedElements[0];
+    const { currentCoords, initialCoords } = dragElements[0];
     return (
       currentCoords.x !== initialCoords.x || currentCoords.y !== initialCoords.y
     );
@@ -524,26 +525,37 @@ export default function Canvas() {
 
     if (!e.isPrimary) return;
 
-    if (didDrag()) {
+    const finalDragElements =
+      dragPreviewElements.length > 0 ? dragPreviewElements : bulkSelectedElements;
+
+    if (didDrag(finalDragElements)) {
+      commitDragPreview({
+        previewElements: finalDragElements,
+        updateTable,
+        updateArea,
+        updateNote,
+      });
       setUndoStack((prev) => [
         ...prev,
         {
           action: Action.MOVE,
           bulk: true,
           message: t("bulk_update"),
-          elements: bulkSelectedElements.map((el) => ({
-            id: el.id,
-            type: el.type,
-            undo: el.initialCoords,
-            redo: el.currentCoords,
-          })),
+          elements: buildDragUndoElements(finalDragElements),
         },
       ]);
       setRedoStack([]);
       setBulkSelectedElements((prev) =>
         prev.map((el) => ({
           ...el,
-          initialCoords: { ...el.currentCoords },
+          initialCoords:
+            finalDragElements.find((finalElement) =>
+              isSameElement(finalElement, el),
+            )?.currentCoords ?? el.currentCoords,
+          currentCoords:
+            finalDragElements.find((finalElement) =>
+              isSameElement(finalElement, el),
+            )?.currentCoords ?? el.currentCoords,
         })),
       );
     }
@@ -560,6 +572,7 @@ export default function Canvas() {
       }
     }
     setDragging(notDragging);
+    setDragPreviewElements([]);
 
     if (panning.isPanning && didPan()) {
       setSaveState(State.SAVING);
@@ -784,7 +797,7 @@ export default function Canvas() {
               />
             </>
           )}
-          {areas.map((a) => (
+          {previewAreas.map((a) => (
             <CanvasAreaLayer
               key={a.id}
               area={a}
@@ -794,9 +807,13 @@ export default function Canvas() {
             />
           ))}
           {relationships.map((e) => (
-            <CanvasRelationshipLayer key={e.id} relationship={e} />
+            <CanvasRelationshipLayer
+              key={e.id}
+              relationship={e}
+              tableOverrides={previewTables}
+            />
           ))}
-          {tables.map((table) => (
+          {previewTables.map((table) => (
             <CanvasTableLayer
               key={table.id}
               table={table}
@@ -815,7 +832,7 @@ export default function Canvas() {
             />
           )}
           <Slot name="svg-overlay" />
-          {notes.map((n) => (
+          {previewNotes.map((n) => (
             <CanvasNoteLayer
               key={n.id}
               note={n}

@@ -25,8 +25,8 @@ function CanvasAreaLayerComponent({
   );
 }
 
-function CanvasRelationshipLayerComponent({ relationship }) {
-  return <Relationship data={relationship} />;
+function CanvasRelationshipLayerComponent({ relationship, tableOverrides }) {
+  return <Relationship data={relationship} tableOverrides={tableOverrides} />;
 }
 
 function CanvasTableLayerComponent({
