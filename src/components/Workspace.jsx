@@ -45,6 +45,7 @@ import { nanoid } from "nanoid";
 import { mergeCustomTypes } from "../utils/customTypes";
 import { createLocalDiagramRepository } from "../persistence/localDiagramRepository";
 import NewDiagramWizard from "../features/onboarding/NewDiagramWizard";
+import CloudConflictDialog from "../features/cloud/CloudConflictDialog";
 
 export const IdContext = createContext({
   gistId: "",
@@ -68,6 +69,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   const [showNewDiagramWizard, setShowNewDiagramWizard] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [restoreState, setRestoreState] = useState(null);
+  const [cloudSaveConflict, setCloudSaveConflict] = useState(null);
   const [selectedDb, setSelectedDb] = useState("");
   const pendingNewIdRef = useRef(null);
   const loadedIdRef = useRef(null);
@@ -125,8 +127,9 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
       setLayout,
       navigate,
     });
-  const { saveLocalDiagram } = useDiagramPersistence({
+  const { saveLocalDiagram, saveCloudDiagram } = useDiagramPersistence({
     repository: localDiagramRepository,
+    cloudRepository: extensions.cloudRepository,
     navigate,
     setSaveState,
     setLastSaved,
@@ -146,6 +149,52 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     if (searchParams.has("importAsNew")) {
       searchParams.delete("importAsNew");
       setSearchParams(searchParams, { replace: true });
+    }
+
+    const currentSaveInput = {
+      database,
+      title,
+      gistId,
+      loadedFromGistId,
+      tables,
+      relationships,
+      notes,
+      areas,
+      transform,
+      types,
+      enums,
+    };
+    const cloudDiagramId =
+      restoreState?.source === "cloud"
+        ? restoreState.diagramId ?? searchParams.get("cloudDiagramId")
+        : null;
+    if (
+      cloudDiagramId &&
+      typeof extensions.cloudRepository?.saveCloudDiagram === "function"
+    ) {
+      const result = await saveCloudDiagram({
+        ...currentSaveInput,
+        cloudDiagramId,
+        cloudModifiedAt: restoreState?.restoredAt,
+      });
+      if (result.ok) {
+        setCloudSaveConflict(null);
+        setRestoreState((current) =>
+          current?.source === "cloud"
+            ? {
+                ...current,
+                restoredAt:
+                  result.diagram?.modifiedAt ??
+                  result.diagram?.lastModified ??
+                  result.pendingDiagram?.lastModified ??
+                  current.restoredAt,
+              }
+            : current,
+        );
+      } else if (result.reason === "conflict") {
+        setCloudSaveConflict(result);
+      }
+      return;
     }
 
     if (cloudOnly) {
@@ -191,17 +240,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     await saveLocalDiagram({
       isNew: isTemplate || (!loadedDiagramId && !isTemplate && !isDiagram),
       loadedDiagramId,
-      database,
-      title,
-      gistId,
-      loadedFromGistId,
-      tables,
-      relationships,
-      notes,
-      areas,
-      transform,
-      types,
-      enums,
+      ...currentSaveInput,
     });
   }, [
     cloudOnly,
@@ -225,7 +264,61 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     loadedDiagramId,
     navigate,
     saveLocalDiagram,
+    saveCloudDiagram,
+    restoreState,
   ]);
+
+  const retryCloudSaveWithOverwrite = useCallback(async () => {
+    if (!cloudSaveConflict?.pendingDiagram) {
+      return;
+    }
+    const result = await saveCloudDiagram({
+      cloudDiagramId: cloudSaveConflict.pendingDiagram.diagramId,
+      cloudModifiedAt: cloudSaveConflict.remoteModifiedAt,
+      database: cloudSaveConflict.pendingDiagram.database,
+      title: cloudSaveConflict.pendingDiagram.name,
+      gistId: cloudSaveConflict.pendingDiagram.gistId,
+      loadedFromGistId: cloudSaveConflict.pendingDiagram.loadedFromGistId,
+      tables: cloudSaveConflict.pendingDiagram.tables,
+      relationships: cloudSaveConflict.pendingDiagram.relationships,
+      notes: cloudSaveConflict.pendingDiagram.notes,
+      areas: cloudSaveConflict.pendingDiagram.areas,
+      transform: {
+        pan: cloudSaveConflict.pendingDiagram.pan,
+        zoom: cloudSaveConflict.pendingDiagram.zoom,
+      },
+      types: cloudSaveConflict.pendingDiagram.types,
+      enums: cloudSaveConflict.pendingDiagram.enums,
+      conflictResolution: "overwrite-cloud",
+    });
+    if (result.ok) {
+      setCloudSaveConflict(null);
+    } else {
+      setCloudSaveConflict(result);
+    }
+  }, [cloudSaveConflict, saveCloudDiagram]);
+
+  const saveCloudConflictAsLocal = useCallback(async () => {
+    const pendingDiagram = cloudSaveConflict?.pendingDiagram;
+    if (!pendingDiagram) {
+      return;
+    }
+    await saveLocalDiagram({
+      isNew: true,
+      database: pendingDiagram.database,
+      title: pendingDiagram.name,
+      gistId: pendingDiagram.gistId,
+      loadedFromGistId: pendingDiagram.loadedFromGistId,
+      tables: pendingDiagram.tables,
+      relationships: pendingDiagram.relationships,
+      notes: pendingDiagram.notes,
+      areas: pendingDiagram.areas,
+      transform: { pan: pendingDiagram.pan, zoom: pendingDiagram.zoom },
+      types: pendingDiagram.types,
+      enums: pendingDiagram.enums,
+    });
+    setCloudSaveConflict(null);
+  }, [cloudSaveConflict, saveLocalDiagram]);
 
   const load = useCallback(async () => {
     const previousLoadedId = loadedIdRef.current;
@@ -759,6 +852,14 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
       >
         {t("restore_warning")}
       </Modal>
+      <CloudConflictDialog
+        visible={Boolean(cloudSaveConflict)}
+        remoteModifiedAt={cloudSaveConflict?.remoteModifiedAt}
+        onKeepLocal={() => setCloudSaveConflict(null)}
+        onOverwriteCloud={retryCloudSaveWithOverwrite}
+        onSaveAsLocal={saveCloudConflictAsLocal}
+        onCancel={() => setCloudSaveConflict(null)}
+      />
     </div>
   );
 }

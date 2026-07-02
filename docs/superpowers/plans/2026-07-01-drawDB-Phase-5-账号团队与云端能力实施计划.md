@@ -189,7 +189,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.7 云端保存、冲突检测与 token 过期恢复
 
-状态：未开始。
+状态：已完成。
 
 目标：云端保存必须处理本地/云端 modified timestamp 冲突和 session 过期，不静默覆盖、不丢未保存更改。
 
@@ -201,15 +201,15 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 remote modified newer 时返回 conflict，token expired 时返回 auth-expired 且保留 pending local changes。
-- [ ] 实现冲突弹窗，提供保留本地、覆盖云端、另存为本地图三条路径。
-- [ ] 保存失败时 Header 保存状态进入 Error，并保留 retry action。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖 remote modified newer 时返回 conflict，token expired 时返回 auth-expired 且保留 pending local changes。（Phase 5.7 已完成，红灯先确认为 `saveCloudDiagram` hook API 和 `CloudConflictDialog` 缺失。）
+- [x] 实现冲突弹窗，提供保留本地、覆盖云端、另存为本地图三条路径。（Phase 5.7 已完成，冲突弹窗提供保留本地、覆盖云端和另存为本地图恢复动作。）
+- [x] 保存失败时 Header 保存状态进入 Error，并保留 retry action。（Phase 5.7 已完成，cloud repository 保存失败会进入 `State.ERROR`；冲突结果保留 pending diagram，可覆盖云端重试或另存为本地图。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。（Phase 5.7 已完成并记录到 run log。）
 
 完成标准：
 
-- 冲突不静默覆盖。
-- token 过期不丢本地未保存更改。
+- 冲突不静默覆盖。（Phase 5.7 已完成。）
+- token 过期不丢本地未保存更改。（Phase 5.7 已完成，返回 `pendingDiagram` 并保持保存状态为 Error。）
 
 ### 5.8 权限模型与 viewer 只读 editor
 
