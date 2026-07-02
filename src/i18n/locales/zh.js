@@ -257,6 +257,7 @@ const zh = {
     share_data_disclosure_description:
       "创建分享链接会把当前图表数据上传到已配置的后端服务。",
     confirm_share_upload: "确认并创建分享链接",
+    cloud_account: "账号",
     supported_types: "支持的文件类型：",
     bulk_update: "批量更新",
     multiselect: "多选",

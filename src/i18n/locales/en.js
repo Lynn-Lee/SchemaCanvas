@@ -265,6 +265,7 @@ const en = {
     share_data_disclosure_description:
       "Creating a share link uploads the current diagram data to the configured backend service.",
     confirm_share_upload: "Confirm and create share link",
+    cloud_account: "Account",
     show_relationship_labels: "Show relationship labels",
     docs: "Docs",
     supported_types: "Supported file types:",
