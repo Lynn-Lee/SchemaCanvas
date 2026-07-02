@@ -213,7 +213,7 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 ### 5.8 权限模型与 viewer 只读 editor
 
-状态：未开始。
+状态：已完成。
 
 目标：支持 owner、editor、viewer 权限，并把 viewer 映射到只读 editor。
 
@@ -226,14 +226,14 @@ Phase 5 的目标是在不破坏“无需账号、本地优先”核心体验的
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 owner/editor 可编辑，viewer 禁用保存、编辑、导入和 destructive actions。
-- [ ] 增加统一 permission helper，避免权限判断散落在 UI。
-- [ ] viewer 模式显示只读提示，但允许导出允许范围内的数据。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run accessibility`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖 owner/editor 可编辑，viewer 禁用保存、编辑、导入和 destructive actions。（本轮红灯先确认为缺失 `cloudPermissions` helper，且 `delete_diagram` 等菜单项未按 read-only 禁用。）
+- [x] 增加统一 permission helper，避免权限判断散落在 UI。（新增 `src/features/cloud/cloudPermissions.js`，`useDiagramLoader` 复用该 helper 映射 `layout.readOnly`。）
+- [x] viewer 模式显示只读提示，但允许导出允许范围内的数据。（`Workspace` 增加 `role="status"` 的云端 viewer 只读提示；导出菜单不按 read-only 禁用。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run accessibility`、`npm run lint`、`npm run build`。（本轮已先完成聚焦测试；全量门禁结果见 run log 与验证矩阵。）
 
 完成标准：
 
-- viewer 无法修改 diagram。
+- viewer 无法修改 diagram。（保存、导入、编辑、删除和画布/侧栏写入动作均通过 `layout.readOnly` 禁用。）
 - owner/editor 仍保留本地和云端保存路径。
 - 只读提示可被键盘和屏幕阅读器访问。
 
@@ -268,4 +268,4 @@ npm run bundle:check
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 5.6 云端加载与本地模式不阻塞。
+下一轮自动化默认执行 Phase 5 退出门禁复核。

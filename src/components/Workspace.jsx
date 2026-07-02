@@ -646,11 +646,14 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   }, [navigate]);
 
   const openImportFromWizard = useCallback(() => {
+    if (layout.readOnly) {
+      return;
+    }
     setShowNewDiagramWizard(false);
     searchParams.set("importAsNew", "1");
     setSearchParams(searchParams, { replace: true });
     window.dispatchEvent(new CustomEvent("drawdb:open-import"));
-  }, [searchParams, setSearchParams]);
+  }, [layout.readOnly, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (
@@ -722,6 +725,20 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
               </p>
             </div>
           </div>
+        </div>
+      )}
+      {layout.readOnly && restoreState?.source === "cloud" && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="z-30 border-b border-sky-200 bg-sky-50 px-4 py-3 text-sky-950 shadow-sm"
+        >
+          <div className="text-sm font-semibold">
+            {t("cloud_viewer_read_only_title")}
+          </div>
+          <p className="text-xs leading-5">
+            {t("cloud_viewer_read_only_description")}
+          </p>
         </div>
       )}
       <div

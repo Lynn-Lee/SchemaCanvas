@@ -181,6 +181,9 @@ export default function ControlPanel({
 
   useEffect(() => {
     const openImportModal = () => {
+      if (layout.readOnly) {
+        return;
+      }
       setImportFrom(IMPORT_FROM.JSON);
       openModal(MODAL.IMPORT);
     };
@@ -189,7 +192,7 @@ export default function ControlPanel({
     return () => {
       window.removeEventListener("drawdb:open-import", openImportModal);
     };
-  }, [openModal]);
+  }, [layout.readOnly, openModal]);
 
   const undo = () => {
     if (undoStack.length === 0) return;
@@ -592,7 +595,10 @@ export default function ControlPanel({
     }
   };
 
-  const fileImport = () => openModal(MODAL.IMPORT);
+  const fileImport = () => {
+    if (layout.readOnly) return;
+    openModal(MODAL.IMPORT);
+  };
   const viewGrid = () =>
     setSettings((prev) => ({ ...prev, showGrid: !prev.showGrid }));
   const snapToGrid = () =>
@@ -1031,6 +1037,7 @@ export default function ControlPanel({
               Toast.success(t("template_saved"));
             });
         },
+        disabled: layout.readOnly,
       },
       rename: {
         function: () => {
@@ -1068,6 +1075,7 @@ export default function ControlPanel({
             Toast.error(t("oops_smth_went_wrong"));
           }
         },
+        disabled: layout.readOnly,
       },
       import_from: {
         children: [

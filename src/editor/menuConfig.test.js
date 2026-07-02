@@ -65,6 +65,34 @@ describe("menuConfig", () => {
     ).toBe(false);
   });
 
+  it("disables write and destructive file actions in read-only viewer mode", () => {
+    const readOnlyState = {
+      readOnly: true,
+      undoCount: 1,
+      redoCount: 1,
+    };
+
+    expect(isEditorMenuItemDisabled("file", "save", readOnlyState)).toBe(true);
+    expect(isEditorMenuItemDisabled("file", "save_as", readOnlyState)).toBe(
+      true,
+    );
+    expect(
+      isEditorMenuItemDisabled("file", "delete_diagram", readOnlyState),
+    ).toBe(true);
+    expect(
+      isEditorMenuItemDisabled("file", "import_from", readOnlyState),
+    ).toBe(true);
+    expect(
+      isEditorMenuItemDisabled("file", "import_from_source", readOnlyState),
+    ).toBe(true);
+    expect(
+      isEditorMenuItemDisabled("file", "export_source", readOnlyState),
+    ).toBe(false);
+    expect(isEditorMenuItemDisabled("file", "export_as", readOnlyState)).toBe(
+      false,
+    );
+  });
+
   it("keeps hotkey registrations aligned with menu shortcuts", () => {
     expect(EDITOR_HOTKEYS).toEqual(
       expect.arrayContaining([
