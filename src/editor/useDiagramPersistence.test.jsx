@@ -60,4 +60,47 @@ describe("useDiagramPersistence", () => {
     expect(setLastSaved).toHaveBeenCalledWith("2026-07-01T18:00:00.000Z");
     expect(saved.diagramId).toBe("new-diagram");
   });
+
+  it("marks local save failures without hiding the error", async () => {
+    const repository = {
+      saveDiagram: vi.fn(async () => {
+        throw new Error("IndexedDB unavailable");
+      }),
+    };
+    const navigate = vi.fn();
+    const setSaveState = vi.fn();
+    const setLastSaved = vi.fn();
+
+    const { result } = renderHook(() =>
+      useDiagramPersistence({
+        repository,
+        navigate,
+        setSaveState,
+        setLastSaved,
+        createDiagramId: () => "new-diagram",
+        now: () => new Date("2026-07-01T18:00:00Z"),
+      }),
+    );
+
+    await expect(
+      result.current.saveLocalDiagram({
+        isNew: true,
+        database: DB.GENERIC,
+        title: "Unsaved",
+        gistId: "",
+        loadedFromGistId: "",
+        tables: [],
+        relationships: [],
+        notes: [],
+        areas: [],
+        transform: { pan: { x: 0, y: 0 }, zoom: 1 },
+        types: [],
+        enums: [],
+      }),
+    ).rejects.toThrow("IndexedDB unavailable");
+
+    expect(setSaveState).toHaveBeenCalledWith(State.ERROR);
+    expect(setLastSaved).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+  });
 });

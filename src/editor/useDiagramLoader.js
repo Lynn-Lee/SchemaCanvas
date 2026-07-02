@@ -48,6 +48,7 @@ export function useDiagramLoader({
   setShowSelectDbModal,
   setShowEmptyState,
   setSaveState,
+  setRestoreState,
   setDatabase,
   setGistId,
   setLoadedFromGistId,
@@ -89,6 +90,11 @@ export function useDiagramLoader({
         setRedoStack,
         setLayout,
       });
+      setRestoreState?.({
+        source: "local",
+        diagramId: diagram.diagramId,
+        restoredAt: diagram.lastModified,
+      });
       return true;
     },
     [
@@ -103,6 +109,7 @@ export function useDiagramLoader({
       setRedoStack,
       setRelationships,
       setSaveState,
+      setRestoreState,
       setShowSelectDbModal,
       setTables,
       setTitle,
@@ -118,6 +125,7 @@ export function useDiagramLoader({
       const latestDiagramId = recentDiagrams[0]?.diagramId;
 
       if (!latestDiagramId) {
+        setRestoreState?.(null);
         if (selectedDb === "") {
           (setShowEmptyState ?? setShowSelectDbModal)(true);
         }
@@ -147,6 +155,11 @@ export function useDiagramLoader({
         setRedoStack,
         setLayout,
       });
+      setRestoreState?.({
+        source: "local",
+        diagramId: diagram.diagramId,
+        restoredAt: diagram.lastModified,
+      });
       navigate(`/editor/diagrams/${diagram.diagramId}`, { replace: true });
       return true;
     },
@@ -163,6 +176,7 @@ export function useDiagramLoader({
       setRedoStack,
       setRelationships,
       setSaveState,
+      setRestoreState,
       setShowSelectDbModal,
       setShowEmptyState,
       setTables,

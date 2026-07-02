@@ -20,6 +20,7 @@ function createSetters(overrides = {}) {
     setUndoStack: vi.fn(),
     setRedoStack: vi.fn(),
     setSaveState: vi.fn(),
+    setRestoreState: vi.fn(),
     setShowSelectDbModal: vi.fn(),
     setLayout: vi.fn(),
     navigate: vi.fn(),
@@ -68,8 +69,45 @@ describe("useDiagramLoader", () => {
     });
     expect(setters.setTypes).toHaveBeenCalledWith(diagram.types);
     expect(setters.setEnums).toHaveBeenCalledWith(diagram.enums);
+    expect(setters.setRestoreState).toHaveBeenCalledWith({
+      source: "local",
+      diagramId: "local-1",
+      restoredAt: diagram.lastModified,
+    });
     expect(setters.navigate).toHaveBeenCalledWith("/editor/diagrams/local-1", {
       replace: true,
+    });
+  });
+
+  it("exposes local restore source when loading a route diagram", async () => {
+    const diagram = {
+      diagramId: "route-local",
+      database: DB.GENERIC,
+      name: "Route Local",
+      lastModified: new Date("2026-07-02T00:00:00Z"),
+      tables: [],
+      relationships: [],
+      notes: [],
+      areas: [],
+      pan: { x: 0, y: 0 },
+      zoom: 1,
+    };
+    const repository = {
+      getDiagramById: vi.fn().mockResolvedValue(diagram),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({ repository, ...setters }),
+    );
+
+    const loaded = await result.current.loadLocalDiagramById("route-local");
+
+    expect(loaded).toBe(true);
+    expect(setters.setRestoreState).toHaveBeenCalledWith({
+      source: "local",
+      diagramId: "route-local",
+      restoredAt: diagram.lastModified,
     });
   });
 

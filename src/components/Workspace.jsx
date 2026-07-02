@@ -67,6 +67,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   const [showSelectDbModal, setShowSelectDbModal] = useState(false);
   const [showNewDiagramWizard, setShowNewDiagramWizard] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [restoreState, setRestoreState] = useState(null);
   const [selectedDb, setSelectedDb] = useState("");
   const pendingNewIdRef = useRef(null);
   const loadedIdRef = useRef(null);
@@ -116,6 +117,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     setUndoStack,
     setRedoStack,
     setSaveState,
+    setRestoreState,
     setShowSelectDbModal,
     setShowEmptyState: setShowNewDiagramWizard,
     setLayout,
@@ -490,6 +492,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
       setRedoStack([]);
       setTransform(emptyTransform);
       setLayout((prev) => ({ ...prev, readOnly: false }));
+      setRestoreState(null);
       setSelectedDb(nextDatabase);
       setShowNewDiagramWizard(false);
 
@@ -589,6 +592,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
           setTitle={setTitle}
           lastSaved={lastSaved}
           setLastSaved={setLastSaved}
+          restoreState={restoreState}
           toolbarContainer={toolbarContainer}
         />
       </IdContext.Provider>

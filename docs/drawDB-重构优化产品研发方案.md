@@ -10,7 +10,7 @@
 
 当前重构项目以 `https://github.com/Lynn-Lee/drawDB.git` 作为唯一远端仓库推进，不再跟踪任何外部仓库历史。后续产品和工程计划均以本仓库 `main` 分支为基线。
 
-Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性细粒度实施计划已生成；Phase 3.1 首次进入新建向导已完成，首次无最近图进入 `/editor` 可选择空白数据库、模板或导入路径。下一步执行 Phase 3.2 最近图恢复提示与保存状态文案。
+Phase 0 已完成安全与工程底座切片，并通过阶段退出门禁：测试、浏览器 smoke、导入限制、分享确认、Docker/nginx 安全 headers 和外部资源完整性治理均已有验证记录。Phase 1 已完成 normalized diagram shape、旧数据归一化、运行时 shape 校验、结构化 validation issues、diagram command reducer、command history、local diagram repository，以及 `Workspace` 本地加载与保存 hooks 初步抽离，并已通过阶段退出门禁。Phase 2 已完成导入导出可靠性切片，并通过阶段退出门禁：支持范围文档、fixture 目录规范、MySQL/PostgreSQL/SQLite/MariaDB/MSSQL/Oracle basic SQL fixtures、`importSQL` smoke tests、JSON/DDB/DBML import service、SQL import service 与 preview、导入模式：覆盖、合并、作为新图、SQL/DBML 导出 service 与 golden tests、Markdown、Mermaid、image、PDF 导出 facade，以及全量本地备份导出修复均已有验证记录。Phase 3 编辑器体验与可访问性细粒度实施计划已生成；Phase 3.1 首次进入新建向导已完成，首次无最近图进入 `/editor` 可选择空白数据库、模板或导入路径。Phase 3.2 最近图恢复提示与保存状态文案已完成，返回用户进入 `/editor` 或 `/editor/diagrams/:id` 时 Header 会显示本地恢复来源，并保留未保存、保存中、已保存、保存失败状态。下一步执行 Phase 3.3 Open modal 本地图表列表增强。
 
 ## 2. 产品定位
 

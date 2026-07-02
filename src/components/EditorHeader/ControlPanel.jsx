@@ -93,6 +93,7 @@ export default function ControlPanel({
   setTitle,
   lastSaved,
   setLastSaved,
+  restoreState,
   toolbarContainer,
 }) {
   const { id: diagramId } = useParams();
@@ -2108,6 +2109,11 @@ export default function ControlPanel({
                 ))}
               </div>
               {layout.readOnly && <Tag size="small">{t("read_only")}</Tag>}
+              {!layout.readOnly && restoreState?.source === "local" && (
+                <Tag size="small" type="light">
+                  {t("restored_from_local")}
+                </Tag>
+              )}
               {!layout.readOnly && (
                 <Tag
                   size="small"

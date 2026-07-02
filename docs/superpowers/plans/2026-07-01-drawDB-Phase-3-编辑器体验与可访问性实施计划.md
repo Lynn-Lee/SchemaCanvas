@@ -78,7 +78,7 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 3.2 最近图恢复提示与保存状态文案
 
-状态：未开始。
+状态：已完成。
 
 目标：返回用户进入 `/editor` 时，Header 或工作区明确显示“已从本地恢复”和当前保存状态。
 
@@ -91,15 +91,17 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖本地 latest diagram 恢复后暴露恢复来源。
-- [ ] 在 UI 中展示本地恢复和保存状态，不新增云端暗示。
-- [ ] 保存失败时保留可操作错误提示。
-- [ ] 运行聚焦测试、`npm run test`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖本地 latest diagram 和 route diagram 恢复后暴露恢复来源。
+- [x] 在 UI 中展示本地恢复和保存状态，不新增云端暗示。
+- [x] 保存失败时保留可操作错误提示。
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 用户能区分本地恢复、未保存、保存中、已保存、保存失败。
 - 保存状态不依赖后端。
+
+验证记录：`npm run test -- src/editor/useDiagramLoader.test.jsx src/editor/useDiagramPersistence.test.jsx`、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build` 已通过；Header 新增“Restored from this browser / 已从本地恢复”本地恢复标签，本地保存异常会进入 `State.ERROR` 并显示保存失败文案。
 
 ### 3.3 Open modal 本地图表列表增强
 

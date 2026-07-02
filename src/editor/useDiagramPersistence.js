@@ -56,7 +56,13 @@ export function useDiagramPersistence({
         ...(databases[database].hasTypes && { types }),
       };
 
-      const savedDiagram = await repository.saveDiagram(diagram);
+      let savedDiagram;
+      try {
+        savedDiagram = await repository.saveDiagram(diagram);
+      } catch (error) {
+        setSaveState(State.ERROR);
+        throw error;
+      }
 
       if (isNew) {
         navigate(`/editor/diagrams/${savedDiagram.diagramId}`, {

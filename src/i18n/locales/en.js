@@ -90,6 +90,7 @@ const en = {
     last_saved: "Last saved",
     saving: "Saving...",
     failed_to_save: "Failed to save",
+    restored_from_local: "Restored from this browser",
     fit_window_reset: "Fit window / Reset",
     zoom: "Zoom",
     add_table: "Add table",
