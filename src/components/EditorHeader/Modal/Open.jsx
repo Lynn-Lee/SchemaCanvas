@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { db } from "../../../data/db";
 import { databases } from "../../../data/databases";
 import { useExtensions } from "../../../context/ExtensionsContext";
+import LocalDiagramList from "../../../features/local-diagrams/LocalDiagramList";
 
 function formatSize(bytes) {
   if (bytes == null) return "";
@@ -235,13 +236,9 @@ export default function Open({ selectedDiagramId, setSelectedDiagramId }) {
       {hasLocal && (
         <section>
           {cloudEnabled && <SectionHeader>Local (this browser)</SectionHeader>}
-          <DiagramTable
-            items={local}
-            isCloud={false}
-            currentUserId={currentUserId}
+          <LocalDiagramList
             selectedDiagramId={selectedDiagramId}
             setSelectedDiagramId={setSelectedDiagramId}
-            cloudRowActions={cloudRowActions}
           />
         </section>
       )}

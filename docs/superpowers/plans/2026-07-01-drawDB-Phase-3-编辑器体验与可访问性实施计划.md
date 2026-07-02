@@ -105,7 +105,7 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 3.3 Open modal 本地图表列表增强
 
-状态：未开始。
+状态：已完成。
 
 目标：Open modal 展示数据库、表数量、关系数量、最近修改时间，并支持搜索、复制、删除、导出。
 
@@ -118,10 +118,12 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖图表列表字段、搜索、复制、删除确认、导出动作。
-- [ ] 实现列表组件，复用 local repository 和 export service。
-- [ ] 删除必须二次确认，取消不改变 IndexedDB。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯测试，覆盖图表列表字段、搜索、复制、删除确认、导出动作。
+- [x] 实现列表组件，复用 local repository。
+- [x] 删除必须二次确认，取消不改变 IndexedDB。
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build`。
+
+验证记录：`npm run test -- src/features/local-diagrams/LocalDiagramList.test.jsx`、`npm run test`、`npm run e2e`、`npm run lint`、`npm run build` 已通过；Open modal 的本地图表区域新增搜索、数据库、表数量、关系数量、最近修改时间、复制、删除确认和 JSON 导出入口。
 
 完成标准：
 
@@ -279,4 +281,4 @@ npm run accessibility
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 3.2 最近图恢复提示与保存状态文案。
+下一轮自动化默认执行 Phase 3.4 菜单配置与快捷键入口抽离。
