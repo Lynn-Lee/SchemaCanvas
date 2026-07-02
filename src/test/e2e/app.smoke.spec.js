@@ -10,6 +10,40 @@ test.describe("app smoke", () => {
     await expect(page.getByRole("link", { name: "Editor" }).first()).toBeVisible();
   });
 
+  test("landing page fits a 390px mobile viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", { name: "Draw, Copy, and Paste" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Try it for yourself" }),
+    ).toBeVisible();
+
+    const layout = await page.evaluate(() => {
+      const documentWidth = document.documentElement.scrollWidth;
+      const bodyWidth = document.body.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const ctaRect = document
+        .querySelector('a[href="/editor"]')
+        .getBoundingClientRect();
+
+      return {
+        bodyWidth,
+        ctaLeft: Math.floor(ctaRect.left),
+        ctaRight: Math.ceil(ctaRect.right),
+        documentWidth,
+        viewportWidth,
+      };
+    });
+
+    expect(layout.documentWidth).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(layout.bodyWidth).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(layout.ctaLeft).toBeGreaterThanOrEqual(0);
+    expect(layout.ctaRight).toBeLessThanOrEqual(layout.viewportWidth);
+  });
+
   test("templates page renders the template library", async ({ page }) => {
     await page.goto("/templates");
 

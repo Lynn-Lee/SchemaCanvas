@@ -212,7 +212,7 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 3.7 Landing 390px 移动端横向溢出修复
 
-状态：未开始。
+状态：已完成。
 
 目标：修复 390px 移动端 landing 横向溢出，确保首屏文本、按钮和媒体不重叠。
 
@@ -224,15 +224,17 @@ Phase 3 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯 Playwright 测试，验证 390px 宽度下 `document.documentElement.scrollWidth <= innerWidth`。
-- [ ] 调整 landing 响应式布局和长文本换行。
-- [ ] 桌面视口 smoke，确认没有破坏首屏入口。
-- [ ] 运行 `npm run e2e`、`npm run lint`、`npm run build`。
+- [x] 写红灯 Playwright 测试，验证 390px 宽度下 `document.documentElement.scrollWidth <= innerWidth`。
+- [x] 调整 landing 响应式布局和长文本换行。
+- [x] 桌面视口 smoke，确认没有破坏首屏入口。
+- [x] 运行 `npm run e2e`、`npm run lint`、`npm run build`。
 
 完成标准：
 
 - 390px viewport 无横向滚动。
 - 桌面 landing 仍能清楚进入 editor/templates。
+
+验证记录：红灯 `npm run e2e -- --grep "landing page fits a 390px mobile viewport"` 首次失败于 390px 视口 `documentElement.scrollWidth` 为 395；修复 feature grid 在小屏仍被排成两列的问题后，同一聚焦测试通过。合并门禁会统一运行 `npm run e2e`、`npm run lint`、`npm run build`、`git diff --check` 和 `npm audit --audit-level=high`。
 
 ### 3.8 Editor 移动端体验提示
 
@@ -287,4 +289,4 @@ npm run accessibility
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 3.7 Landing 390px 移动端横向溢出修复。
+下一轮自动化默认执行 Phase 3.8 Editor 移动端体验提示。
