@@ -221,7 +221,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.8 拖拽期间 pointer movement state 隔离
 
-状态：未开始。
+状态：已完成。
 
 目标：拖拽期间减少 diagram model 全量更新，把高频 pointer movement 与最终 command commit 分离。
 
@@ -233,15 +233,15 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯 e2e 或单元测试，覆盖拖拽仍能移动对象且最终可撤销/重做。
-- [ ] 将拖拽中间态限制在局部 state/ref，结束时再提交 diagram command。
-- [ ] 确认锁定对象、缩放和平移不回归。
-- [ ] 运行聚焦测试、`npm run e2e`、`npm run test`、`npm run build`。
+- [x] 写红灯 e2e 或单元测试，覆盖拖拽仍能移动对象且最终可撤销/重做。（Phase 4.8 已新增 `canvasDragPreview.test.js`，先确认 helper 缺失红灯，再覆盖局部 preview、不提前 commit、pointer up 一次提交，以及 undo/redo payload 使用最终 preview 坐标。）
+- [x] 将拖拽中间态限制在局部 state/ref，结束时再提交 diagram command。（Phase 4.8 已完成，`Canvas.jsx` 使用 `dragPreviewElements` 渲染 table/area/note 和 relationship table overrides，pointer move 不再调用 `updateTable`/`updateArea`/`updateNote`。）
+- [x] 确认锁定对象、缩放和平移不回归。（Phase 4.8 保留原锁定对象早退、panning 与 area resize 分支；全量 e2e 和测试门禁记录见 run log。）
+- [x] 运行聚焦测试、`npm run e2e`、`npm run test`、`npm run build`。（Phase 4.8 已完成并记录到 run log。）
 
 完成标准：
 
-- 拖拽语义保持一致。
-- 高频 pointer move 不触发不必要的全局 diagram 更新。
+- 拖拽语义保持一致。（Phase 4.8 已通过 helper 单测、现有 editor e2e smoke 和全量测试门禁验证。）
+- 高频 pointer move 不触发不必要的全局 diagram 更新。（Phase 4.8 已将中间态限制为 Canvas 局部 preview，最终 pointer up 才提交 diagram 更新。）
 
 ### 4.9 500 表加载与搜索 smoke
 
@@ -292,4 +292,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.8 拖拽期间 pointer movement state 隔离。
+下一轮自动化默认执行 Phase 4.9 500 表加载与搜索 smoke。

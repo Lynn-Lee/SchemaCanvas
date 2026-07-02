@@ -13,16 +13,17 @@ import {
 
 const labelFontSize = 16;
 
-export default function Relationship({ data }) {
+export default function Relationship({ data, tableOverrides }) {
   const { settings } = useSettings();
   const { tables, relationships } = useDiagram();
+  const relationshipTables = tableOverrides ?? tables;
   const { layout } = useLayout();
   const { selectedElement, setSelectedElement } = useSelect();
   const { t } = useTranslation();
 
   const pathValues = useMemo(() => {
-    const startTable = tables.find((t) => t.id === data.startTableId);
-    const endTable = tables.find((t) => t.id === data.endTableId);
+    const startTable = relationshipTables.find((t) => t.id === data.startTableId);
+    const endTable = relationshipTables.find((t) => t.id === data.endTableId);
 
     if (!startTable || !endTable || startTable.hidden || endTable.hidden)
       return null;
@@ -62,7 +63,7 @@ export default function Relationship({ data }) {
         fields: endFields,
       },
     };
-  }, [tables, relationships, data]);
+  }, [relationshipTables, relationships, data]);
 
   const isComposite = (pathValues?.startFieldIndices?.length ?? 0) > 1;
 
