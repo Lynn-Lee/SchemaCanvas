@@ -10,8 +10,8 @@ const fixturesDir = path.join(cwd(), "src/test/fixtures/sql");
 const fixture = (name) => readFileSync(path.join(fixturesDir, name), "utf8");
 
 describe("importSqlText", () => {
-  test("imports valid SQL into a normalized diagram preview", () => {
-    const result = importSqlText({
+  test("imports valid SQL into a normalized diagram preview", async () => {
+    const result = await importSqlText({
       sql: fixture("mysql-basic.sql"),
       dialect: DB.MYSQL,
       diagramDatabase: DB.MYSQL,
@@ -35,8 +35,8 @@ describe("importSqlText", () => {
     expect(result.issues).toEqual([]);
   });
 
-  test("rejects empty SQL without returning a diagram", () => {
-    const result = importSqlText({
+  test("rejects empty SQL without returning a diagram", async () => {
+    const result = await importSqlText({
       sql: "   ",
       dialect: DB.MYSQL,
       diagramDatabase: DB.MYSQL,
@@ -52,8 +52,8 @@ describe("importSqlText", () => {
     });
   });
 
-  test("rejects SQL text above the import text limit", () => {
-    const result = importSqlText({
+  test("rejects SQL text above the import text limit", async () => {
+    const result = await importSqlText({
       sql: "x".repeat(IMPORT_LIMITS.maxTextBytes + 1),
       dialect: DB.MYSQL,
       diagramDatabase: DB.MYSQL,
@@ -68,8 +68,8 @@ describe("importSqlText", () => {
     });
   });
 
-  test("returns a parser error issue for invalid SQL", () => {
-    const result = importSqlText({
+  test("returns a parser error issue for invalid SQL", async () => {
+    const result = await importSqlText({
       sql: "CREATE TABLE",
       dialect: DB.MYSQL,
       diagramDatabase: DB.MYSQL,
@@ -84,8 +84,8 @@ describe("importSqlText", () => {
     });
   });
 
-  test("keeps importable tables and warns for unsupported statements", () => {
-    const result = importSqlText({
+  test("keeps importable tables and warns for unsupported statements", async () => {
+    const result = await importSqlText({
       sql: `${fixture("mysql-basic.sql")}\nCREATE VIEW active_users AS SELECT id FROM users;`,
       dialect: DB.MYSQL,
       diagramDatabase: DB.MYSQL,

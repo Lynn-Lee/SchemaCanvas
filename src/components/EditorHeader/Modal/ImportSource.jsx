@@ -18,7 +18,7 @@ export default function ImportSource({
   diagramDatabase,
 }) {
   const { t } = useTranslation();
-  const setImportResult = (sql) => {
+  const setImportResult = async (sql) => {
     const limitResult = validateImportText(sql, { label: "SQL" });
     if (!limitResult.ok) {
       setImportData((prev) => ({
@@ -35,7 +35,7 @@ export default function ImportSource({
       return;
     }
 
-    const result = importSqlText({ sql, dialect, diagramDatabase });
+    const result = await importSqlText({ sql, dialect, diagramDatabase });
     setImportData((prev) => ({
       ...prev,
       src: sql,
@@ -74,7 +74,7 @@ export default function ImportSource({
             height={224}
             language="sql"
             onChange={(value) => {
-              setImportResult(value);
+              void setImportResult(value);
             }}
           />
         </TabPane>
@@ -111,7 +111,7 @@ export default function ImportSource({
                   });
                   return;
                 }
-                setImportResult(e.target.result);
+                void setImportResult(e.target.result);
               };
               reader.readAsText(f);
 

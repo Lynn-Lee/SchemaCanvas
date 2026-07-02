@@ -11,7 +11,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 本阶段结束后，应满足：
 
 - 构建产物有可重复的 bundle budget 检查，主 bundle 超预算会阻断门禁。
-- Monaco、SQL parsers、image/PDF export libraries、tweet/social widgets 不再无条件进入首屏主 chunk。
+- Monaco、SQL parsers 已从首屏主 chunk 拆出；image/PDF export libraries、tweet/social widgets 后续不再无条件进入首屏主 chunk。
 - build 前后 chunk size 有记录，Phase 4 的优化收益可审计。
 - 100、500、1000 表性能 fixtures 存在并可复用。
 - 500 表图可以打开、搜索、定位，1000 表图至少可以打开、查看结构和导出。
@@ -98,7 +98,7 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 ### 4.3 SQL parsers 按需加载
 
-状态：未开始。
+状态：已完成。
 
 目标：SQL parser 只在 SQL import 或相关导出能力触发时加载，不进入无关首屏路径。
 
@@ -110,15 +110,16 @@ Phase 4 的目标是在 Phase 0 安全底座、Phase 1 domain/persistence、Phas
 
 步骤：
 
-- [ ] 写红灯测试，覆盖 SQL import service 可以等待动态 parser 并返回原有 `{ ok, diagram, preview, issues }` contract。
-- [ ] 将 dialect parser 加载边界集中到 import service，避免 UI 直接感知 parser 细节。
-- [ ] 保留 parser error、unsupported statement warning 和超限输入保护。
-- [ ] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。
+- [x] 写红灯测试，覆盖 SQL import service 可以等待动态 parser 并返回原有 `{ ok, diagram, preview, issues }` contract。（Phase 4.3 已完成，`src/build/sqlParserLazyBoundary.test.js` 先捕获静态 parser import，`importSqlService.test.js` 已改为 async contract。）
+- [x] 将 dialect parser 加载边界集中到 import service，避免 UI 直接感知 parser 细节。（Phase 4.3 已完成，`importSqlText` 动态加载 `node-sql-parser` 和 `oracle-sql-parser`，`ImportSource` 只等待 service result。）
+- [x] 保留 parser error、unsupported statement warning 和超限输入保护。（Phase 4.3 已通过既有 SQL import service 测试覆盖。）
+- [x] 运行聚焦测试、`npm run test`、`npm run e2e`、`npm run build`、`npm run bundle:check`。（Phase 4.3 已完成并记录到 run log。）
 
 完成标准：
 
 - 非 SQL import 路径不加载 SQL parser。
 - SQL import 失败不会清空当前图。
+- 当前 build 将 `node-sql-parser` 和 `oracle-sql-parser` 拆为独立 chunk，主 JS chunk 降至约 13682.29 KB。
 
 ### 4.4 Image/PDF export libraries 按需加载
 
@@ -289,4 +290,4 @@ npm audit --audit-level=high
 
 ## 6. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 4.3 SQL parsers 按需加载。
+下一轮自动化默认执行 Phase 4.4 Image/PDF export libraries 按需加载。
