@@ -6,6 +6,7 @@ import Templates from "./pages/Templates";
 import LandingPage from "./pages/LandingPage";
 import SettingsContextProvider from "./context/SettingsContext";
 import NotFound from "./pages/NotFound";
+import CloudDiagrams from "./pages/CloudDiagrams";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/editor/templates/:id" element={<Editor />} />
           <Route path="/bug-report" element={<BugReport />} />
           <Route path="/templates" element={<Templates />} />
+          <Route path="/cloud/diagrams" element={<CloudDiagrams />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </SettingsContextProvider>
