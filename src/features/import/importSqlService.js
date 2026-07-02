@@ -1,5 +1,3 @@
-import { Parser } from "node-sql-parser";
-import { Parser as OracleParser } from "oracle-sql-parser";
 import { DB } from "../../data/constants";
 import { normalizeDiagram } from "../../domain/normalizeDiagram";
 import { validateDiagram } from "../../domain/validateDiagram";
@@ -98,7 +96,16 @@ function parseMssqlForeignKeyAlter(statement) {
   };
 }
 
-function parseMssql(sql) {
+async function loadSqlParsers() {
+  const [{ Parser }, { Parser: OracleParser }] = await Promise.all([
+    import("node-sql-parser"),
+    import("oracle-sql-parser"),
+  ]);
+
+  return { Parser, OracleParser };
+}
+
+function parseMssql(sql, Parser) {
   const parser = new Parser();
 
   return sql
@@ -114,19 +121,21 @@ function parseMssql(sql) {
     });
 }
 
-function parseSql({ sql, dialect }) {
+async function parseSql({ sql, dialect }) {
+  const { Parser, OracleParser } = await loadSqlParsers();
+
   if (dialect === DB.ORACLESQL) {
     return new OracleParser().parse(sql);
   }
 
   if (dialect === DB.MSSQL) {
-    return parseMssql(sql);
+    return parseMssql(sql, Parser);
   }
 
   return new Parser().astify(sql, { database: dialect });
 }
 
-export function importSqlText({ sql, dialect, diagramDatabase }) {
+export async function importSqlText({ sql, dialect, diagramDatabase }) {
   if (!sql || sql.trim() === "") {
     return failed(
       issue({
@@ -149,7 +158,7 @@ export function importSqlText({ sql, dialect, diagramDatabase }) {
 
   let ast;
   try {
-    ast = parseSql({ sql, dialect });
+    ast = await parseSql({ sql, dialect });
   } catch (error) {
     return failed(
       issue({
