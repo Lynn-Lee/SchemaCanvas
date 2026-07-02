@@ -202,7 +202,7 @@ export default function LandingPage() {
           <div className="text-2xl mt-1 font-medium text-center">
             What drawDB has to offer
           </div>
-          <div className="grid grid-cols-3 gap-8 mt-10 md:grid-cols-2 sm:grid-cols-1">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-8 mt-10">
             {features.map((f, i) => (
               <div
                 key={"feature" + i}
