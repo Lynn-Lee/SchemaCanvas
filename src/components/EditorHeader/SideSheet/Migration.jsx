@@ -3,7 +3,7 @@ import { Tabs, TabPane, Modal, Input, Tag, Spin } from "@douyinfe/semi-ui";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../hooks";
-import { compare, VERSION_FILENAME } from "../../../api/gists";
+import { compare, isApiError, VERSION_FILENAME } from "../../../api/gists";
 import { deepDiff } from "../../../utils/diff";
 import { DateTime } from "luxon";
 import CodeEditor from "../../CodeEditor";
@@ -38,12 +38,16 @@ export default function Migration({
     try {
       setLoading(true);
       const diff = {};
-      const { data } = await compare(
+      const response = await compare(
         gistId,
         VERSION_FILENAME,
         selectedVersion,
         versionToCompareTo,
       );
+      if (isApiError(response)) {
+        return;
+      }
+      const { data } = response;
       setContentA(JSON.stringify(JSON.parse(data.contentA), null, 2));
       setContentB(
         data.contentB ? JSON.stringify(JSON.parse(data.contentB), null, 2) : "",

@@ -60,13 +60,16 @@ function Form({ theme }) {
   const onSubmit = useCallback(() => {
     setLoading(true);
     editor.update(() => {
-      const sendMail = async () => {
+          const sendMail = async () => {
         try {
-          await send(
+          const result = await send(
             `[BUG REPORT]: ${data.title}`,
             $generateHtmlFromNodes(editor),
             data.attachments,
           );
+          if (result?.ok === false) {
+            throw new Error(result.message);
+          }
           Toast.success("Bug reported!");
           editor.dispatchCommand(CLEAR_EDITOR_COMMAND, null);
           resetForm();

@@ -7,6 +7,7 @@ import {
   create,
   getCommitsWithFile,
   getVersion,
+  isApiError,
   patch,
   get,
   VERSION_FILENAME,
@@ -86,6 +87,10 @@ export default function Versions({ open, title, setTitle }) {
       try {
         setLoadingVersion(sha);
         const version = await getVersion(gistId, sha);
+        if (isApiError(version)) {
+          Toast.error(t("failed_to_load_diagram"));
+          return;
+        }
 
         if (!version.data.files[VERSION_FILENAME]) {
           return;
@@ -157,6 +162,10 @@ export default function Versions({ open, title, setTitle }) {
           LIMIT,
           cursorParam,
         );
+        if (isApiError(res)) {
+          Toast.error(t("oops_smth_went_wrong"));
+          return;
+        }
 
         const newVersions = cursorParam ? [...versions, ...res.data] : res.data;
 
@@ -183,6 +192,9 @@ export default function Versions({ open, title, setTitle }) {
     if (!gistId) return true;
 
     const previousVersion = await get(gistId);
+    if (isApiError(previousVersion)) {
+      return true;
+    }
 
     if (!previousVersion.data.files[VERSION_FILENAME]) {
       return true;
@@ -220,9 +232,17 @@ export default function Versions({ open, title, setTitle }) {
         return;
       }
       if (gistId) {
-        await patch(gistId, VERSION_FILENAME, diagramToString());
+        const result = await patch(gistId, VERSION_FILENAME, diagramToString());
+        if (isApiError(result)) {
+          Toast.error(t("failed_to_record_version"));
+          return;
+        }
       } else {
         const id = await create(VERSION_FILENAME, diagramToString());
+        if (isApiError(id)) {
+          Toast.error(t("failed_to_record_version"));
+          return;
+        }
         setGistId(id);
       }
 
@@ -248,6 +268,7 @@ export default function Versions({ open, title, setTitle }) {
 
     if (currentIndex === versions.length - 1 && hasMore) {
       const res = await getCommitsWithFile(gistId, VERSION_FILENAME, 1, cursor);
+      if (isApiError(res)) return null;
       const version = res.data.length ? res.data[0].version : "null";
 
       if (version === selectedVersion) return null;

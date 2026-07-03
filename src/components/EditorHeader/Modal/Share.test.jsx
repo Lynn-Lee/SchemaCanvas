@@ -122,6 +122,7 @@ vi.mock("../../../api/gists", () => ({
   SHARE_FILENAME: "share.json",
   SHARE_BACKEND_NOT_CONFIGURED: "SHARE_BACKEND_NOT_CONFIGURED",
   create: vi.fn(),
+  isApiError: (result) => result?.ok === false,
   isSharingBackendConfigured: vi.fn(),
   patch: vi.fn(),
 }));

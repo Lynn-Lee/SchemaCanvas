@@ -15,6 +15,7 @@ import { databases } from "../../../data/databases";
 import { MODAL } from "../../../data/constants";
 import {
   create,
+  isApiError,
   isSharingBackendConfigured,
   patch,
   SHARE_BACKEND_NOT_CONFIGURED,
@@ -113,6 +114,10 @@ export default function Share({ title, setModal }) {
   const unshare = useCallback(async () => {
     try {
       const deleted = await patch(gistId, SHARE_FILENAME, undefined);
+      if (isApiError(deleted)) {
+        setError(deleted);
+        return;
+      }
       if (deleted) {
         setGistId("");
       }
@@ -134,9 +139,16 @@ export default function Share({ title, setModal }) {
 
       if (!gistId || gistId === "") {
         const id = await create(SHARE_FILENAME, diagramToString());
+        if (isApiError(id)) {
+          setError(id);
+          return;
+        }
         setGistId(id);
       } else {
-        await patch(gistId, SHARE_FILENAME, diagramToString());
+        const result = await patch(gistId, SHARE_FILENAME, diagramToString());
+        if (isApiError(result)) {
+          setError(result);
+        }
       }
     } catch (e) {
       setError(e);

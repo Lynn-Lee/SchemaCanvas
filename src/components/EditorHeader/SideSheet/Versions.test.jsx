@@ -79,6 +79,7 @@ vi.mock("../../../api/gists", () => ({
   get: vi.fn(),
   getCommitsWithFile: vi.fn(),
   getVersion: vi.fn(),
+  isApiError: (result) => result?.ok === false,
   patch: vi.fn(),
 }));
 

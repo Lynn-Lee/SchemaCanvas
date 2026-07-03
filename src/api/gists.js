@@ -7,13 +7,41 @@ const description = "drawDB diagram";
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const SHARE_BACKEND_NOT_CONFIGURED = "SHARE_BACKEND_NOT_CONFIGURED";
+export const SHARE_BACKEND_REQUEST_FAILED = "SHARE_BACKEND_REQUEST_FAILED";
+export const SHARE_BACKEND_INVALID_RESPONSE =
+  "SHARE_BACKEND_INVALID_RESPONSE";
 
-function assertSharingBackendConfigured() {
+export function isApiError(result) {
+  return result?.ok === false;
+}
+
+function apiError(reason, message) {
+  return { ok: false, reason, message };
+}
+
+function getErrorMessage(error) {
+  return (
+    error?.response?.data?.message ||
+    error?.message ||
+    "Sharing backend request failed."
+  );
+}
+
+function requireSharingBackendConfigured() {
   if (!baseUrl) {
-    const error = new Error("Sharing backend is not configured.");
-    error.code = SHARE_BACKEND_NOT_CONFIGURED;
-    throw error;
+    return apiError(
+      SHARE_BACKEND_NOT_CONFIGURED,
+      "Sharing backend is not configured.",
+    );
   }
+  return null;
+}
+
+function invalidResponseError() {
+  return apiError(
+    SHARE_BACKEND_INVALID_RESPONSE,
+    "Sharing backend returned an invalid response.",
+  );
 }
 
 export function isSharingBackendConfigured() {
@@ -21,56 +49,106 @@ export function isSharingBackendConfigured() {
 }
 
 export async function create(filename, content) {
-  assertSharingBackendConfigured();
-  const res = await axios.post(`${baseUrl}/gists`, {
-    public: false,
-    filename,
-    description,
-    content,
-  });
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data.data.id;
+  try {
+    const res = await axios.post(`${baseUrl}/gists`, {
+      public: false,
+      filename,
+      description,
+      content,
+    });
+
+    const id = res?.data?.data?.id;
+    if (!id) return invalidResponseError();
+
+    return id;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function patch(gistId, filename, content) {
-  assertSharingBackendConfigured();
-  const { data } = await axios.patch(`${baseUrl}/gists/${gistId}`, {
-    filename,
-    content,
-  });
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return data.deleted;
+  try {
+    const { data } = await axios.patch(`${baseUrl}/gists/${gistId}`, {
+      filename,
+      content,
+    });
+
+    if (!data || typeof data.deleted === "undefined") {
+      return invalidResponseError();
+    }
+
+    return data.deleted;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function del(gistId) {
-  assertSharingBackendConfigured();
-  await axios.delete(`${baseUrl}/gists/${gistId}`);
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
+
+  try {
+    await axios.delete(`${baseUrl}/gists/${gistId}`);
+    return true;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function get(gistId) {
-  assertSharingBackendConfigured();
-  const res = await axios.get(`${baseUrl}/gists/${gistId}`);
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data;
+  try {
+    const res = await axios.get(`${baseUrl}/gists/${gistId}`);
+
+    if (!res?.data?.data) return invalidResponseError();
+
+    return res.data;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function getCommits(gistId, perPage = 20, page = 1) {
-  assertSharingBackendConfigured();
-  const res = await axios.get(`${baseUrl}/gists/${gistId}/commits`, {
-    params: {
-      per_page: perPage,
-      page,
-    },
-  });
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data;
+  try {
+    const res = await axios.get(`${baseUrl}/gists/${gistId}/commits`, {
+      params: {
+        per_page: perPage,
+        page,
+      },
+    });
+
+    if (!res?.data?.data) return invalidResponseError();
+
+    return res.data;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function getVersion(gistId, sha) {
-  assertSharingBackendConfigured();
-  const res = await axios.get(`${baseUrl}/gists/${gistId}/${sha}`);
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data;
+  try {
+    const res = await axios.get(`${baseUrl}/gists/${gistId}/${sha}`);
+
+    if (!res?.data?.data) return invalidResponseError();
+
+    return res.data;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function getCommitsWithFile(
@@ -79,25 +157,43 @@ export async function getCommitsWithFile(
   limit = 10,
   cursor = null,
 ) {
-  assertSharingBackendConfigured();
-  const res = await axios.get(
-    `${baseUrl}/gists/${gistId}/file-versions/${file}`,
-    {
-      params: {
-        limit,
-        cursor,
-      },
-    },
-  );
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data;
+  try {
+    const res = await axios.get(
+      `${baseUrl}/gists/${gistId}/file-versions/${file}`,
+      {
+        params: {
+          limit,
+          cursor,
+        },
+      },
+    );
+
+    if (!res?.data?.data || !res?.data?.pagination) {
+      return invalidResponseError();
+    }
+
+    return res.data;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }
 
 export async function compare(gistId, file, versionA, versionB) {
-  assertSharingBackendConfigured();
-  const res = await axios.get(
-    `${baseUrl}/gists/${gistId}/file/${file}/compare/${versionA}/${versionB}`,
-  );
+  const configError = requireSharingBackendConfigured();
+  if (configError) return configError;
 
-  return res.data;
+  try {
+    const res = await axios.get(
+      `${baseUrl}/gists/${gistId}/file/${file}/compare/${versionA}/${versionB}`,
+    );
+
+    if (!res?.data?.data) return invalidResponseError();
+
+    return res.data;
+  } catch (error) {
+    return apiError(SHARE_BACKEND_REQUEST_FAILED, getErrorMessage(error));
+  }
 }

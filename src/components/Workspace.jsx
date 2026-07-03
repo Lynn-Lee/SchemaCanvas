@@ -40,7 +40,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { get, SHARE_FILENAME } from "../api/gists";
+import { get, isApiError, SHARE_FILENAME } from "../api/gists";
 import { nanoid } from "nanoid";
 import { mergeCustomTypes } from "../utils/customTypes";
 import { createLocalDiagramRepository } from "../persistence/localDiagramRepository";
@@ -438,7 +438,12 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
 
     const loadFromGist = async (shareId, diagramId = null) => {
       try {
-        const { data } = await get(shareId);
+        const response = await get(shareId);
+        if (isApiError(response)) {
+          setSaveState(State.FAILED_TO_LOAD);
+          return;
+        }
+        const { data } = response;
         const validation = validateSharedDiagramContent(
           data.files[SHARE_FILENAME].content,
         );
