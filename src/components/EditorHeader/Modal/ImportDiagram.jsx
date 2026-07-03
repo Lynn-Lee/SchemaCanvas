@@ -38,8 +38,8 @@ export default function ImportDiagram({
     );
   };
 
-  const loadDiagramData = (file, e) => {
-    const result = importDiagramFileContent({
+  const loadDiagramData = async (file, e) => {
+    const result = await importDiagramFileContent({
       content: e.target.result,
       fileName: file.name,
       fileType: file.type,
@@ -122,7 +122,7 @@ export default function ImportDiagram({
           }
           const reader = new FileReader();
           reader.onload = async (e) => {
-            loadDiagramData(f, e);
+            await loadDiagramData(f, e);
           };
           reader.readAsText(f);
 

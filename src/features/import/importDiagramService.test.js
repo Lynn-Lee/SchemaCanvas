@@ -59,8 +59,8 @@ const validDiagram = (overrides = {}) => ({
 });
 
 describe("importDiagramFileContent", () => {
-  it("imports valid JSON diagram content with a normalized preview", () => {
-    const result = importDiagramFileContent({
+  it("imports valid JSON diagram content with a normalized preview", async () => {
+    const result = await importDiagramFileContent({
       content: JSON.stringify(validDiagram()),
       fileName: "schema.json",
       fileType: "application/json",
@@ -84,8 +84,8 @@ describe("importDiagramFileContent", () => {
     expect(result.issues).toEqual([]);
   });
 
-  it("imports valid DDB content using the same service path", () => {
-    const result = importDiagramFileContent({
+  it("imports valid DDB content using the same service path", async () => {
+    const result = await importDiagramFileContent({
       content: JSON.stringify(
         validDiagram({
           author: "drawDB",
@@ -104,8 +104,8 @@ describe("importDiagramFileContent", () => {
     expect(result.preview.tables).toBe(2);
   });
 
-  it("imports DBML content and returns table, relationship, and enum preview", () => {
-    const result = importDiagramFileContent({
+  it("imports DBML content and returns table, relationship, and enum preview", async () => {
+    const result = await importDiagramFileContent({
       content: `
         Enum user_status {
           active
@@ -142,8 +142,8 @@ describe("importDiagramFileContent", () => {
     });
   });
 
-  it("returns issues for invalid JSON without throwing", () => {
-    const result = importDiagramFileContent({
+  it("returns issues for invalid JSON without throwing", async () => {
+    const result = await importDiagramFileContent({
       content: "{ invalid json",
       fileName: "broken.json",
       fileType: "application/json",
@@ -159,8 +159,8 @@ describe("importDiagramFileContent", () => {
     });
   });
 
-  it("rejects diagrams that do not match the open diagram database", () => {
-    const result = importDiagramFileContent({
+  it("rejects diagrams that do not match the open diagram database", async () => {
+    const result = await importDiagramFileContent({
       content: JSON.stringify(validDiagram({ database: DB.MYSQL })),
       fileName: "schema.json",
       fileType: "application/json",
@@ -174,8 +174,8 @@ describe("importDiagramFileContent", () => {
     );
   });
 
-  it("rejects relationships that reference missing tables or fields", () => {
-    const result = importDiagramFileContent({
+  it("rejects relationships that reference missing tables or fields", async () => {
+    const result = await importDiagramFileContent({
       content: JSON.stringify(
         validDiagram({
           relationships: [

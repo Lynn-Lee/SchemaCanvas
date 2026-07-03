@@ -167,7 +167,7 @@ const importJsonDiagram = ({ content, fileName, fileType, currentDatabase }) => 
   };
 };
 
-const importDbmlDiagram = ({ content }) => {
+const importDbmlDiagram = async ({ content }) => {
   const limitResult = validateImportText(content, { label: "DBML" });
   if (!limitResult.ok) {
     return failed(
@@ -180,7 +180,7 @@ const importDbmlDiagram = ({ content }) => {
 
   let importedDiagram;
   try {
-    importedDiagram = fromDBML(content);
+    importedDiagram = await fromDBML(content);
   } catch (error) {
     return failed(
       errorIssue({
@@ -204,7 +204,7 @@ const importDbmlDiagram = ({ content }) => {
   };
 };
 
-export function importDiagramFileContent({
+export async function importDiagramFileContent({
   content,
   fileName = "",
   fileType = "",
@@ -215,10 +215,12 @@ export function importDiagramFileContent({
     return importDbmlDiagram({ content });
   }
 
-  return importJsonDiagram({
-    content,
-    fileName,
-    fileType,
-    currentDatabase,
-  });
+  return Promise.resolve(
+    importJsonDiagram({
+      content,
+      fileName,
+      fileType,
+      currentDatabase,
+    }),
+  );
 }
