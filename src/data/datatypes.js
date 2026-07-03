@@ -18,6 +18,14 @@ import { DB } from "./constants";
 const intRegex = /^-?\d*$/;
 const doubleRegex = /^-?\d*.?\d+$/;
 const binaryRegex = /^[01]+$/;
+const postgresGeometryNumber = "\\d+(?:\\.\\d+)?";
+const postgresGeometryPoint = `\\(${postgresGeometryNumber},${postgresGeometryNumber}\\)`;
+const postgresLineSegmentRegex = new RegExp(
+  `^(?:${postgresGeometryPoint},)+${postgresGeometryPoint}$`,
+);
+const postgresPathPolygonRegex = new RegExp(
+  `^\\(${postgresGeometryNumber},${postgresGeometryNumber}(?:,${postgresGeometryNumber},${postgresGeometryNumber})*\\)$`,
+);
 
 /* eslint-disable no-unused-vars */
 const defaultTypesBase = {
@@ -1151,7 +1159,7 @@ const postgresTypesBase = {
   LINE: {
     type: "LINE",
     color: geometricColor,
-    checkDefault: (field) => /^(\(\d+,\d+\),)+\(\d+,\d+\)$/.test(field.default),
+    checkDefault: (field) => postgresLineSegmentRegex.test(field.default),
     hasCheck: false,
     isSized: false,
     hasPrecision: false,
@@ -1160,7 +1168,7 @@ const postgresTypesBase = {
   LSEG: {
     type: "LSEG",
     color: geometricColor,
-    checkDefault: (field) => /^(\(\d+,\d+\),)+\(\d+,\d+\)$/.test(field.default),
+    checkDefault: (field) => postgresLineSegmentRegex.test(field.default),
     hasCheck: false,
     isSized: false,
     hasPrecision: false,
@@ -1181,10 +1189,7 @@ const postgresTypesBase = {
   PATH: {
     type: "PATH",
     color: geometricColor,
-    checkDefault: (field) =>
-      /^\((\d+(\.\d+)?,\d+(\.\d+)?(,\d+(\.\d+)?,\d+(\.\d+)?)*?)\)$/.test(
-        field.default,
-      ),
+    checkDefault: (field) => postgresPathPolygonRegex.test(field.default),
     hasCheck: false,
     isSized: false,
     hasPrecision: false,
@@ -1193,10 +1198,7 @@ const postgresTypesBase = {
   POLYGON: {
     type: "POLYGON",
     color: geometricColor,
-    checkDefault: (field) =>
-      /^\((\d+(\.\d+)?,\d+(\.\d+)?(,\d+(\.\d+)?,\d+(\.\d+)?)*?)\)$/.test(
-        field.default,
-      ),
+    checkDefault: (field) => postgresPathPolygonRegex.test(field.default),
     hasCheck: false,
     isSized: false,
     hasPrecision: false,

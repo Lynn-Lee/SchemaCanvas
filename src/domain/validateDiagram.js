@@ -4,6 +4,7 @@ import { isFunction } from "../utils/utils";
 const normalizeName = (value) => String(value ?? "").trim().toLowerCase();
 
 const objectId = (value, fallback) => String(value ?? fallback);
+const MAX_DEFAULT_VALUE_LENGTH = 1000;
 
 const issue = ({
   id,
@@ -32,6 +33,12 @@ function checkDefault(field, database) {
     field.default.toLowerCase() === "null"
   ) {
     return true;
+  }
+  if (
+    typeof field.default === "string" &&
+    field.default.length > MAX_DEFAULT_VALUE_LENGTH
+  ) {
+    return false;
   }
 
   const checkDefaultForType = dbToTypes[database]?.[field.type]?.checkDefault;
