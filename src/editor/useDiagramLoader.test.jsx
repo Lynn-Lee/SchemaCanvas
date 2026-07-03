@@ -130,6 +130,51 @@ describe("useDiagramLoader", () => {
     expect(setters.setShowSelectDbModal).toHaveBeenCalledWith(true);
   });
 
+  it("marks route diagram load failure when the local repository returns an error", async () => {
+    const repository = {
+      getDiagramById: vi.fn().mockResolvedValue({
+        ok: false,
+        reason: "dexie-error",
+        message: "IndexedDB unavailable",
+      }),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({ repository, ...setters }),
+    );
+
+    const loaded = await result.current.loadLocalDiagramById("local-error");
+
+    expect(loaded).toBe(false);
+    expect(setters.setSaveState).toHaveBeenCalledWith(State.FAILED_TO_LOAD);
+    expect(setters.setShowSelectDbModal).toHaveBeenCalledWith(true);
+    expect(setters.setTables).not.toHaveBeenCalled();
+  });
+
+  it("does not treat a recent-list repository error as an empty local diagram list", async () => {
+    const repository = {
+      listRecentDiagrams: vi.fn().mockResolvedValue({
+        ok: false,
+        reason: "dexie-error",
+        message: "IndexedDB unavailable",
+      }),
+      getDiagramById: vi.fn(),
+    };
+    const setters = createSetters();
+
+    const { result } = renderHook(() =>
+      useDiagramLoader({ repository, ...setters }),
+    );
+
+    const loaded = await result.current.loadLatestLocalDiagram();
+
+    expect(loaded).toBe(false);
+    expect(repository.getDiagramById).not.toHaveBeenCalled();
+    expect(setters.setSaveState).toHaveBeenCalledWith(State.FAILED_TO_LOAD);
+    expect(setters.setShowSelectDbModal).toHaveBeenCalledWith(true);
+  });
+
   it("loads a cloud diagram through the cloud repository", async () => {
     const diagram = {
       id: "cloud-1",

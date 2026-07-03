@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { State } from "../data/constants";
 import { databases } from "../data/databases";
+import { isLocalRepositoryError } from "../persistence/localDiagramRepository";
 
 function createDiagramId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -95,6 +96,14 @@ export function useDiagramPersistence({
       } catch (error) {
         setSaveState(State.ERROR);
         throw error;
+      }
+
+      if (isLocalRepositoryError(savedDiagram)) {
+        setSaveState(State.ERROR);
+        return {
+          ...savedDiagram,
+          pendingDiagram: diagram,
+        };
       }
 
       if (isNew) {

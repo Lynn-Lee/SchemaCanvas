@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { databases } from "../../data/databases";
-import { createLocalDiagramRepository } from "../../persistence/localDiagramRepository";
+import {
+  createLocalDiagramRepository,
+  isLocalRepositoryError,
+} from "../../persistence/localDiagramRepository";
 
 function formatDate(value, language) {
   if (!value) return "";
@@ -55,7 +58,13 @@ export default function LocalDiagramList({
     setLoading(true);
     setError("");
     try {
-      setDiagrams(await localRepository.listRecentDiagrams({ limit: 50 }));
+      const result = await localRepository.listRecentDiagrams({ limit: 50 });
+      if (isLocalRepositoryError(result)) {
+        setError(result.message);
+        setDiagrams([]);
+        return;
+      }
+      setDiagrams(result);
     } catch (err) {
       setError(err?.message || "Failed to load local diagrams.");
     } finally {
@@ -69,7 +78,8 @@ export default function LocalDiagramList({
 
   const duplicateDiagram = async (diagram) => {
     try {
-      await localRepository.duplicateDiagram(diagram.diagramId);
+      const result = await localRepository.duplicateDiagram(diagram.diagramId);
+      if (isLocalRepositoryError(result)) throw new Error(result.message);
       await loadDiagrams();
       Toast.success(t("duplicate"));
     } catch {
@@ -81,7 +91,8 @@ export default function LocalDiagramList({
     if (!window.confirm(t("are_you_sure_delete_diagram"))) return;
 
     try {
-      await localRepository.deleteDiagram(diagram.diagramId);
+      const result = await localRepository.deleteDiagram(diagram.diagramId);
+      if (isLocalRepositoryError(result)) throw new Error(result.message);
       if (selectedDiagramId === diagram.diagramId) {
         setSelectedDiagramId("");
       }
@@ -95,6 +106,7 @@ export default function LocalDiagramList({
   const exportDiagram = async (diagram) => {
     try {
       const fullDiagram = await localRepository.getDiagramById(diagram.diagramId);
+      if (isLocalRepositoryError(fullDiagram)) throw new Error(fullDiagram.message);
       if (!fullDiagram) throw new Error("Diagram not found");
       const blob = new Blob([JSON.stringify(fullDiagram, null, 2)], {
         type: "application/json",

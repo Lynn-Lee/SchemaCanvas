@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { DB } from "../data/constants";
 import { CURRENT_SCHEMA_VERSION } from "../domain/diagramModel";
@@ -65,8 +65,20 @@ function createFakeDatabase(seedDiagrams = []) {
     },
     toArray: async () => [...rows],
   };
+  diagrams.__rows = rows;
 
-  return { diagrams };
+  return {
+    diagrams,
+    transaction: vi.fn(async (_mode, _table, callback) => {
+      const snapshot = rows.map((row) => ({ ...row }));
+      try {
+        return await callback();
+      } catch (error) {
+        rows.splice(0, rows.length, ...snapshot);
+        throw error;
+      }
+    }),
+  };
 }
 
 describe("createLocalDiagramRepository", () => {
@@ -174,5 +186,65 @@ describe("createLocalDiagramRepository", () => {
     await expect(repository.getDiagramById("copy")).resolves.toMatchObject({
       diagramId: "copy",
     });
+  });
+
+  it("returns structured errors when Dexie operations fail", async () => {
+    const database = createFakeDatabase();
+    database.diagrams.orderBy = () => {
+      throw new Error("IndexedDB unavailable");
+    };
+    database.diagrams.where = () => {
+      throw new Error("IndexedDB unavailable");
+    };
+    const repository = createLocalDiagramRepository(database);
+
+    await expect(repository.listRecentDiagrams()).resolves.toMatchObject({
+      ok: false,
+      reason: "dexie-error",
+      operation: "listRecentDiagrams",
+      message: "IndexedDB unavailable",
+    });
+    await expect(repository.getDiagramById("missing")).resolves.toMatchObject({
+      ok: false,
+      reason: "dexie-error",
+      operation: "getDiagramById",
+      message: "IndexedDB unavailable",
+    });
+    await expect(repository.deleteDiagram("missing")).resolves.toMatchObject({
+      ok: false,
+      reason: "dexie-error",
+      operation: "deleteDiagram",
+      message: "IndexedDB unavailable",
+    });
+  });
+
+  it("wraps saveDiagram in a transaction and leaves no new row when writing fails", async () => {
+    const database = createFakeDatabase();
+    database.diagrams.add = async (diagram) => {
+      const rows = database.diagrams.__rows;
+      rows.push({ id: rows.length + 1, ...diagram });
+      throw new Error("Quota exceeded");
+    };
+    const repository = createLocalDiagramRepository(database);
+
+    const saved = await repository.saveDiagram({
+      diagramId: "new-diagram",
+      name: "New diagram",
+      tables: [],
+      relationships: [],
+    });
+
+    expect(saved).toMatchObject({
+      ok: false,
+      reason: "dexie-error",
+      operation: "saveDiagram",
+      message: "Quota exceeded",
+    });
+    expect(database.transaction).toHaveBeenCalledWith(
+      "rw",
+      database.diagrams,
+      expect.any(Function),
+    );
+    await expect(database.diagrams.toArray()).resolves.toEqual([]);
   });
 });

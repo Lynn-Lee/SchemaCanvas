@@ -4,6 +4,7 @@ import { DB, State } from "../data/constants";
 import { databases } from "../data/databases";
 import { normalizeDiagram } from "../domain/normalizeDiagram";
 import { getCloudPermissionState } from "../features/cloud/cloudPermissions";
+import { isLocalRepositoryError } from "../persistence/localDiagramRepository";
 
 function valueOrDefault(value, fallback) {
   return value === undefined || value === null ? fallback : value;
@@ -103,7 +104,7 @@ export function useDiagramLoader({
     async (diagramId) => {
       const diagram = await repository.getDiagramById(diagramId);
 
-      if (!diagram) {
+      if (!diagram || isLocalRepositoryError(diagram)) {
         setSaveState(State.FAILED_TO_LOAD);
         setShowSelectDbModal(true);
         return false;
@@ -236,6 +237,12 @@ export function useDiagramLoader({
   const loadLatestLocalDiagram = useCallback(
     async ({ selectedDb = "" } = {}) => {
       const recentDiagrams = await repository.listRecentDiagrams({ limit: 1 });
+      if (isLocalRepositoryError(recentDiagrams)) {
+        setSaveState(State.FAILED_TO_LOAD);
+        setShowSelectDbModal(true);
+        return false;
+      }
+
       const latestDiagramId = recentDiagrams[0]?.diagramId;
 
       if (!latestDiagramId) {
@@ -247,7 +254,7 @@ export function useDiagramLoader({
       }
 
       const diagram = await repository.getDiagramById(latestDiagramId);
-      if (!diagram) {
+      if (!diagram || isLocalRepositoryError(diagram)) {
         setSaveState(State.FAILED_TO_LOAD);
         setShowSelectDbModal(true);
         return false;
