@@ -26,6 +26,7 @@ import { databases } from "../../../data/databases";
 import { loadCache, saveCache } from "../../../utils/cache";
 import Migration from "./Migration";
 import { DB } from "../../../data/constants";
+import { validateSharedDiagramContent } from "../../../features/share/validateSharedDiagram";
 
 const LIMIT = 10;
 
@@ -85,27 +86,32 @@ export default function Versions({ open, title, setTitle }) {
       try {
         setLoadingVersion(sha);
         const version = await getVersion(gistId, sha);
-        setVersion(sha);
-        setLayout((prev) => ({ ...prev, readOnly: true }));
 
         if (!version.data.files[VERSION_FILENAME]) {
           return;
         }
 
         const content = version.data.files[VERSION_FILENAME].content;
-        const parsedDiagram = JSON.parse(content);
+        const validation = validateSharedDiagramContent(content);
+        if (!validation.ok) {
+          Toast.error(t("failed_to_load_diagram"));
+          return;
+        }
 
+        const parsedDiagram = validation.diagram;
+        setVersion(sha);
+        setLayout((prev) => ({ ...prev, readOnly: true }));
         setTables(parsedDiagram.tables);
         setRelationships(parsedDiagram.relationships);
-        setAreas(parsedDiagram.subjectAreas);
+        setAreas(parsedDiagram.areas);
         setNotes(parsedDiagram.notes);
-        setTitle(parsedDiagram.title);
+        setTitle(parsedDiagram.name);
 
-        if (databases[database].hasTypes) {
+        if (databases[parsedDiagram.database].hasTypes) {
           setTypes(parsedDiagram.types);
         }
 
-        if (databases[database].hasEnums) {
+        if (databases[parsedDiagram.database].hasEnums) {
           setEnums(parsedDiagram.enums);
         }
       } catch (e) {
@@ -122,7 +128,6 @@ export default function Versions({ open, title, setTitle }) {
       setAreas,
       setVersion,
       setLayout,
-      database,
       setNotes,
       setTypes,
       setEnums,
@@ -183,9 +188,14 @@ export default function Versions({ open, title, setTitle }) {
       return true;
     }
 
-    const previousDiagram = JSON.parse(
-      previousVersion.data.files[VERSION_FILENAME]?.content,
-    );
+    let previousDiagram;
+    try {
+      previousDiagram = JSON.parse(
+        previousVersion.data.files[VERSION_FILENAME]?.content,
+      );
+    } catch (e) {
+      return true;
+    }
     const currentDiagram = {
       title,
       tables,

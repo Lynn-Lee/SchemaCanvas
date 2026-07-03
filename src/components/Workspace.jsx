@@ -46,6 +46,7 @@ import { mergeCustomTypes } from "../utils/customTypes";
 import { createLocalDiagramRepository } from "../persistence/localDiagramRepository";
 import NewDiagramWizard from "../features/onboarding/NewDiagramWizard";
 import CloudConflictDialog from "../features/cloud/CloudConflictDialog";
+import { validateSharedDiagramContent } from "../features/share/validateSharedDiagram";
 
 export const IdContext = createContext({
   gistId: "",
@@ -438,18 +439,28 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     const loadFromGist = async (shareId, diagramId = null) => {
       try {
         const { data } = await get(shareId);
-        const parsedDiagram = JSON.parse(data.files[SHARE_FILENAME].content);
+        const validation = validateSharedDiagramContent(
+          data.files[SHARE_FILENAME].content,
+        );
+        if (!validation.ok) {
+          setSaveState(State.FAILED_TO_LOAD);
+          return;
+        }
+        const parsedDiagram = validation.diagram;
         setUndoStack([]);
         setRedoStack([]);
         setGistId(shareId);
         setLoadedFromGistId(shareId);
         setDatabase(parsedDiagram.database);
-        setTitle(parsedDiagram.title);
+        setTitle(parsedDiagram.name);
         setTables(parsedDiagram.tables);
         setRelationships(parsedDiagram.relationships);
         setNotes(parsedDiagram.notes);
-        setAreas(parsedDiagram.subjectAreas);
-        setTransform(parsedDiagram.transform);
+        setAreas(parsedDiagram.areas);
+        setTransform({
+          pan: parsedDiagram.pan,
+          zoom: parsedDiagram.zoom,
+        });
         if (databases[parsedDiagram.database].hasTypes) {
           if (parsedDiagram.types) {
             setTypes(
