@@ -1,11 +1,16 @@
-import { Parser } from "@dbml/core";
 import { arrangeTables } from "../arrangeTables";
 import { Cardinality, Constraint } from "../../data/constants";
 import { nanoid } from "nanoid";
 
-const parser = new Parser();
+let parserPromise;
 
-export function fromDBML(src) {
+const getParser = async () => {
+  parserPromise ??= import("@dbml/core").then(({ Parser }) => new Parser());
+  return parserPromise;
+};
+
+export async function fromDBML(src) {
+  const parser = await getParser();
   const ast = parser.parse(src, "dbmlv2");
 
   const tables = [];
