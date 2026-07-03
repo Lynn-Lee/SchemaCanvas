@@ -2,6 +2,20 @@ import { db } from "../data/db";
 import { normalizeDiagram } from "../domain/normalizeDiagram";
 
 const DEFAULT_RECENT_LIMIT = 10;
+const LOCAL_REPOSITORY_ERROR_REASON = "dexie-error";
+
+export function isLocalRepositoryError(result) {
+  return result?.ok === false;
+}
+
+function repositoryError(operation, error) {
+  return {
+    ok: false,
+    reason: LOCAL_REPOSITORY_ERROR_REASON,
+    operation,
+    message: error?.message || "Local diagram storage operation failed.",
+  };
+}
 
 function createDiagramId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -50,51 +64,74 @@ export function createLocalDiagramRepository(database = db) {
   }
 
   async function listRecentDiagrams({ limit = DEFAULT_RECENT_LIMIT } = {}) {
-    const rows = await diagrams
-      .orderBy("lastModified")
-      .reverse()
-      .limit(limit)
-      .toArray();
+    try {
+      const rows = await diagrams
+        .orderBy("lastModified")
+        .reverse()
+        .limit(limit)
+        .toArray();
 
-    return rows.map(toSummary);
+      return rows.map(toSummary);
+    } catch (error) {
+      return repositoryError("listRecentDiagrams", error);
+    }
   }
 
   async function getDiagramById(diagramId) {
-    return toDiagram(await getRawByDiagramId(diagramId));
+    try {
+      return toDiagram(await getRawByDiagramId(diagramId));
+    } catch (error) {
+      return repositoryError("getDiagramById", error);
+    }
   }
 
   async function saveDiagram(diagram) {
-    const existingRecord = await getRawByDiagramId(diagram.diagramId);
-    const storedDiagram = toStoredDiagram(diagram, existingRecord);
+    try {
+      return await database.transaction("rw", diagrams, async () => {
+        const existingRecord = await getRawByDiagramId(diagram.diagramId);
+        const storedDiagram = toStoredDiagram(diagram, existingRecord);
 
-    if (existingRecord) {
-      await diagrams.put(storedDiagram);
-    } else {
-      const id = await diagrams.add(storedDiagram);
-      storedDiagram.id = id;
+        if (existingRecord) {
+          await diagrams.put(storedDiagram);
+        } else {
+          const id = await diagrams.add(storedDiagram);
+          storedDiagram.id = id;
+        }
+
+        return toDiagram(storedDiagram);
+      });
+    } catch (error) {
+      return repositoryError("saveDiagram", error);
     }
-
-    return toDiagram(storedDiagram);
   }
 
   async function deleteDiagram(diagramId) {
-    return diagrams.where("diagramId").equals(diagramId).delete();
+    try {
+      return await diagrams.where("diagramId").equals(diagramId).delete();
+    } catch (error) {
+      return repositoryError("deleteDiagram", error);
+    }
   }
 
   async function duplicateDiagram(diagramId, overrides = {}) {
-    const source = await getDiagramById(diagramId);
-    if (!source) return null;
+    try {
+      const source = await getDiagramById(diagramId);
+      if (isLocalRepositoryError(source)) return source;
+      if (!source) return null;
 
-    const diagram = { ...source };
-    delete diagram.id;
-    delete diagram.lastModified;
+      const diagram = { ...source };
+      delete diagram.id;
+      delete diagram.lastModified;
 
-    return saveDiagram({
-      ...diagram,
-      diagramId: overrides.diagramId ?? createDiagramId(),
-      name: overrides.name ?? `${source.name} copy`,
-      lastModified: overrides.lastModified,
-    });
+      return await saveDiagram({
+        ...diagram,
+        diagramId: overrides.diagramId ?? createDiagramId(),
+        name: overrides.name ?? `${source.name} copy`,
+        lastModified: overrides.lastModified,
+      });
+    } catch (error) {
+      return repositoryError("duplicateDiagram", error);
+    }
   }
 
   return {

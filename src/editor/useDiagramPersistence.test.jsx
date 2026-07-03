@@ -104,6 +104,54 @@ describe("useDiagramPersistence", () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
+  it("marks local save structured errors without navigating to an invalid route", async () => {
+    const repository = {
+      saveDiagram: vi.fn(async () => ({
+        ok: false,
+        reason: "dexie-error",
+        message: "Quota exceeded",
+      })),
+    };
+    const navigate = vi.fn();
+    const setSaveState = vi.fn();
+    const setLastSaved = vi.fn();
+
+    const { result } = renderHook(() =>
+      useDiagramPersistence({
+        repository,
+        navigate,
+        setSaveState,
+        setLastSaved,
+        createDiagramId: () => "new-diagram",
+        now: () => new Date("2026-07-01T18:00:00Z"),
+      }),
+    );
+
+    const saved = await result.current.saveLocalDiagram({
+      isNew: true,
+      database: DB.GENERIC,
+      title: "Unsaved",
+      gistId: "",
+      loadedFromGistId: "",
+      tables: [],
+      relationships: [],
+      notes: [],
+      areas: [],
+      transform: { pan: { x: 0, y: 0 }, zoom: 1 },
+      types: [],
+      enums: [],
+    });
+
+    expect(saved).toMatchObject({
+      ok: false,
+      reason: "dexie-error",
+      pendingDiagram: expect.objectContaining({ diagramId: "new-diagram" }),
+    });
+    expect(setSaveState).toHaveBeenCalledWith(State.ERROR);
+    expect(setLastSaved).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
   it("returns cloud conflict without overwriting remote data", async () => {
     const savedAt = new Date("2026-07-02T11:45:00Z");
     const cloudRepository = {

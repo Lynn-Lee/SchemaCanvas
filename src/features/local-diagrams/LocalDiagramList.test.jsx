@@ -167,4 +167,24 @@ describe("LocalDiagramList", () => {
 
     confirm.mockRestore();
   });
+
+  it("shows a repository error instead of rendering a broken diagram list", async () => {
+    render(
+      <LocalDiagramList
+        repository={{
+          listRecentDiagrams: vi.fn(async () => ({
+            ok: false,
+            reason: "dexie-error",
+            message: "IndexedDB unavailable",
+          })),
+        }}
+        selectedDiagramId=""
+        setSelectedDiagramId={vi.fn()}
+      />,
+    );
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "IndexedDB unavailable",
+    );
+  });
 });
