@@ -48,9 +48,11 @@ import {
   noteWidth,
   pngExportPixelRatio,
 } from "../../data/constants";
-import { Validator } from "jsonschema";
-import { areaSchema, noteSchema, tableSchema } from "../../data/schemas";
 import { db } from "../../data/db";
+import {
+  PASTED_OBJECT_TYPE,
+  resolvePastedDiagramObject,
+} from "../../features/clipboard/resolvePastedDiagramObject";
 import {
   useLayout,
   useSettings,
@@ -875,8 +877,8 @@ export default function ControlPanel({
       } catch (error) {
         return;
       }
-      const v = new Validator();
-      if (v.validate(obj, tableSchema).valid) {
+      const pastedObject = resolvePastedDiagramObject(obj);
+      if (pastedObject?.type === PASTED_OBJECT_TYPE.TABLE) {
         addTable({
           table: {
             ...obj,
@@ -885,14 +887,14 @@ export default function ControlPanel({
             id: nanoid(),
           },
         });
-      } else if (v.validate(obj, areaSchema).valid) {
+      } else if (pastedObject?.type === PASTED_OBJECT_TYPE.AREA) {
         addArea({
           ...obj,
           x: obj.x + 20,
           y: obj.y + 20,
           id: areas.length,
         });
-      } else if (v.validate(obj, noteSchema)) {
+      } else if (pastedObject?.type === PASTED_OBJECT_TYPE.NOTE) {
         addNote({
           ...obj,
           x: obj.x + 20,
