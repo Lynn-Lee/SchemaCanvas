@@ -1,5 +1,9 @@
 import { DB } from "../../data/constants";
 
+export function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function quoteColumn(str, db) {
   switch (db) {
     case DB.MYSQL:

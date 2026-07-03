@@ -6,6 +6,7 @@ import { Parser } from "node-sql-parser";
 import { Parser as OracleParser } from "oracle-sql-parser";
 import { DB } from "../../data/constants";
 import { importSQL } from ".";
+import { fromPostgres } from "./postgres";
 
 const fixturesDir = path.join(cwd(), "src/test/fixtures/sql");
 const fixturePath = (name) => path.join(fixturesDir, name);
@@ -78,6 +79,48 @@ function findTable(diagram, name) {
   return diagram.tables.find((table) => table.name.toLowerCase() === name);
 }
 
+function postgresEnumAst(name, values = ["active", "archived"]) {
+  return {
+    type: "create",
+    keyword: "type",
+    resource: "enum",
+    name: { name },
+    create_definitions: {
+      value: values.map((value) => ({ value })),
+    },
+  };
+}
+
+function postgresCompositeTypeAst(name) {
+  return {
+    type: "create",
+    keyword: "type",
+    name: { name },
+    create_definitions: [
+      {
+        resource: "column",
+        column: { column: { expr: { value: "line1" } } },
+        definition: { dataType: "TEXT" },
+      },
+    ],
+  };
+}
+
+function postgresTableAst(columnType) {
+  return {
+    type: "create",
+    keyword: "table",
+    table: [{ table: "accounts" }],
+    create_definitions: [
+      {
+        resource: "column",
+        column: { column: { expr: { value: "status" } } },
+        definition: { dataType: columnType },
+      },
+    ],
+  };
+}
+
 describe("importSQL fixtures", () => {
   for (const [name, db, fixture] of dialects) {
     test(`${name} basic SQL imports tables, primary key, and relationship`, () => {
@@ -103,4 +146,33 @@ describe("importSQL fixtures", () => {
       });
     });
   }
+});
+
+describe("PostgreSQL custom type matching", () => {
+  test("matches composite type names with regex metacharacters literally", () => {
+    const diagram = fromPostgres(
+      [postgresCompositeTypeAst("(a+)+b"), postgresTableAst('"(a+)+b"')],
+      DB.POSTGRES,
+    );
+
+    expect(findTable(diagram, "accounts")?.fields[0].type).toBe("(a+)+b");
+  });
+
+  test("treats regex metacharacters in enum names as literal text", () => {
+    const diagram = fromPostgres(
+      [postgresEnumAst(".*"), postgresTableAst("INTEGER")],
+      DB.POSTGRES,
+    );
+
+    expect(findTable(diagram, "accounts")?.fields[0].type).toBe("INTEGER");
+  });
+
+  test("does not throw when enum names contain invalid regex syntax", () => {
+    expect(() =>
+      fromPostgres(
+        [postgresEnumAst("status["), postgresTableAst("status[")],
+        DB.POSTGRES,
+      ),
+    ).not.toThrow();
+  });
 });

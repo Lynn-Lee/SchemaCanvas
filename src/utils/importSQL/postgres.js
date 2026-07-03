@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { Cardinality, Constraint, DB } from "../../data/constants";
 import { dbToTypes } from "../../data/datatypes";
-import { buildSQLFromAST } from "./shared";
+import { buildSQLFromAST, escapeRegex } from "./shared";
 
 const affinity = {
   [DB.POSTGRES]: new Proxy(
@@ -42,16 +42,18 @@ export function fromPostgres(ast, diagramDb = DB.GENERIC) {
             field.id = nanoid();
             field.name = d.column.column.expr.value;
 
-            let type = types.find((t) =>
-              new RegExp(`^(${t.name}|"${t.name}")$`).test(
+            let type = types.find((t) => {
+              const escapedName = escapeRegex(t.name);
+              return new RegExp(`^(${escapedName}|"${escapedName}")$`).test(
                 d.definition.dataType,
-              ),
-            )?.name;
-            type ??= enums.find((t) =>
-              new RegExp(`^(${t.name}|"${t.name}")$`).test(
+              );
+            })?.name;
+            type ??= enums.find((t) => {
+              const escapedName = escapeRegex(t.name);
+              return new RegExp(`^(${escapedName}|"${escapedName}")$`).test(
                 d.definition.dataType,
-              ),
-            )?.name;
+              );
+            })?.name;
 
             type ??=
               dbToTypes[diagramDb][d.definition.dataType.toUpperCase()].type;
