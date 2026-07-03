@@ -26,5 +26,11 @@ jobs:
     - run: npm install
     - name: Run eslint 
       run: npm run lint
+    - name: Run tests
+      run: npm run test
     - name: Run vite build
       run: npm run build
+    - name: Run bundle budget check
+      run: npm run bundle:check
+    - name: Run high severity audit
+      run: npm audit --audit-level=high
