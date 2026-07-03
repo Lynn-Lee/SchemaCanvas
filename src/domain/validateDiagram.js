@@ -47,6 +47,13 @@ function checkDefault(field, database) {
   return checkDefaultForType(field);
 }
 
+const fieldReferenceExists = (table, fieldReference) => {
+  const reference = String(fieldReference ?? "");
+  return (Array.isArray(table?.fields) ? table.fields : []).some(
+    (field) => String(field.id) === reference || String(field.name) === reference,
+  );
+};
+
 export function validateDiagram(diagram) {
   const issues = [];
   const tables = Array.isArray(diagram?.tables) ? diagram.tables : [];
@@ -55,6 +62,9 @@ export function validateDiagram(diagram) {
     : [];
   const types = Array.isArray(diagram?.types) ? diagram.types : [];
   const enums = Array.isArray(diagram?.enums) ? diagram.enums : [];
+  const tablesById = new Map(
+    tables.map((table) => [String(table.id), table]),
+  );
   const tableNames = new Map();
 
   tables.forEach((table) => {
@@ -259,6 +269,21 @@ export function validateDiagram(diagram) {
             fixHint: "Add at least one field to the index or remove it.",
           }),
         );
+      } else {
+        index.fields.forEach((fieldReference) => {
+          if (!fieldReferenceExists(table, fieldReference)) {
+            issues.push(
+              issue({
+                id: `missing-index-field:${indexId}:${fieldReference}`,
+                objectType: "index",
+                objectId: indexId,
+                messageKey: "index_field_missing",
+                message: `Index ${indexName || indexId} in table ${tableName} references a missing field: ${fieldReference}.`,
+                fixHint: "Remove the missing field reference or choose an existing field.",
+              }),
+            );
+          }
+        });
       }
     });
 
@@ -300,6 +325,21 @@ export function validateDiagram(diagram) {
             fixHint: "Add at least one field to the unique constraint or remove it.",
           }),
         );
+      } else {
+        constraint.fields.forEach((fieldReference) => {
+          if (!fieldReferenceExists(table, fieldReference)) {
+            issues.push(
+              issue({
+                id: `missing-unique-constraint-field:${constraintId}:${fieldReference}`,
+                objectType: "index",
+                objectId: constraintId,
+                messageKey: "unique_constraint_field_missing",
+                message: `Unique constraint ${constraintName || constraintId} in table ${tableName} references a missing field: ${fieldReference}.`,
+                fixHint: "Remove the missing field reference or choose an existing field.",
+              }),
+            );
+          }
+        });
       }
     });
 
@@ -483,6 +523,26 @@ export function validateDiagram(diagram) {
           fixHint: "Add at least one enum value or remove it.",
         }),
       );
+    } else {
+      const enumValues = new Map();
+      enumValue.values.forEach((value) => {
+        const normalizedValue = normalizeName(value);
+        if (!normalizedValue) return;
+        if (enumValues.has(normalizedValue)) {
+          issues.push(
+            issue({
+              id: `duplicate-enum-value:${enumId}:${normalizedValue}`,
+              objectType: "enum",
+              objectId: enumId,
+              messageKey: "duplicate_enum_values",
+              message: `Duplicate enum value in ${enumName}: ${value}`,
+              fixHint: "Remove or rename one of the duplicate enum values.",
+            }),
+          );
+        } else {
+          enumValues.set(normalizedValue, value);
+        }
+      });
     }
   });
 
@@ -505,6 +565,92 @@ export function validateDiagram(diagram) {
       );
     } else {
       relationshipNames.set(relationshipName, relationshipId);
+    }
+
+    const relationshipTables = [
+      {
+        direction: "start",
+        tableId: relationship.startTableId,
+        fieldId: relationship.startFieldId,
+      },
+      {
+        direction: "end",
+        tableId: relationship.endTableId,
+        fieldId: relationship.endFieldId,
+      },
+    ];
+
+    relationshipTables.forEach(({ direction, tableId, fieldId }) => {
+      const normalizedTableId = String(tableId ?? "");
+      const table = tablesById.get(normalizedTableId);
+
+      if (!table) {
+        issues.push(
+          issue({
+            id: `missing-relationship-table:${relationshipId}:${direction}:${normalizedTableId}`,
+            severity: "critical",
+            objectType: "relationship",
+            objectId: relationshipId,
+            messageKey: "relationship_table_missing",
+            message: `Relationship ${relationshipName || relationshipId} references a missing ${direction} table: ${normalizedTableId}.`,
+            fixHint: "Reconnect the relationship to an existing table or remove it.",
+          }),
+        );
+        return;
+      }
+
+      const normalizedFieldId = String(fieldId ?? "");
+      if (!fieldReferenceExists(table, normalizedFieldId)) {
+        issues.push(
+          issue({
+            id: `missing-relationship-field:${relationshipId}:${direction}:${normalizedFieldId}`,
+            severity: "critical",
+            objectType: "relationship",
+            objectId: relationshipId,
+            messageKey: "relationship_field_missing",
+            message: `Relationship ${relationshipName || relationshipId} references a missing ${direction} field: ${normalizedFieldId}.`,
+            fixHint: "Reconnect the relationship to an existing field or remove it.",
+          }),
+        );
+      }
+    });
+
+    if (Array.isArray(relationship.fields)) {
+      relationship.fields.forEach((field, index) => {
+        const startTable = tablesById.get(String(relationship.startTableId));
+        const endTable = tablesById.get(String(relationship.endTableId));
+
+        if (
+          startTable &&
+          !fieldReferenceExists(startTable, field.startFieldId)
+        ) {
+          issues.push(
+            issue({
+              id: `missing-relationship-field:${relationshipId}:start:${field.startFieldId ?? index}`,
+              severity: "critical",
+              objectType: "relationship",
+              objectId: relationshipId,
+              messageKey: "relationship_field_missing",
+              message: `Relationship ${relationshipName || relationshipId} references a missing start field: ${field.startFieldId}.`,
+              fixHint: "Reconnect the relationship to an existing field or remove it.",
+            }),
+          );
+        }
+
+        if (endTable && !fieldReferenceExists(endTable, field.endFieldId)) {
+          issues.push(
+            issue({
+              id: `missing-relationship-field:${relationshipId}:end:${field.endFieldId ?? index}`,
+              severity: "critical",
+              objectType: "relationship",
+              objectId: relationshipId,
+              messageKey: "relationship_field_missing",
+              message: `Relationship ${relationshipName || relationshipId} references a missing end field: ${field.endFieldId}.`,
+              fixHint: "Reconnect the relationship to an existing field or remove it.",
+            }),
+          );
+        }
+      });
     }
   });
 
