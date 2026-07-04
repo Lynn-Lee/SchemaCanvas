@@ -1,5 +1,11 @@
 import { applyCommand } from "./diagramCommands";
 
+export const DEFAULT_HISTORY_LIMIT = 100;
+
+function limitHistoryStack(stack, limit = DEFAULT_HISTORY_LIMIT) {
+  return stack.slice(-limit);
+}
+
 export function createHistoryState(diagram) {
   return {
     current: diagram,
@@ -13,13 +19,13 @@ function executeCommand(state, command) {
 
   return {
     current: result.diagram,
-    undoStack: [
+    undoStack: limitHistoryStack([
       ...state.undoStack,
       {
         command,
         inverseCommand: result.inverseCommand,
       },
-    ],
+    ]),
     redoStack: [],
   };
 }
@@ -33,13 +39,13 @@ function undo(state) {
   return {
     current: result.diagram,
     undoStack: state.undoStack.slice(0, -1),
-    redoStack: [
+    redoStack: limitHistoryStack([
       ...state.redoStack,
       {
         command: entry.command,
         inverseCommand: result.inverseCommand,
       },
-    ],
+    ]),
   };
 }
 
@@ -51,13 +57,13 @@ function redo(state) {
 
   return {
     current: result.diagram,
-    undoStack: [
+    undoStack: limitHistoryStack([
       ...state.undoStack,
       {
         command: entry.command,
         inverseCommand: result.inverseCommand,
       },
-    ],
+    ]),
     redoStack: state.redoStack.slice(0, -1),
   };
 }
