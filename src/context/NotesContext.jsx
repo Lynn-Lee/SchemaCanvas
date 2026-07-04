@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 import {
   Action,
   ObjectType,
@@ -18,86 +18,113 @@ export default function NotesContextProvider({ children }) {
   const { setUndoStack, setRedoStack } = useUndoRedo();
   const { selectedElement, setSelectedElement } = useSelect();
   const { emitDelta, isApplyingRemoteRef } = useCollab();
-  const shouldEmit = () => !isApplyingRemoteRef?.current;
+  const shouldEmit = useCallback(
+    () => !isApplyingRemoteRef?.current,
+    [isApplyingRemoteRef],
+  );
 
-  const addNote = (data, addToHistory = true) => {
-    let created = data;
-    if (data) {
-      setNotes((prev) => {
-        const temp = prev.slice();
-        temp.splice(data.id, 0, data);
-        return temp.map((t, i) => ({ ...t, id: i }));
-      });
-    } else {
-      const height = 88;
-      created = {
-        id: notes.length,
-        x: transform.pan.x,
-        y: transform.pan.y - height / 2,
-        title: `note_${notes.length}`,
-        content: "",
-        locked: false,
-        color: defaultNoteTheme,
-        height,
-        width: noteWidth,
-      };
-      setNotes((prev) => [...prev, { ...created, id: prev.length }]);
-    }
-    if (addToHistory) {
-      setUndoStack((prev) => [
-        ...prev,
-        {
-          action: Action.ADD,
-          element: ObjectType.NOTE,
-          message: t("add_note"),
-        },
-      ]);
-      setRedoStack([]);
-    }
-    if (shouldEmit() && created) {
-      emitDelta({
-        target: "note",
-        action: "create",
-        entityId: created.id,
-        data: [created],
-      });
-    }
-  };
+  const addNote = useCallback(
+    (data, addToHistory = true) => {
+      let created = data;
+      if (data) {
+        setNotes((prev) => {
+          const temp = prev.slice();
+          temp.splice(data.id, 0, data);
+          return temp.map((t, i) => ({ ...t, id: i }));
+        });
+      } else {
+        const height = 88;
+        created = {
+          id: notes.length,
+          x: transform.pan.x,
+          y: transform.pan.y - height / 2,
+          title: `note_${notes.length}`,
+          content: "",
+          locked: false,
+          color: defaultNoteTheme,
+          height,
+          width: noteWidth,
+        };
+        setNotes((prev) => [...prev, { ...created, id: prev.length }]);
+      }
+      if (addToHistory) {
+        setUndoStack((prev) => [
+          ...prev,
+          {
+            action: Action.ADD,
+            element: ObjectType.NOTE,
+            message: t("add_note"),
+          },
+        ]);
+        setRedoStack([]);
+      }
+      if (shouldEmit() && created) {
+        emitDelta({
+          target: "note",
+          action: "create",
+          entityId: created.id,
+          data: [created],
+        });
+      }
+    },
+    [
+      emitDelta,
+      notes.length,
+      setRedoStack,
+      setUndoStack,
+      shouldEmit,
+      t,
+      transform.pan.x,
+      transform.pan.y,
+    ],
+  );
 
-  const deleteNote = (id, addToHistory = true) => {
-    if (addToHistory) {
-      Toast.success(t("note_deleted"));
-      setUndoStack((prev) => [
-        ...prev,
-        {
-          action: Action.DELETE,
-          element: ObjectType.NOTE,
-          data: notes[id],
-          message: t("delete_note", { noteTitle: notes[id].title }),
-        },
-      ]);
-      setRedoStack([]);
-    }
-    setNotes((prev) =>
-      prev.filter((e) => e.id !== id).map((e, i) => ({ ...e, id: i })),
-    );
-    if (id === selectedElement.id) {
-      setSelectedElement((prev) => ({
-        ...prev,
-        element: ObjectType.NONE,
-        id: -1,
-        open: false,
-      }));
-    }
-    if (shouldEmit()) {
-      emitDelta({
-        target: "note",
-        action: "delete",
-        entityId: id,
-        data: [id],
-      });
-    }
-  };
+  const deleteNote = useCallback(
+    (id, addToHistory = true) => {
+      if (addToHistory) {
+        Toast.success(t("note_deleted"));
+        setUndoStack((prev) => [
+          ...prev,
+          {
+            action: Action.DELETE,
+            element: ObjectType.NOTE,
+            data: notes[id],
+            message: t("delete_note", { noteTitle: notes[id].title }),
+          },
+        ]);
+        setRedoStack([]);
+      }
+      setNotes((prev) =>
+        prev.filter((e) => e.id !== id).map((e, i) => ({ ...e, id: i })),
+      );
+      if (id === selectedElement.id) {
+        setSelectedElement((prev) => ({
+          ...prev,
+          element: ObjectType.NONE,
+          id: -1,
+          open: false,
+        }));
+      }
+      if (shouldEmit()) {
+        emitDelta({
+          target: "note",
+          action: "delete",
+          entityId: id,
+          data: [id],
+        });
+      }
+    },
+    [
+      emitDelta,
+      notes,
+      selectedElement.id,
+      setRedoStack,
+      setSelectedElement,
+      setUndoStack,
+      shouldEmit,
+      t,
+    ],
+  );
 
   const updateNote = useCallback(
     (id, values) => {
@@ -121,21 +148,22 @@ export default function NotesContextProvider({ children }) {
         });
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [emitDelta],
+    [emitDelta, shouldEmit],
+  );
+  const contextValue = useMemo(
+    () => ({
+      notes,
+      setNotes,
+      updateNote,
+      addNote,
+      deleteNote,
+      notesCount: notes.length,
+    }),
+    [addNote, deleteNote, notes, updateNote],
   );
 
   return (
-    <NotesContext.Provider
-      value={{
-        notes,
-        setNotes,
-        updateNote,
-        addNote,
-        deleteNote,
-        notesCount: notes.length,
-      }}
-    >
+    <NotesContext.Provider value={contextValue}>
       {children}
     </NotesContext.Provider>
   );
