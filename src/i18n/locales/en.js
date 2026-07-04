@@ -424,6 +424,8 @@ const en = {
     bug_report_add_issue: "Add an issue",
     bug_report_banner:
       "We value your feedback! If you've encountered a bug or issue while using our platform, please help us improve by reporting it. Your input is invaluable in making our service better.",
+    bug_report_attachment_error:
+      "Failed to read one of the selected attachments.",
     bug_report_upload_main:
       "Click to upload the file or drag and drop the file here",
     bug_report_upload_sub: "Upload up to 3 images",

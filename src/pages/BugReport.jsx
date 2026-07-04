@@ -46,6 +46,9 @@ function Form({ theme, t }) {
         const dataUri = event.target.result;
         attachments.push({ path: dataUri, filename: fileList[index].name });
       };
+      reader.onerror = () => {
+        Toast.error(t("bug_report_attachment_error"));
+      };
 
       reader.readAsDataURL(fileList[index].fileInstance);
     };

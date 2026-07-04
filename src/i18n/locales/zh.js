@@ -407,6 +407,7 @@ const zh = {
     bug_report_add_issue: "提交 issue",
     bug_report_banner:
       "我们重视你的反馈！如果你在使用过程中遇到 bug 或问题，请报告给我们，帮助我们改进服务。",
+    bug_report_attachment_error: "读取所选附件时失败。",
     bug_report_upload_main: "点击上传文件，或将文件拖放到这里",
     bug_report_upload_sub: "最多上传 3 张图片",
     bug_report_submit: "提交",

@@ -124,6 +124,13 @@ export default function ImportDiagram({
           reader.onload = async (e) => {
             await loadDiagramData(f, e);
           };
+          reader.onerror = () => {
+            setImportData(null);
+            setError({
+              type: STATUS.ERROR,
+              message: "Failed to read the selected file.",
+            });
+          };
           reader.readAsText(f);
 
           return {

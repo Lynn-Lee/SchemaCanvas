@@ -113,6 +113,19 @@ export default function ImportSource({
                 }
                 void setImportResult(e.target.result);
               };
+              reader.onerror = () => {
+                setImportData((prev) => ({
+                  ...prev,
+                  src: "",
+                  diagram: null,
+                  preview: null,
+                  issues: [],
+                }));
+                setError({
+                  type: STATUS.ERROR,
+                  message: "Failed to read the selected file.",
+                });
+              };
               reader.readAsText(f);
 
               return {
