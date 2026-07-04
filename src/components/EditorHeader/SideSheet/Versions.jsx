@@ -12,7 +12,7 @@ import {
   get,
   VERSION_FILENAME,
 } from "../../../api/gists";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import { DateTime } from "luxon";
 import {
   useAreas,
@@ -220,7 +220,7 @@ export default function Versions({ open, title, setTitle }) {
       transform: transform,
     };
 
-    return !_.isEqual(previousDiagram, currentDiagram);
+    return !isEqual(previousDiagram, currentDiagram);
   };
 
   const recordVersion = async () => {
