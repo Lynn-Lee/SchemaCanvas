@@ -227,7 +227,9 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
         setSaveState(State.SAVED);
         setLastSaved(new Date().toLocaleString());
       } catch (err) {
-        console.warn("cloud autosave failed:", err);
+        if (import.meta.env.DEV) {
+          console.warn("cloud autosave failed:", err);
+        }
         if (err?.response?.status === 402) {
           setSaveState(State.NONE);
           navigate("/checkout?tier=solo_pro");
@@ -501,7 +503,9 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
           });
         }
       } catch (e) {
-        console.log(e);
+        if (import.meta.env.DEV) {
+          console.log(e);
+        }
         setSaveState(State.FAILED_TO_LOAD);
       }
     };

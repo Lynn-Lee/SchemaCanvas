@@ -123,7 +123,9 @@ export default function Share({ title, setModal }) {
       }
       setModal(MODAL.NONE);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) {
+        console.error(e);
+      }
       setError(e);
     }
   }, [gistId, setModal, setGistId]);
