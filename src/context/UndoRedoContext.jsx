@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 export const UndoRedoContext = createContext({
   undoStack: [],
@@ -10,11 +10,13 @@ export const UndoRedoContext = createContext({
 export default function UndoRedoContextProvider({ children }) {
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+  const contextValue = useMemo(
+    () => ({ undoStack, redoStack, setUndoStack, setRedoStack }),
+    [undoStack, redoStack],
+  );
 
   return (
-    <UndoRedoContext.Provider
-      value={{ undoStack, redoStack, setUndoStack, setRedoStack }}
-    >
+    <UndoRedoContext.Provider value={contextValue}>
       {children}
     </UndoRedoContext.Provider>
   );

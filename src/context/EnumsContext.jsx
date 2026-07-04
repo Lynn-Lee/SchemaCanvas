@@ -1,4 +1,11 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Action, ObjectType } from "../data/constants";
 import { Toast } from "@douyinfe/semi-ui";
 import { useTranslation } from "react-i18next";
@@ -29,78 +36,86 @@ export default function EnumsContextProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enums]);
 
-  const addEnum = (data, addToHistory = true) => {
-    const newEnum = {
-      id: nanoid(),
-      name: `enum_${enums.length}`,
-      values: [],
-    };
-    if (data) {
-      setEnums((prev) => {
-        const temp = prev.slice();
-        temp.splice(data.index, 0, data.enum);
-        return temp;
-      });
-    } else {
-      setEnums((prev) => [...prev, newEnum]);
-    }
-    if (addToHistory) {
-      setUndoStack((prev) => [
-        ...prev,
-        {
-          action: Action.ADD,
-          data: {
-            index: enums.length,
-            enum: data?.enum ?? newEnum,
+  const addEnum = useCallback(
+    (data, addToHistory = true) => {
+      const newEnum = {
+        id: nanoid(),
+        name: `enum_${enums.length}`,
+        values: [],
+      };
+      if (data) {
+        setEnums((prev) => {
+          const temp = prev.slice();
+          temp.splice(data.index, 0, data.enum);
+          return temp;
+        });
+      } else {
+        setEnums((prev) => [...prev, newEnum]);
+      }
+      if (addToHistory) {
+        setUndoStack((prev) => [
+          ...prev,
+          {
+            action: Action.ADD,
+            data: {
+              index: enums.length,
+              enum: data?.enum ?? newEnum,
+            },
+            element: ObjectType.ENUM,
+            message: t("add_enum"),
           },
-          element: ObjectType.ENUM,
-          message: t("add_enum"),
-        },
-      ]);
-      setRedoStack([]);
-    }
-  };
+        ]);
+        setRedoStack([]);
+      }
+    },
+    [enums.length, setRedoStack, setUndoStack, t],
+  );
 
-  const deleteEnum = (id, addToHistory = true) => {
-    const enumIndex = enums.findIndex((e) => e.id === id);
-    if (addToHistory) {
-      Toast.success(t("enum_deleted"));
-      setUndoStack((prev) => [
-        ...prev,
-        {
-          action: Action.DELETE,
-          element: ObjectType.ENUM,
-          data: {
-            index: enumIndex,
-            enum: enums[enumIndex],
+  const deleteEnum = useCallback(
+    (id, addToHistory = true) => {
+      const enumIndex = enums.findIndex((e) => e.id === id);
+      if (addToHistory) {
+        Toast.success(t("enum_deleted"));
+        setUndoStack((prev) => [
+          ...prev,
+          {
+            action: Action.DELETE,
+            element: ObjectType.ENUM,
+            data: {
+              index: enumIndex,
+              enum: enums[enumIndex],
+            },
+            message: t("delete_enum", {
+              enumName: enums[enumIndex].name,
+            }),
           },
-          message: t("delete_enum", {
-            enumName: enums[enumIndex].name,
-          }),
-        },
-      ]);
-      setRedoStack([]);
-    }
-    setEnums((prev) => prev.filter((e) => e.id !== id));
-  };
+        ]);
+        setRedoStack([]);
+      }
+      setEnums((prev) => prev.filter((e) => e.id !== id));
+    },
+    [enums, setRedoStack, setUndoStack, t],
+  );
 
-  const updateEnum = (id, values) => {
+  const updateEnum = useCallback((id, values) => {
     setEnums((prev) =>
       prev.map((e) => (e.id === id ? { ...e, ...values } : e)),
     );
-  };
+  }, []);
+  const contextValue = useMemo(
+    () => ({
+      enums,
+      setEnums,
+      addEnum,
+      updateEnum,
+      deleteEnum,
+      enumsCount: enums.length,
+    }),
+    [addEnum, deleteEnum, enums, updateEnum],
+  );
 
   return (
-    <EnumsContext.Provider
-      value={{
-        enums,
-        setEnums,
-        addEnum,
-        updateEnum,
-        deleteEnum,
-        enumsCount: enums.length,
-      }}
-    >
+    <EnumsContext.Provider value={contextValue}>
       {children}
     </EnumsContext.Provider>
   );

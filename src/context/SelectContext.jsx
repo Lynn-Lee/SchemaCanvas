@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 import { ObjectType, Tab } from "../data/constants";
 
 export const SelectContext = createContext(null);
@@ -14,16 +14,18 @@ export default function SelectContextProvider({ children }) {
     openFromToolbar: false, // this is to handle triggering onClickOutside when sidebar is disabled
   });
   const [bulkSelectedElements, setBulkSelectedElements] = useState([]);
+  const contextValue = useMemo(
+    () => ({
+      selectedElement,
+      setSelectedElement,
+      bulkSelectedElements,
+      setBulkSelectedElements,
+    }),
+    [selectedElement, bulkSelectedElements],
+  );
 
   return (
-    <SelectContext.Provider
-      value={{
-        selectedElement,
-        setSelectedElement,
-        bulkSelectedElements,
-        setBulkSelectedElements,
-      }}
-    >
+    <SelectContext.Provider value={contextValue}>
       {children}
     </SelectContext.Provider>
   );

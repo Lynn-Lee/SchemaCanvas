@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   defaultSettings,
@@ -25,9 +25,13 @@ export default function SettingsContextProvider({ children }) {
   useEffect(() => {
     writeSettings(settings);
   }, [settings]);
+  const contextValue = useMemo(
+    () => ({ settings, setSettings }),
+    [settings],
+  );
 
   return (
-    <SettingsContext.Provider value={{ settings, setSettings }}>
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );

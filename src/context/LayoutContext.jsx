@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { queryConfig } from "../utils/queryConfig";
 
@@ -33,26 +33,31 @@ export default function LayoutContextProvider({ children }) {
       : defaultLayout.toolbar,
   });
 
-  const effectiveLayout = {
-    ...layout,
-    header: queryConfig.hideHeader.isForced(hideHeaderParam)
-      ? false
-      : layout.header,
-    sidebar: queryConfig.hideSidebar.isForced(hideSidebarParam)
-      ? false
-      : layout.sidebar,
-    toolbar: queryConfig.hideToolbar.isForced(hideToolbarParam)
-      ? false
-      : layout.toolbar,
-  };
+  const effectiveLayout = useMemo(
+    () => ({
+      ...layout,
+      header: queryConfig.hideHeader.isForced(hideHeaderParam)
+        ? false
+        : layout.header,
+      sidebar: queryConfig.hideSidebar.isForced(hideSidebarParam)
+        ? false
+        : layout.sidebar,
+      toolbar: queryConfig.hideToolbar.isForced(hideToolbarParam)
+        ? false
+        : layout.toolbar,
+    }),
+    [layout, hideHeaderParam, hideSidebarParam, hideToolbarParam],
+  );
+  const contextValue = useMemo(
+    () => ({
+      layout: effectiveLayout,
+      setLayout,
+    }),
+    [effectiveLayout],
+  );
 
   return (
-    <LayoutContext.Provider
-      value={{
-        layout: effectiveLayout,
-        setLayout,
-      }}
-    >
+    <LayoutContext.Provider value={contextValue}>
       {children}
     </LayoutContext.Provider>
   );
