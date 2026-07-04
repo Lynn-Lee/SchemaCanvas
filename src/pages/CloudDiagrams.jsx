@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {
+  getCloudCapability,
+  useExtensions,
+} from "../context/ExtensionsContext";
+import CloudAccountStatus from "../features/cloud/CloudAccountStatus";
 import { noBackendCloudRepository } from "../persistence/cloudRepository";
 
 const ALL_FILTER = "all";
@@ -63,9 +68,32 @@ function filterDiagrams(diagrams, filter) {
   return diagrams;
 }
 
+function resolveCloudAccountStatus(session = {}) {
+  if (session.status === "signed-in" || session.status === "authenticated") {
+    return "signed-in";
+  }
+  if (session.status === "expired" || session.status === "expired-session") {
+    return "expired-session";
+  }
+  return "signed-out";
+}
+
 export default function CloudDiagrams({
-  repository = noBackendCloudRepository,
+  repository,
+  cloudCapability,
+  cloudSession,
+  onSignIn,
+  onSignOut,
 }) {
+  const extensions = useExtensions();
+  const resolvedRepository =
+    repository ?? extensions.cloudRepository ?? noBackendCloudRepository;
+  const capability =
+    cloudCapability ??
+    (repository ? { enabled: true } : getCloudCapability(extensions));
+  const session = cloudSession ?? extensions.cloudSession ?? {};
+  const accountStatus = resolveCloudAccountStatus(session);
+  const canListCloudDiagrams = capability.enabled && accountStatus === "signed-in";
   const { t } = useTranslation();
   const [state, setState] = useState({
     loading: true,
@@ -77,11 +105,38 @@ export default function CloudDiagrams({
 
   useEffect(() => {
     let active = true;
+
+    if (!capability.enabled) {
+      setState({
+        loading: false,
+        error: {
+          reason: "unavailable",
+        },
+        diagrams: [],
+        teams: [],
+      });
+      return () => {
+        active = false;
+      };
+    }
+
+    if (!canListCloudDiagrams) {
+      setState({
+        loading: false,
+        error: null,
+        diagrams: [],
+        teams: [],
+      });
+      return () => {
+        active = false;
+      };
+    }
+
     setState((current) => ({ ...current, loading: true, error: null }));
 
     Promise.all([
-      repository.listCloudDiagrams(),
-      repository.listTeams(),
+      resolvedRepository.listCloudDiagrams(),
+      resolvedRepository.listTeams(),
     ])
       .then(([diagramsResult, teamsResult]) => {
         if (!active) {
@@ -125,7 +180,7 @@ export default function CloudDiagrams({
     return () => {
       active = false;
     };
-  }, [repository]);
+  }, [capability.enabled, canListCloudDiagrams, resolvedRepository]);
 
   useEffect(() => {
     document.title = t("cloud_diagrams_document_title");
@@ -183,7 +238,18 @@ export default function CloudDiagrams({
           />
         ) : null}
 
-        {!state.loading && !state.error ? (
+        {!state.loading && capability.enabled && !canListCloudDiagrams ? (
+          <section className="rounded-md border border-slate-200 bg-white p-6">
+            <CloudAccountStatus
+              status={accountStatus}
+              account={session.account}
+              onSignIn={onSignIn ?? extensions.signInCloudAccount}
+              onSignOut={onSignOut ?? extensions.signOutCloudAccount}
+            />
+          </section>
+        ) : null}
+
+        {!state.loading && !state.error && canListCloudDiagrams ? (
           <div className="space-y-5">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
