@@ -1,10 +1,6 @@
 import { createContext, useMemo, useRef } from "react";
 
-export const CollabContext = createContext({
-  emitDelta: () => {},
-  emitAwareness: () => {},
-  isApplyingRemoteRef: { current: false },
-});
+export const CollabContext = createContext(null);
 
 export default function CollabContextProvider({ children }) {
   const isApplyingRemoteRef = useRef(false);

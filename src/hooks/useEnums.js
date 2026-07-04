@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { EnumsContext } from "../context/EnumsContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useEnums() {
-  return useContext(EnumsContext);
+  return useRequiredContext(EnumsContext, "useEnums", "EnumsContextProvider");
 }

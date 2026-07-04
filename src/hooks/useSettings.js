@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useSettings() {
-  return useContext(SettingsContext);
+  return useRequiredContext(
+    SettingsContext,
+    "useSettings",
+    "SettingsContextProvider",
+  );
 }

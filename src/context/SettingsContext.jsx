@@ -1,15 +1,11 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  defaultSettings,
   readSettings,
   writeSettings,
 } from "../persistence/settingsRepository";
 
-export const SettingsContext = createContext({
-  settings: defaultSettings,
-  setSettings: () => {},
-});
+export const SettingsContext = createContext(null);
 
 export default function SettingsContextProvider({ children }) {
   const [searchParams] = useSearchParams();

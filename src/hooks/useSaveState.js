@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { SaveStateContext } from "../context/SaveStateContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useSaveState() {
-  return useContext(SaveStateContext);
+  return useRequiredContext(
+    SaveStateContext,
+    "useSaveState",
+    "SaveStateContextProvider",
+  );
 }

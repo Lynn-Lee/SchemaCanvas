@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { AreasContext } from "../context/AreasContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useAreas() {
-  return useContext(AreasContext);
+  return useRequiredContext(AreasContext, "useAreas", "AreasContextProvider");
 }

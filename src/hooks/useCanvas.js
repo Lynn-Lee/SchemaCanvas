@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { CanvasContext } from "../context/CanvasContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useCanvas() {
-  return useContext(CanvasContext);
+  return useRequiredContext(CanvasContext, "useCanvas", "CanvasContextProvider");
 }

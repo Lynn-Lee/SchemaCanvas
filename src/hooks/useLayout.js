@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { LayoutContext } from "../context/LayoutContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useLayout() {
-  return useContext(LayoutContext);
+  return useRequiredContext(
+    LayoutContext,
+    "useLayout",
+    "LayoutContextProvider",
+  );
 }

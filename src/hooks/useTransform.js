@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { TransformContext } from "../context/TransformContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useTransform() {
-  return useContext(TransformContext);
+  return useRequiredContext(
+    TransformContext,
+    "useTransform",
+    "TransformContextProvider",
+  );
 }

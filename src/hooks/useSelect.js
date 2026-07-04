@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { SelectContext } from "../context/SelectContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useSelect() {
-  return useContext(SelectContext);
+  return useRequiredContext(SelectContext, "useSelect", "SelectContextProvider");
 }

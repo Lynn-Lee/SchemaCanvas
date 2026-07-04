@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { DiagramContext } from "../context/DiagramContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useDiagram() {
-  return useContext(DiagramContext);
+  return useRequiredContext(
+    DiagramContext,
+    "useDiagram",
+    "DiagramContextProvider",
+  );
 }

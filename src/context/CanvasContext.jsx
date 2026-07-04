@@ -2,37 +2,7 @@ import { useTransform } from "../hooks";
 import { createContext, useCallback, useMemo, useRef, useState } from "react";
 import { useEventListener, useResizeObserver } from "usehooks-ts";
 
-export const CanvasContext = createContext({
-  canvas: {
-    screenSize: {
-      x: 0,
-      y: 0,
-    },
-    viewBox: new DOMRect(),
-  },
-  coords: {
-    toDiagramSpace(coords) {
-      return coords;
-    },
-    toScreenSpace(coords) {
-      return coords;
-    },
-  },
-  pointer: {
-    spaces: {
-      screen: {
-        x: 0,
-        y: 0,
-      },
-      diagram: {
-        x: 0,
-        y: 0,
-      },
-    },
-    style: "default",
-    setStyle() {},
-  },
-});
+export const CanvasContext = createContext(null);
 
 export function CanvasContextProvider({ children, ...attrs }) {
   const canvasWrapRef = useRef(null);

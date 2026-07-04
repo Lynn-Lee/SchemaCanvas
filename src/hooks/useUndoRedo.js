@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { UndoRedoContext } from "../context/UndoRedoContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useUndoRedo() {
-  return useContext(UndoRedoContext);
+  return useRequiredContext(
+    UndoRedoContext,
+    "useUndoRedo",
+    "UndoRedoContextProvider",
+  );
 }

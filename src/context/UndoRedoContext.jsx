@@ -1,11 +1,6 @@
 import { createContext, useMemo, useState } from "react";
 
-export const UndoRedoContext = createContext({
-  undoStack: [],
-  setUndoStack: () => {},
-  redoStack: [],
-  setRedoStack: () => {},
-});
+export const UndoRedoContext = createContext(null);
 
 export default function UndoRedoContextProvider({ children }) {
   const [undoStack, setUndoStack] = useState([]);

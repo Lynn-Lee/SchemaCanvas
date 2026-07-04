@@ -1,7 +1,7 @@
 import { createContext, useMemo, useState } from "react";
 import { State } from "../data/constants";
 
-export const SaveStateContext = createContext(State.NONE);
+export const SaveStateContext = createContext(null);
 
 export default function SaveStateContextProvider({ children }) {
   const [saveState, setSaveState] = useState(State.NONE);

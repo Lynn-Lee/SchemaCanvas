@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { NotesContext } from "../context/NotesContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useNotes() {
-  return useContext(NotesContext);
+  return useRequiredContext(NotesContext, "useNotes", "NotesContextProvider");
 }

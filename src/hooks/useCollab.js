@@ -1,6 +1,10 @@
-import { useContext } from "react";
 import { CollabContext } from "../context/CollabContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useCollab() {
-  return useContext(CollabContext);
+  return useRequiredContext(
+    CollabContext,
+    "useCollab",
+    "CollabContextProvider",
+  );
 }

@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { TypesContext } from "../context/TypesContext";
+import useRequiredContext from "./useRequiredContext";
 
 export default function useTypes() {
-  return useContext(TypesContext);
+  return useRequiredContext(TypesContext, "useTypes", "TypesContextProvider");
 }
