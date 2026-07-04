@@ -16,7 +16,7 @@ import {
 import { DB } from "./constants";
 
 const intRegex = /^-?\d*$/;
-const doubleRegex = /^-?\d*.?\d+$/;
+const doubleRegex = /^-?\d+(?:\.\d+)?$/;
 const binaryRegex = /^[01]+$/;
 const postgresGeometryNumber = "\\d+(?:\\.\\d+)?";
 const postgresGeometryPoint = `\\(${postgresGeometryNumber},${postgresGeometryNumber}\\)`;

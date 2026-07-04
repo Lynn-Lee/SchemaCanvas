@@ -388,12 +388,14 @@ describe("validateDiagram", () => {
   it("validates defaults for common scalar types", () => {
     const validDefaults = [
       [{ type: "INTEGER", defaultValue: "42" }],
+      [{ type: "DECIMAL", defaultValue: "12.34" }],
       [{ type: "VARCHAR", defaultValue: "hello", size: 255 }],
       [{ type: "BOOLEAN", defaultValue: "true" }],
       [{ type: "DATE", defaultValue: "2026-07-04" }],
     ];
     const invalidDefaults = [
       [{ type: "INTEGER", defaultValue: "forty-two" }],
+      [{ type: "DECIMAL", defaultValue: "12x34" }],
       [{ type: "BOOLEAN", defaultValue: "maybe" }],
       [{ type: "DATE", defaultValue: "not-a-date" }],
     ];
