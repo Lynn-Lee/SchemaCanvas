@@ -52,12 +52,33 @@ describe("CloudDiagrams", () => {
   });
 
   it("shows an empty state for configured cloud with no diagrams", async () => {
-    renderCloudDiagrams({ repository: createRepository() });
+    renderCloudDiagrams({
+      repository: createRepository(),
+      cloudCapability: { enabled: true },
+      cloudSession: { status: "signed-in" },
+    });
 
     expect(
       await screen.findByRole("heading", { name: "cloud_diagrams_empty" }),
     ).toBeInTheDocument();
     expect(screen.getByText("cloud_diagrams_empty_description"));
+  });
+
+  it("requires a signed-in session before listing configured cloud diagrams", async () => {
+    const repository = createRepository();
+
+    renderCloudDiagrams({
+      repository,
+      cloudCapability: { enabled: true },
+      cloudSession: { status: "signed-out" },
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "cloud_status_signed_out" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "cloud_action_sign_in" }));
+    expect(repository.listCloudDiagrams).not.toHaveBeenCalled();
+    expect(repository.listTeams).not.toHaveBeenCalled();
   });
 
   it("shows mine diagrams with permission and modified timestamp", async () => {
@@ -75,7 +96,11 @@ describe("CloudDiagrams", () => {
       ],
     });
 
-    renderCloudDiagrams({ repository });
+    renderCloudDiagrams({
+      repository,
+      cloudCapability: { enabled: true },
+      cloudSession: { status: "signed-in" },
+    });
 
     expect(await screen.findByText("Billing schema")).toBeInTheDocument();
     expect(screen.getByText("PostgreSQL"));
@@ -111,7 +136,11 @@ describe("CloudDiagrams", () => {
       ],
     });
 
-    renderCloudDiagrams({ repository });
+    renderCloudDiagrams({
+      repository,
+      cloudCapability: { enabled: true },
+      cloudSession: { status: "signed-in" },
+    });
 
     expect(await screen.findByText("Platform schema")).toBeInTheDocument();
     expect(screen.getByText("Analytics schema")).toBeInTheDocument();
