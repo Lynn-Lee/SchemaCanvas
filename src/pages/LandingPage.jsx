@@ -10,12 +10,9 @@ import sqlite_icon from "../assets/sqlite.png";
 import mariadb_icon from "../assets/mariadb.png";
 import oraclesql_icon from "../assets/oraclesql.png";
 import sql_server_icon from "../assets/sql-server.png";
-import discord from "../assets/discord.png";
 import github from "../assets/github.png";
-import warp from "../assets/warp.png";
 import screenshot from "../assets/screenshot.png";
 import FadeIn from "../animations/FadeIn";
-import axios from "axios";
 import { languages } from "../i18n/i18n";
 import { socials } from "../data/socials";
 
@@ -28,20 +25,11 @@ function shortenNumber(number) {
 
 export default function LandingPage() {
   const { t } = useTranslation();
-  const [stats, setStats] = useState({ stars: 18000, forks: 1200 });
   const features = getFeatures(t);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      await axios
-        .get("https://api.github-star-counter.workers.dev/user/drawdb-io")
-        .then((res) => setStats(res.data));
-    };
-
     document.body.setAttribute("theme-mode", "light");
     document.title = t("landing_document_title");
-
-    fetchStats();
   }, [t]);
 
   return (
@@ -104,29 +92,6 @@ export default function LandingPage() {
       {/* Learn more */}
       <div id="learn-more">
         <div className="bg-zinc-100 py-10 px-28 md:px-8">
-          {/* Supported by */}
-          <div className="text-center mb-16">
-            <div className="text-2xl md:text-xl font-bold text-sky-800 mb-8">
-              {t("landing_supported_by")}
-            </div>
-            <div>
-              <a
-                href="https://warp.dev/drawdb"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src={warp}
-                  alt="warp.dev"
-                  width={260}
-                  className="m-auto mb-4"
-                />
-                <div className="font-semibold text-lg md:text-base">
-                  {t("landing_warp_description")}
-                </div>
-              </a>
-            </div>
-          </div>
           <div className="mt-16 w-[75%] text-center sm:w-full mx-auto shadow-xs rounded-2xl border p-6 bg-white space-y-3 mb-12">
             <div className="text-lg font-medium">
               {t("landing_product_summary")}
@@ -138,22 +103,6 @@ export default function LandingPage() {
             />
           </div>
           <div className="flex justify-center items-center gap-28 md:block">
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(stats.stars)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                {t("landing_github_stars")}
-              </div>
-            </div>
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(stats.forks)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                {t("landing_github_forks")}
-              </div>
-            </div>
             <div className="text-center mb-4">
               <div className="text-5xl md:text-3xl font-bold text-sky-800">
                 {shortenNumber(languages.length)}
@@ -262,46 +211,6 @@ export default function LandingPage() {
                 </div>
               </div>
             </a>
-            <a
-              className="inline-block"
-              href={socials.discord}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="bg-[#5865f2] hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-8 py-4 rounded-lg">
-                <img src={discord} alt="" className="h-8" />
-                <div className="text-lg text-white font-bold">
-                  {t("landing_join_discord")}
-                </div>
-              </div>
-            </a>
-            <a
-              className="inline-block"
-              href={socials.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="text-white bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-12 py-4 rounded-lg">
-                <i className="text-2xl bi bi-twitter-x" />
-                <div className="text-lg  font-bold">{t("landing_follow_x")}</div>
-              </div>
-            </a>
-          </div>
-          <div className="px-30 md:px-8 text-center mt-4">
-            <a
-              className="w-full"
-              href={socials.sponsor}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="bg-white border-2 border-rose-400 hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-4 px-12 py-3 rounded-full">
-                <div className="relative text-2xl mt-1">
-                  <i className="bi bi-heart-fill text-rose-300" />
-                  <i className="absolute top-0.5 left-0 bi bi-heart text-rose-400" />
-                </div>
-                <div className="text-xl font-semibold">{t("landing_support_us")}</div>
-              </div>
-            </a>
           </div>
         </div>
       </div>
@@ -311,7 +220,7 @@ export default function LandingPage() {
       </div>
       <hr className="border-zinc-300" />
       <div className="text-center text-sm py-3">
-        &copy; {new Date().getFullYear()} <strong>drawDB</strong> - All rights
+        &copy; {new Date().getFullYear()} <strong>SchemaCanvas</strong> - All rights
         {t("landing_rights_reserved")}
       </div>
     </div>
@@ -447,18 +356,7 @@ function getFeatures(t) {
   },
   {
     title: t("landing_feature_shortcuts_title"),
-    content: (
-      <div>
-        {t("landing_feature_shortcuts_body")}{" "}
-        <Link
-          to={`${socials.docs}/shortcuts`}
-          className="ms-1.5 text-blue-500 hover:underline"
-        >
-          {t("landing_feature_shortcuts_link")}
-        </Link>
-        .
-      </div>
-    ),
+    content: <div>{t("landing_feature_shortcuts_body")}</div>,
     footer: "",
   },
   {

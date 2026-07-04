@@ -1,4 +1,4 @@
-# Contributing to drawDB
+# Contributing to SchemaCanvas
 
 Thanks for taking the time to contribute!
 
@@ -38,7 +38,7 @@ This section guides you through submitting an enhancement suggestion for our pro
 
 ### Submitting Pull Requests
 
-If you would like to implement a big feature that has not been discussed before please reach out to the maintainer on Discord at @dottle_ or send an email to drawdb@outlook.com.
+If you would like to implement a big feature that has not been discussed before, please open an issue first so it can be discussed before you invest the work.
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -79,10 +79,7 @@ This section lists the labels we use to help organize and identify issues and pu
 
 ### Getting Help
 
-If you have any questions, please feel free to reach out to us through the following channels:
-
-- [Discord](https://discord.gg/BrjZgNrmR6)
-- [Email](drawdb@outlook.com)
+If you have any questions, please open a [GitHub issue](https://github.com/Lynn-Lee/SchemaCanvas/issues).
 
 ---
 

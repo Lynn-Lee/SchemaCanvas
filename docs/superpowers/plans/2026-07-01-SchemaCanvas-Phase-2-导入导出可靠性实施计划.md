@@ -1,4 +1,4 @@
-# drawDB Phase 2 导入导出可靠性实施计划
+# SchemaCanvas Phase 2 导入导出可靠性实施计划
 
 版本：2026-07-01
 

@@ -1,4 +1,4 @@
-# drawDB Phase 5 账号团队与云端能力实施计划
+# SchemaCanvas Phase 5 账号团队与云端能力实施计划
 
 版本：2026-07-02
 

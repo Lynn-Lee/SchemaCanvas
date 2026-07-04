@@ -2,7 +2,7 @@ export async function seedLocalDiagram(page, diagram) {
   await page.goto("/");
   await page.evaluate(
     async ({ diagramToSeed }) => {
-      const databaseName = "drawDB";
+      const databaseName = "SchemaCanvas";
       const databaseVersion = 67;
 
       const requestToPromise = (request) =>
@@ -16,7 +16,7 @@ export async function seedLocalDiagram(page, diagram) {
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
         request.onblocked = () =>
-          reject(new Error("Timed out deleting the drawDB IndexedDB database."));
+          reject(new Error("Timed out deleting the SchemaCanvas IndexedDB database."));
       });
 
       const openRequest = indexedDB.open(databaseName, databaseVersion);

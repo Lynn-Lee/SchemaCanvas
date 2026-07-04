@@ -1,4 +1,4 @@
-# drawDB Phase 1 Domain模型与持久化实施计划
+# SchemaCanvas Phase 1 Domain模型与持久化实施计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -309,4 +309,4 @@ npm audit --audit-level=high
 
 ## 4. 下一轮默认任务
 
-下一轮自动化默认执行 Phase 1 退出门禁复核；若门禁保持通过，则生成 `docs/superpowers/plans/2026-07-01-drawDB-Phase-2-导入导出可靠性实施计划.md`，暂不直接进入 Phase 2 源码切片。
+下一轮自动化默认执行 Phase 1 退出门禁复核；若门禁保持通过，则生成 `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-2-导入导出可靠性实施计划.md`，暂不直接进入 Phase 2 源码切片。

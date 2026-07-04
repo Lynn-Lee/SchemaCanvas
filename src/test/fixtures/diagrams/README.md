@@ -1,6 +1,6 @@
 # Diagram fixtures
 
-本目录保存 drawDB normalized diagram、旧格式兼容样本和导出输入样本。
+本目录保存 SchemaCanvas normalized diagram、旧格式兼容样本和导出输入样本。
 
 命名规则：
 

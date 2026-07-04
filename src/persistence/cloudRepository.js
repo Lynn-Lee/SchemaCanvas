@@ -18,7 +18,7 @@ function createUnavailableResult(operation) {
     ok: false,
     reason: CLOUD_UNAVAILABLE_REASON,
     operation,
-    message: "Cloud features are not configured for this drawDB instance.",
+    message: "Cloud features are not configured for this SchemaCanvas instance.",
   };
 }
 

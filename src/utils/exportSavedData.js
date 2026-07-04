@@ -55,5 +55,5 @@ export async function exportSavedData({ now = () => new Date() } = {}) {
   });
 
   const content = await zip.generateAsync({ type: "blob" });
-  saveAs(content, `drawdb-backup-${formatBackupTimestamp(now())}.zip`);
+  saveAs(content, `schemacanvas-backup-${formatBackupTimestamp(now())}.zip`);
 }

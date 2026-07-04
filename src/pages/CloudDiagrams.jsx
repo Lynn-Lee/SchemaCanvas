@@ -199,7 +199,7 @@ export default function CloudDiagrams({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <div>
             <Link className="text-sm font-semibold text-slate-700" to="/">
-              drawDB
+              SchemaCanvas
             </Link>
             <h1 className="text-2xl font-semibold">{t("cloud_diagrams")}</h1>
           </div>

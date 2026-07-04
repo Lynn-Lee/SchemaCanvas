@@ -1,10 +1,10 @@
-# drawDB Phase 0 安全与工程底座实施计划
+# SchemaCanvas Phase 0 安全与工程底座实施计划
 
 版本：2026-07-01
 
 ## 1. 阶段目标
 
-Phase 0 的目标是先建立后续重构所需的安全说明、验证门禁、测试基础设施和高风险输入保护。这个阶段不改变 drawDB 的核心产品定位：默认仍然是无需账号、本地优先、浏览器内保存的 ERD 编辑器。
+Phase 0 的目标是先建立后续重构所需的安全说明、验证门禁、测试基础设施和高风险输入保护。这个阶段不改变 SchemaCanvas 的核心产品定位：默认仍然是无需账号、本地优先、浏览器内保存的 ERD 编辑器。
 
 本阶段结束后，应满足：
 
@@ -35,7 +35,7 @@ Phase 0 的目标是先建立后续重构所需的安全说明、验证门禁、
 
 - 新增 `SECURITY.md`
 - 新增 `docs/engineering/验证矩阵.md`
-- 修改 `docs/superpowers/plans/2026-07-01-drawDB-Phase-0-安全与工程底座实施计划.md`
+- 修改 `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-0-安全与工程底座实施计划.md`
 
 内容要求：
 
@@ -354,6 +354,6 @@ npm run e2e
 
 Phase 0 完成后，进入 Phase 1 前需要新增：
 
-- `docs/superpowers/plans/2026-07-01-drawDB-Phase-1-Domain-Model-与本地持久化实施计划.md`
+- `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-1-Domain-Model-与本地持久化实施计划.md`
 
 Phase 1 不应在 Phase 0 的测试基线和安全门禁稳定前启动。

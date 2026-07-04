@@ -672,7 +672,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
     setShowNewDiagramWizard(false);
     searchParams.set("importAsNew", "1");
     setSearchParams(searchParams, { replace: true });
-    window.dispatchEvent(new CustomEvent("drawdb:open-import"));
+    window.dispatchEvent(new CustomEvent("schemacanvas:open-import"));
   }, [layout.readOnly, searchParams, setSearchParams]);
 
   useEffect(() => {
@@ -711,7 +711,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   }, [saveState, layout, save]);
 
   useEffect(() => {
-    document.title = "Editor | drawDB";
+    document.title = "Editor | SchemaCanvas";
 
     load();
   }, [load]);

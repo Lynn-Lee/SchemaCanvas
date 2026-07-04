@@ -182,12 +182,7 @@ export const EDITOR_MENU_CATEGORIES = [
   },
   {
     id: "help",
-    items: [
-      { id: "docs", labelKey: "docs", shortcut: "Ctrl+H", hotkey: "mod+h" },
-      { id: "shortcuts", labelKey: "shortcuts" },
-      { id: "ask_on_discord", labelKey: "ask_on_discord" },
-      { id: "report_bug", labelKey: "report_bug" },
-    ],
+    items: [{ id: "report_bug", labelKey: "report_bug" }],
   },
 ];
 
@@ -236,7 +231,6 @@ export const EDITOR_HOTKEYS = [
     shortcut: "Ctrl+Alt+C",
   },
   { id: "reset_view", keys: "enter", action: "resetView" },
-  { id: "docs", keys: "mod+h", action: "openDocs", shortcut: "Ctrl+H" },
   { id: "fit_window", keys: "mod+alt+w", action: "fitWindow" },
   {
     id: "toggle_dbml_editor",

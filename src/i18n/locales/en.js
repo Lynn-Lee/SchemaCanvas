@@ -82,8 +82,6 @@ const en = {
       "Are you sure you want to flush the storage? This will irreversibly delete all your diagrams and custom templates.",
     storage_flushed: "Storage flushed",
     help: "Help",
-    shortcuts: "Shortcuts",
-    ask_on_discord: "Ask us on Discord",
     feedback: "Feedback",
     no_changes: "No changes",
     loading: "Loading...",
@@ -271,7 +269,7 @@ const en = {
     cloud_account: "Account",
     cloud_status_unavailable: "Cloud unavailable",
     cloud_status_unavailable_description:
-      "Cloud features are not configured for this drawDB instance.",
+      "Cloud features are not configured for this SchemaCanvas instance.",
     cloud_status_signed_out: "Not signed in",
     cloud_status_signed_out_description:
       "Sign in only when you want to use optional cloud features.",
@@ -296,13 +294,13 @@ const en = {
     cloud_upload_confirm: "Confirm upload",
     cloud_upload_success: "Uploaded to cloud",
     cloud_upload_failed: "Cloud upload failed",
-    cloud_diagrams_document_title: "Cloud diagrams | drawDB",
+    cloud_diagrams_document_title: "Cloud diagrams | SchemaCanvas",
     cloud_diagrams: "Cloud diagrams",
     cloud_diagrams_open_editor: "Open editor",
     cloud_diagrams_loading: "Loading cloud diagrams...",
     cloud_diagrams_unavailable: "Cloud diagrams unavailable",
     cloud_diagrams_unavailable_description:
-      "Cloud diagram storage is not configured for this drawDB instance.",
+      "Cloud diagram storage is not configured for this SchemaCanvas instance.",
     cloud_diagrams_local_mode_available:
       "Local editing, saving, import, and export remain available in this browser.",
     cloud_diagrams_error: "Cloud diagrams could not be loaded",
@@ -324,7 +322,7 @@ const en = {
     cloud_diagrams_viewer: "viewer",
     cloud_diagrams_open_cloud_diagram: "Open in editor",
     landing_document_title:
-      "drawDB | Online database diagram editor and SQL generator",
+      "SchemaCanvas | Online database diagram editor and SQL generator",
     landing_hero_title: "Draw, Copy, and Paste",
     landing_hero_description:
       "Free and open source, simple, and intuitive database design editor, data-modeler, and SQL generator.",
@@ -333,29 +331,21 @@ const en = {
     landing_hero_quick: "Quick and easy",
     landing_learn_more: "Learn more",
     landing_try_it: "Try it for yourself",
-    landing_supported_by: "Supported by",
-    landing_warp_description:
-      "Next-gen AI-powered intelligent terminal for all platforms",
     landing_product_summary:
       "Build diagrams with a few clicks, see the full picture, export SQL scripts, customize your editor, and more.",
-    landing_screenshot_alt: "drawDB editor showing a database diagram",
-    landing_github_stars: "GitHub stars",
-    landing_github_forks: "GitHub forks",
+    landing_screenshot_alt: "SchemaCanvas editor showing a database diagram",
     landing_languages: "Languages",
     landing_design_for_database: "Design for your database",
     landing_features_eyebrow: "More than just an editor",
-    landing_features_title: "What drawDB has to offer",
+    landing_features_title: "What SchemaCanvas has to offer",
     landing_social_title: "What the internet says about us",
     landing_social_load_error: "Community posts could not be loaded.",
     landing_social_loading:
       "Loading community posts when this section is visible.",
     landing_contact_title: "Reach out to us",
     landing_contact_description:
-      "We love hearing from you. Join our community on Discord, GitHub, and X.",
+      "We love hearing from you. Check out the code, open an issue, or send a pull request on GitHub.",
     landing_source: "See the source",
-    landing_join_discord: "Join us on Discord",
-    landing_follow_x: "Follow us on X",
-    landing_support_us: "Support us",
     landing_browser_storage_warning:
       "Attention! The diagrams are saved in your browser. Before clearing the browser make sure to back up your data.",
     landing_rights_reserved: "All rights reserved.",
@@ -373,8 +363,7 @@ const en = {
       "Customize the UI to fit your preferences. Select the components you want in your view.",
     landing_feature_shortcuts_title: "Keyboard shortcuts",
     landing_feature_shortcuts_body:
-      "Speed up development with keyboard shortcuts. See all available shortcuts",
-    landing_feature_shortcuts_link: "here",
+      "Speed up development with keyboard shortcuts for almost every action.",
     landing_feature_templates_title: "Templates",
     landing_feature_templates_body:
       "Start off with pre-built templates. Get a quick start or get inspiration for your design.",
@@ -398,14 +387,11 @@ const en = {
       "Present your diagrams on a big screen during team meetings and discussions.",
     not_found_greeting: "hey there!",
     not_found_prompt: "looking for something you couldn't find?",
-    not_found_check_out: "check out the",
-    not_found_email: "shoot us an email",
-    not_found_or: "or",
-    not_found_discord: "a message on discord",
+    not_found_check_out: "Let us know by opening an issue on",
+    not_found_github_issues: "GitHub",
     not_found_relationship_hint:
       "* to create a relationship hold the blue dot of a field and drag it towards the field you want to connect it to",
-    not_found_see_here: "see here",
-    bug_report_document_title: "Report a bug | drawDB",
+    bug_report_document_title: "Report a bug | SchemaCanvas",
     bug_report_describe_bug: "Describe the bug",
     bug_report_describe_bug_hint:
       "Please provide a clear and concise description of what the bug is.",
@@ -431,7 +417,7 @@ const en = {
     bug_report_upload_sub: "Upload up to 3 images",
     bug_report_submit: "Submit",
     bug_report_success: "Bug reported!",
-    templates_document_title: "Templates | drawDB",
+    templates_document_title: "Templates | SchemaCanvas",
     templates: "Templates",
     templates_schema_title: "Database schema templates",
     templates_schema_description:
@@ -450,7 +436,6 @@ const en = {
     templates_step_load_title: "Load a template",
     templates_step_load_description: "Fork a template to build on",
     show_relationship_labels: "Show relationship labels",
-    docs: "Docs",
     supported_types: "Supported file types:",
     bulk_update: "Bulk update",
     multiselect: "Multiselect",

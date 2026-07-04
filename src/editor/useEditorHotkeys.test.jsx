@@ -30,7 +30,6 @@ function createActions() {
     saveDiagramAs: vi.fn(),
     copyAsImage: vi.fn(),
     resetView: vi.fn(),
-    openDocs: vi.fn(),
     fitWindow: vi.fn(),
     toggleDBMLEditor: vi.fn(),
   };

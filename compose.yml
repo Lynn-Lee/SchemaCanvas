@@ -1,7 +1,7 @@
 services:
-  drawdb:
+  schemacanvas:
     image: node:20-alpine
-    container_name: drawdb
+    container_name: schemacanvas
     ports:
       - 5173:5173
     working_dir: /var/www/html

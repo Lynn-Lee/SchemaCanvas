@@ -73,7 +73,7 @@ test.describe("app smoke", () => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto("/editor");
 
-    await expect(page).toHaveTitle(/Editor \| drawDB/);
+    await expect(page).toHaveTitle(/Editor \| SchemaCanvas/);
     await expect(
       page.getByRole("heading", { name: "Create a local diagram" }),
     ).toBeVisible();

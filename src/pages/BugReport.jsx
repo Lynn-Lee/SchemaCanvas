@@ -252,7 +252,7 @@ export default function BugReport() {
         } my-1`}
       />
       <div className="text-center text-sm py-3">
-        &copy; {new Date().getFullYear()} <strong>drawDB</strong> - All rights reserved.
+        &copy; {new Date().getFullYear()} <strong>SchemaCanvas</strong> - All rights reserved.
       </div>
     </>
   );

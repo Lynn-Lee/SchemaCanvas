@@ -94,7 +94,7 @@ describe("exportSavedData", () => {
 
     await exportSavedData({ now: () => new Date("2026-07-01T22:00:01.000Z") });
 
-    expect(savedFiles[0].fileName).toBe("drawdb-backup-2026-07-01T22-00-01.zip");
+    expect(savedFiles[0].fileName).toBe("schemacanvas-backup-2026-07-01T22-00-01.zip");
     await expect(zipEntries(savedFiles[0].content)).resolves.toEqual([
       "diagrams/Customer_Orders_Q3_diagram-1.json",
       "templates/Billing_Template_template-1.json",

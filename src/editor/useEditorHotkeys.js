@@ -84,9 +84,6 @@ export function useEditorHotkeys(actions) {
   useHotkeys("enter", (event) => runEditorHotkey(event, actions.resetView), {
     preventDefault: true,
   });
-  useHotkeys("mod+h", (event) => runEditorHotkey(event, actions.openDocs), {
-    preventDefault: true,
-  });
   useHotkeys("mod+alt+w", (event) => runEditorHotkey(event, actions.fitWindow), {
     preventDefault: true,
   });

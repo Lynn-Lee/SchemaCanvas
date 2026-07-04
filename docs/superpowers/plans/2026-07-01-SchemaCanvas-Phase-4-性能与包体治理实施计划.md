@@ -1,4 +1,4 @@
-# drawDB Phase 4 性能与包体治理实施计划
+# SchemaCanvas Phase 4 性能与包体治理实施计划
 
 版本：2026-07-02
 

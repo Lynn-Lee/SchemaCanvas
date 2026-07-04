@@ -1,4 +1,4 @@
-# drawDB Phase 3 编辑器体验与可访问性实施计划
+# SchemaCanvas Phase 3 编辑器体验与可访问性实施计划
 
 版本：2026-07-02
 

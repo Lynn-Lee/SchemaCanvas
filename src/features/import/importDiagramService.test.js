@@ -88,7 +88,7 @@ describe("importDiagramFileContent", () => {
     const result = await importDiagramFileContent({
       content: JSON.stringify(
         validDiagram({
-          author: "drawDB",
+          author: "SchemaCanvas",
           project: "demo",
           date: "2026-07-01",
         }),

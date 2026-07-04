@@ -1,6 +1,7 @@
 import Dexie from "dexie";
 import { templateSeeds } from "./seeds";
 import {
+  CURRENT_DATABASE_NAME,
   CURRENT_INDEXEDDB_VERSION,
   DIAGRAMS_UNIQUE_PREP_VERSION,
   DIAGRAMS_UNIQUE_STORE_SCHEMA,
@@ -8,9 +9,10 @@ import {
   TEMPLATES_STORE_SCHEMA,
   backfillStableIds,
   logSeedError,
+  migrateLegacyDrawDbDatabase,
 } from "./dbMigration";
 
-export const db = new Dexie("drawDB");
+export const db = new Dexie(CURRENT_DATABASE_NAME);
 
 // This independent refactor baseline starts at v67; no v1-v66 schema history exists in this repository.
 db.version(67)
@@ -35,3 +37,12 @@ db.version(CURRENT_INDEXEDDB_VERSION).stores({
 db.on("populate", (transaction) => {
   transaction.templates.bulkAdd(templateSeeds).catch(logSeedError);
 });
+
+// jsdom (used by the vitest unit test environment) doesn't implement
+// indexedDB at all, so guard this real-IndexedDB migration to environments
+// where it actually exists (real browsers, Playwright e2e).
+if (typeof indexedDB !== "undefined" && typeof localStorage !== "undefined") {
+  migrateLegacyDrawDbDatabase(db, { DexieCtor: Dexie, storage: localStorage }).catch(
+    logSeedError,
+  );
+}

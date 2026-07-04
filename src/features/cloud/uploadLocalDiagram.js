@@ -15,7 +15,7 @@ export async function uploadLocalDiagram({ repository, diagram }) {
     return {
       ok: false,
       reason: "unavailable",
-      message: "Cloud upload is not configured for this drawDB instance.",
+      message: "Cloud upload is not configured for this SchemaCanvas instance.",
     };
   }
 

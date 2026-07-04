@@ -12,7 +12,7 @@ const scriptPath = path.join(repoRoot, 'scripts/check-bundle-budget.mjs');
 const tempDirs = [];
 
 async function createTempProject() {
-  const dir = await mkdtemp(path.join(tmpdir(), 'drawdb-bundle-budget-'));
+  const dir = await mkdtemp(path.join(tmpdir(), 'schemacanvas-bundle-budget-'));
   tempDirs.push(dir);
   return dir;
 }
@@ -54,7 +54,7 @@ describe('bundle budget check', () => {
     await writeAsset(projectDir, 'index-oversized.js', 12 * 1024);
 
     const result = runBundleCheck(projectDir, {
-      DRAWDB_BUNDLE_MAX_JS_KB: '10',
+      SCHEMACANVAS_BUNDLE_MAX_JS_KB: '10',
     });
 
     expect(result.status).toBe(1);
@@ -68,7 +68,7 @@ describe('bundle budget check', () => {
     await writeAsset(projectDir, 'style.css', 2 * 1024);
 
     const result = runBundleCheck(projectDir, {
-      DRAWDB_BUNDLE_MAX_JS_KB: '10',
+      SCHEMACANVAS_BUNDLE_MAX_JS_KB: '10',
     });
 
     expect(result.status).toBe(0);

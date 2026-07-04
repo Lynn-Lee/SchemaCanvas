@@ -3,7 +3,7 @@ import axios from "axios";
 export const SHARE_FILENAME = "share.json";
 export const VERSION_FILENAME = "versionned.json";
 
-const description = "drawDB diagram";
+const description = "SchemaCanvas diagram";
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const SHARE_BACKEND_NOT_CONFIGURED = "SHARE_BACKEND_NOT_CONFIGURED";

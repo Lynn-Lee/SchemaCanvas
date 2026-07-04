@@ -15,7 +15,7 @@
 - `enum`：DBML enum 到 Domain enum。
 - `index`：单字段和多字段 indexes。
 - `comment`：table note 和字段 note。
-- `unsupported`：当前 DBML parser 可识别但 drawDB 暂不表达的属性。
+- `unsupported`：当前 DBML parser 可识别但 SchemaCanvas 暂不表达的属性。
 
 测试要求：
 

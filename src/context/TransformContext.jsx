@@ -9,7 +9,7 @@ export default function TransformContextProvider({ children }) {
   });
 
   /**
-   * @type {typeof DrawDB.TransformContext["setTransform"]}
+   * @type {typeof SchemaCanvas.TransformContext["setTransform"]}
    */
   const setTransform = useCallback(
     (actionOrValue) => {

@@ -87,16 +87,16 @@ function assertBudget({ largestJs, largestCss, totalBytes, maxJsKb, maxCssKb, ma
 }
 
 try {
-  const maxJsKb = parseBudget('DRAWDB_BUNDLE_MAX_JS_KB', DEFAULT_MAX_JS_KB);
-  const maxCssKb = parseBudget('DRAWDB_BUNDLE_MAX_CSS_KB', DEFAULT_MAX_CSS_KB);
-  const maxTotalKb = parseBudget('DRAWDB_BUNDLE_MAX_TOTAL_KB', DEFAULT_MAX_TOTAL_KB);
+  const maxJsKb = parseBudget('SCHEMACANVAS_BUNDLE_MAX_JS_KB', DEFAULT_MAX_JS_KB);
+  const maxCssKb = parseBudget('SCHEMACANVAS_BUNDLE_MAX_CSS_KB', DEFAULT_MAX_CSS_KB);
+  const maxTotalKb = parseBudget('SCHEMACANVAS_BUNDLE_MAX_TOTAL_KB', DEFAULT_MAX_TOTAL_KB);
   const assets = await readAssets();
   const largestJs = findLargest(assets, 'js');
   const largestCss = findLargest(assets, 'css');
   const totalBytes = assets.reduce((sum, asset) => sum + asset.bytes, 0);
   const failures = assertBudget({ largestJs, largestCss, totalBytes, maxJsKb, maxCssKb, maxTotalKb });
 
-  console.log('drawDB bundle budget summary');
+  console.log('SchemaCanvas bundle budget summary');
   console.log(`largest JS chunk: ${largestJs ? `${largestJs.name} (${formatKb(largestJs.bytes)})` : 'none'}`);
   console.log(`largest CSS asset: ${largestCss ? `${largestCss.name} (${formatKb(largestCss.bytes)})` : 'none'}`);
   console.log(`total JS/CSS assets: ${formatKb(totalBytes)}`);

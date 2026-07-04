@@ -1,8 +1,8 @@
-# drawDB 重构总控工程实施计划
+# SchemaCanvas 重构总控工程实施计划
 
 > **给 agent 执行者的要求：** 具体执行本计划时，必须使用 `superpowers:subagent-driven-development`（推荐）或 `superpowers:executing-plans` 按任务推进。本文是总控计划，阶段开工前还需要生成对应 Phase 的细粒度实施计划。
 
-**目标：** 将 drawDB 的产品重构方案转化为可分阶段交付的工程计划，在保持“无需账号、本地优先”核心体验可用的前提下，系统性提升安全性、数据模型可靠性、导入导出正确性、编辑器体验、可访问性、性能，以及后续可选的账号/团队/云端能力。
+**目标：** 将 SchemaCanvas（原 drawDB）的产品重构方案转化为可分阶段交付的工程计划，在保持“无需账号、本地优先”核心体验可用的前提下，系统性提升安全性、数据模型可靠性、导入导出正确性、编辑器体验、可访问性、性能，以及后续可选的账号/团队/云端能力。
 
 **架构策略：** 按 7 个阶段推进。Phase 0 已建立安全和测试底座；Phase 1 稳定 diagram domain model、command history 和本地持久化；Phase 2 强化导入导出；Phase 3 优化编辑器 UX 和 accessibility；Phase 4 治理 bundle 和大图性能；Phase 5 在明确能力开关后增加可选账号、团队和云端同步，不强制登录；Phase 6 已基于 Phase 0–5 完成后的全方位评估，系统性修复安全漏洞、架构债务、构建优化、国际化补齐和测试覆盖提升。下一轮应先评估 Phase 7 架构重构或新的产品 roadmap，不提前实施未决产品能力。
 
@@ -24,7 +24,7 @@
 
 当前产品方案源文档：
 
-- `docs/drawDB-重构优化产品研发方案.md`
+- `docs/SchemaCanvas-重构优化产品研发方案.md`
 
 ## 2. 目标文件地图
 
@@ -32,7 +32,7 @@
 
 - 修改：`README.md`，同步本地模式、分享模式、云端模式的产品说明。
 - 新增：`SECURITY.md`，记录漏洞报告、支持版本、本地存储和分享数据边界。
-- 修改：`docs/drawDB-重构优化产品研发方案.md`，仅在产品范围变化时更新。
+- 修改：`docs/SchemaCanvas-重构优化产品研发方案.md`，仅在产品范围变化时更新。
 - 新增：`docs/engineering/验证矩阵.md`，记录命令、fixtures、浏览器检查和发布门禁。
 - 新增：`docs/engineering/导入导出支持范围.md`，记录各数据库 SQL/DBML 支持范围。（Phase 2.1 已完成。）
 
@@ -439,12 +439,12 @@ npm run bundle:check
 
 后续细粒度实施计划使用中文文件名：
 
-1. `docs/superpowers/plans/2026-07-01-drawDB-Phase-0-安全与工程底座实施计划.md`
-2. `docs/superpowers/plans/2026-07-01-drawDB-Phase-1-Domain模型与持久化实施计划.md`（已生成）
-3. `docs/superpowers/plans/2026-07-01-drawDB-Phase-2-导入导出可靠性实施计划.md`
-4. `docs/superpowers/plans/2026-07-01-drawDB-Phase-3-编辑器体验与可访问性实施计划.md`（已生成）
-5. `docs/superpowers/plans/2026-07-01-drawDB-Phase-4-性能与包体治理实施计划.md`（已生成，Phase 4 退出门禁已通过）
-6. `docs/superpowers/plans/2026-07-01-drawDB-Phase-5-账号团队与云端能力实施计划.md`（已生成，Phase 5 退出门禁已通过）
+1. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-0-安全与工程底座实施计划.md`
+2. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-1-Domain模型与持久化实施计划.md`（已生成）
+3. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-2-导入导出可靠性实施计划.md`
+4. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-3-编辑器体验与可访问性实施计划.md`（已生成）
+5. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-4-性能与包体治理实施计划.md`（已生成，Phase 4 退出门禁已通过）
+6. `docs/superpowers/plans/2026-07-01-SchemaCanvas-Phase-5-账号团队与云端能力实施计划.md`（已生成，Phase 5 退出门禁已通过）
 
 Phase 0-5 已全部通过 exit gate。当前总控路线覆盖本地优先、安全底座、Domain Model、导入导出可靠性、编辑器体验与可访问性、性能与包体治理，以及可选账号、团队和云端能力。后续若继续自动研发，应先补充新的产品 roadmap 或维护任务，不应在无明确计划时继续猜测新阶段。
 

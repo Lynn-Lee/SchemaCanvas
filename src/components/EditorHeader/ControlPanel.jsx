@@ -78,7 +78,6 @@ import { useTranslation } from "react-i18next";
 import { databases } from "../../data/databases";
 import { isRtl } from "../../i18n/utils/rtl";
 import { IdContext } from "../Workspace";
-import { socials } from "../../data/socials";
 import {
   exportCanvasImage,
   exportCanvasPdf,
@@ -190,9 +189,9 @@ export default function ControlPanel({
       openModal(MODAL.IMPORT);
     };
 
-    window.addEventListener("drawdb:open-import", openImportModal);
+    window.addEventListener("schemacanvas:open-import", openImportModal);
     return () => {
-      window.removeEventListener("drawdb:open-import", openImportModal);
+      window.removeEventListener("schemacanvas:open-import", openImportModal);
     };
   }, [layout.readOnly, openModal]);
 
@@ -1685,16 +1684,6 @@ export default function ControlPanel({
       },
     },
     help: {
-      docs: {
-        function: () => window.open(`${socials.docs}`, "_blank"),
-        shortcut: menuShortcut("help", "docs"),
-      },
-      shortcuts: {
-        function: () => window.open(`${socials.docs}/shortcuts`, "_blank"),
-      },
-      ask_on_discord: {
-        function: () => window.open(socials.discord, "_blank"),
-      },
       report_bug: {
         function: () => window.open("/bug-report", "_blank"),
       },
@@ -1721,7 +1710,6 @@ export default function ControlPanel({
     saveDiagramAs,
     copyAsImage,
     resetView,
-    openDocs: () => window.open(socials.docs, "_blank"),
     fitWindow,
     toggleDBMLEditor,
   });

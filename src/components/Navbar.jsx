@@ -38,12 +38,6 @@ export default function Navbar() {
             >
               Templates
             </Link>
-            <Link
-              to={socials.docs}
-              className="text-lg font-semibold text-zinc-800 hover:text-sky-800 transition-colors duration-300"
-            >
-              Docs
-            </Link>
           </div>
           <div className="md:hidden block space-x-3 ms-12">
             <a
@@ -54,34 +48,6 @@ export default function Navbar() {
               rel="noreferrer"
             >
               <i className="opacity-70 bi bi-github" />
-            </a>
-            <a
-              title="Follow us on X"
-              className="px-2 py-2 hover:opacity-60 transition-all duration-300 rounded-full text-2xl"
-              href={socials.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <i className="opacity-70 bi bi-twitter-x" />
-            </a>
-            <a
-              title="Join the community on Discord"
-              className="px-2 py-2 hover:opacity-60 transition-all duration-300 rounded-full text-2xl"
-              href={socials.discord}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <i className="opacity-70 bi bi-discord" />
-            </a>
-            <a
-              title="Sponsor on GitHub"
-              className="p-1 px-1.5 relative flex-inline items-center justify-center hover:opacity-60 bg-white transition-all duration-300 rounded-full text-xl"
-              href={socials.sponsor}
-              target="_blank"
-              rel="noreferrer"
-            >
-               <i className="bi bi-heart-fill text-rose-300" />
-               <i className="absolute top-1.5 left-1.5 bi bi-heart text-rose-400" />
             </a>
           </div>
         </div>
@@ -128,19 +94,14 @@ export default function Navbar() {
           Templates
         </Link>
         <hr />
-        <Link
-          to={socials.docs}
+        <a
+          href={socials.github}
+          target="_blank"
+          rel="noreferrer"
           className="hover:bg-zinc-100 block p-3 text-base font-semibold"
         >
-          Docs
-        </Link>
-        <hr />
-        <Link
-          to={socials.sponsor}
-          className="hover:bg-zinc-100 block p-3 text-base font-semibold"
-        >
-          Sponsor
-        </Link>
+          GitHub
+        </a>
       </SideSheet>
     </>
   );
