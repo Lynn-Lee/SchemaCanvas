@@ -80,8 +80,8 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
             >
-               <i className="fa-solid fa-heart text-rose-300" />
-               <i className="absolute top-1.5 left-1.5 fa-regular fa-heart text-rose-400" />
+               <i className="bi bi-heart-fill text-rose-300" />
+               <i className="absolute top-1.5 left-1.5 bi bi-heart text-rose-400" />
             </a>
           </div>
         </div>

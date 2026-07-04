@@ -360,7 +360,7 @@ export default function Versions({ open, title, setTitle }) {
                   r.version === loadingVersion ? (
                     <Spin size="small" />
                   ) : (
-                    <i className="text-sm fa-solid fa-asterisk ms-1" />
+                    <i className="text-sm bi bi-asterisk ms-1" />
                   )
                 }
               />

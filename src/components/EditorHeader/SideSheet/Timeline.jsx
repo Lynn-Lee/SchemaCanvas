@@ -16,7 +16,7 @@ export default function Timeline() {
             className="hover-1"
           >
             <div className="flex items-center py-1 w-full">
-              <i className="block fa-regular fa-circle fa-xs" />
+              <i className="block bi bi-circle text-[8px]" />
               <div className="ms-2">{e.message}</div>
             </div>
           </List.Item>

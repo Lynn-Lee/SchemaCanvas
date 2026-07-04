@@ -42,7 +42,7 @@ export default function Issues() {
             className="mt-1"
           >
             <div className="pe-3 select-none">
-              <i className="fa-solid fa-triangle-exclamation me-2 text-yellow-500" />
+              <i className="bi bi-exclamation-triangle-fill me-2 text-yellow-500" />
               {t("issues")}
             </div>
           </Badge>

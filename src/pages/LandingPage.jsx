@@ -296,8 +296,8 @@ export default function LandingPage() {
             >
               <div className="bg-white border-2 border-rose-400 hover:opacity-90 transition-all duration-300 flex items-center justify-center gap-4 px-12 py-3 rounded-full">
                 <div className="relative text-2xl mt-1">
-                  <i className="fa-solid fa-heart text-rose-300" />
-                  <i className="absolute top-0.5 left-0 fa-regular fa-heart text-rose-400" />
+                  <i className="bi bi-heart-fill text-rose-300" />
+                  <i className="absolute top-0.5 left-0 bi bi-heart text-rose-400" />
                 </div>
                 <div className="text-xl font-semibold">{t("landing_support_us")}</div>
               </div>

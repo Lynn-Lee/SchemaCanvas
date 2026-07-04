@@ -797,7 +797,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
           {version && (
             <div className="absolute right-8 top-2 space-x-2">
               <Button
-                icon={<i className="fa-solid fa-rotate-right mt-0.5"></i>}
+                icon={<i className="bi bi-arrow-clockwise mt-0.5"></i>}
                 onClick={() => setShowRestoreModal(true)}
               >
                 {t("restore_version")}

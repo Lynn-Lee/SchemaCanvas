@@ -1803,7 +1803,7 @@ export default function ControlPanel({
                 setTransform((prev) => ({ ...prev, zoom: prev.zoom / 1.2 }))
               }
             >
-              <i className="fa-solid fa-magnifying-glass-minus" />
+              <i className="bi bi-zoom-out" />
             </button>
           </Tooltip>
           <Dropdown
@@ -1867,7 +1867,7 @@ export default function ControlPanel({
                 setTransform((prev) => ({ ...prev, zoom: prev.zoom * 1.2 }))
               }
             >
-              <i className="fa-solid fa-magnifying-glass-plus" />
+              <i className="bi bi-zoom-in" />
             </button>
           </Tooltip>
           <Divider layout="vertical" margin="8px" />
@@ -1940,7 +1940,7 @@ export default function ControlPanel({
               aria-label={t("versions")}
               onClick={() => setSidesheet(SIDESHEET.VERSIONS)}
             >
-              <i className="fa-solid fa-code-branch" />
+              <i className="bi bi-diagram-3" />
             </button>
           </Tooltip>
           <Divider layout="vertical" margin="8px" />
@@ -1959,7 +1959,7 @@ export default function ControlPanel({
                 }
               }}
             >
-              <i className="fa-solid fa-circle-half-stroke" />
+              <i className="bi bi-circle-half" />
             </button>
           </Tooltip>
         </div>

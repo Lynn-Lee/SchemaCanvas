@@ -89,7 +89,7 @@ export default function Templates() {
                           className="border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
                           onClick={() => forkTemplate(template.templateId)}
                         >
-                          <i className="fa-solid fa-code-fork"></i>
+                          <i className="bi bi-diagram-3"></i>
                         </button>
                       </div>
                       <div>{template.description}</div>
@@ -125,7 +125,7 @@ export default function Templates() {
                               className="me-1 border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
                               onClick={() => forkTemplate(c.templateId)}
                             >
-                              <i className="fa-solid fa-code-fork"></i>
+                              <i className="bi bi-diagram-3"></i>
                             </button>
                           </div>
                         </div>
