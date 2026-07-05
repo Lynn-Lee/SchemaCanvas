@@ -6,13 +6,15 @@ import { describe, expect, test } from "vitest";
 
 const repoRoot = process.cwd();
 
-describe("Landing social widget lazy loading boundary", () => {
-  test("keeps react-tweet out of the landing page entry until social posts are visible", async () => {
+describe("Landing page endorsement boundary", () => {
+  test("does not include third-party endorsement widgets or react-tweet loading code", async () => {
     const source = await readFile(
       path.join(repoRoot, "src/pages/LandingPage.jsx"),
       "utf8",
     );
 
-    expect(source).not.toMatch(/import\s+[^;]*react-tweet/);
+    expect(source).not.toContain("react-tweet");
+    expect(source).not.toContain("landing-social");
+    expect(source).not.toContain("LandingTweets");
   });
 });

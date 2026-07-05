@@ -21,7 +21,7 @@ The following is a set of guidelines for contributing to our project. These are 
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for our project. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
+This section guides you through submitting a bug report for our project. Following these guidelines helps maintainers understand your report, reproduce the behavior, and find related reports.
 
 - Use a clear and descriptive title for the issue to identify the problem.
 - Describe the exact steps which reproduce the problem in as many details as possible.

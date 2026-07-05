@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SimpleCanvas from "../components/SimpleCanvas";
@@ -168,14 +168,6 @@ export default function LandingPage() {
         </FadeIn>
       </div>
 
-      {/* Tweets */}
-      <div className="px-40 mt-6 md:px-8">
-        <div className="text-center text-2xl md:text-xl font-medium">
-          {t("landing_social_title")}
-        </div>
-        <LandingTweets t={t} />
-      </div>
-
       {/* Contact us */}
       <svg
         viewBox="0 0 1440 54"
@@ -223,86 +215,6 @@ export default function LandingPage() {
         &copy; {new Date().getFullYear()} <strong>SchemaCanvas</strong> -{" "}
         {t("landing_rights_reserved")}
       </div>
-    </div>
-  );
-}
-
-const tweetIds = [
-  "1816111365125218343",
-  "1817933406337905021",
-  "1785457354777006524",
-  "1776842268042756248",
-];
-
-function LandingTweets({ t }) {
-  const containerRef = useRef(null);
-  const [shouldLoadTweets, setShouldLoadTweets] = useState(false);
-  const [TweetComponent, setTweetComponent] = useState(null);
-  const [tweetLoadError, setTweetLoadError] = useState(false);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return undefined;
-
-    if (!("IntersectionObserver" in window)) {
-      setShouldLoadTweets(true);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadTweets(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "160px 0px" },
-    );
-
-    observer.observe(container);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!shouldLoadTweets || TweetComponent) return undefined;
-
-    let active = true;
-    import("react-tweet")
-      .then((module) => {
-        if (active) setTweetComponent(() => module.Tweet);
-      })
-      .catch(() => {
-        if (active) setTweetLoadError(true);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [shouldLoadTweets, TweetComponent]);
-
-  return (
-    <div
-      ref={containerRef}
-      data-theme="light"
-      className="grid grid-cols-2 place-items-center md:grid-cols-1 min-h-[420px]"
-    >
-      {!TweetComponent ? (
-        <div
-          data-testid="landing-social-placeholder"
-          className="col-span-2 md:col-span-1 w-full rounded-xl border border-zinc-200 bg-white p-8 text-center text-sm font-medium text-zinc-500"
-        >
-          {tweetLoadError
-            ? t("landing_social_load_error")
-            : t("landing_social_loading")}
-        </div>
-      ) : (
-        tweetIds.map((id) => (
-          <div data-testid="landing-social-widget" key={id}>
-            <TweetComponent id={id} />
-          </div>
-        ))
-      )}
     </div>
   );
 }

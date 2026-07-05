@@ -346,9 +346,6 @@ const zh = {
     landing_design_for_database: "为你的数据库设计",
     landing_features_eyebrow: "不只是编辑器",
     landing_features_title: "SchemaCanvas 能提供什么",
-    landing_social_title: "社区如何评价我们",
-    landing_social_load_error: "无法加载社区动态。",
-    landing_social_loading: "当此区域可见时加载社区动态。",
     landing_contact_title: "联系我们",
     landing_contact_description:
       "我们乐于听取反馈。欢迎在 GitHub 上查看源码或提交 issue。",

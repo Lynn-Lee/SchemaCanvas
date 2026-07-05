@@ -368,10 +368,6 @@ const en = {
     landing_design_for_database: "Design for your database",
     landing_features_eyebrow: "More than just an editor",
     landing_features_title: "What SchemaCanvas has to offer",
-    landing_social_title: "What the internet says about us",
-    landing_social_load_error: "Community posts could not be loaded.",
-    landing_social_loading:
-      "Loading community posts when this section is visible.",
     landing_contact_title: "Reach out to us",
     landing_contact_description:
       "We love hearing from you. Check out the code, open an issue, or send a pull request on GitHub.",

@@ -44,7 +44,7 @@ test.describe("app smoke", () => {
     expect(layout.ctaRight).toBeLessThanOrEqual(layout.viewportWidth);
   });
 
-  test("landing social posts load after the social section is reached", async ({
+  test("landing page does not render third-party endorsement sections", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -56,10 +56,7 @@ test.describe("app smoke", () => {
     await expect(
       page.getByRole("link", { name: "立即试用" }),
     ).toBeVisible();
-    await expect(page.getByTestId("landing-social-widget")).toHaveCount(0);
-
-    await page.getByText("社区如何评价我们").scrollIntoViewIfNeeded();
-    await expect(page.getByTestId("landing-social-placeholder")).toBeVisible();
+    await expect(page.locator('[data-testid^="landing-social"]')).toHaveCount(0);
   });
 
   test("templates page renders the template library", async ({ page }) => {
