@@ -11,6 +11,10 @@
 
 SchemaCanvas 是一个运行在浏览器中的数据库结构设计器。你可以在可视化画布上设计表、字段、关系、分组区域和备注，并将模型导出为 SQL、DBML、JSON、Markdown、Mermaid 或图片/PDF 等格式。核心编辑、保存和导出能力默认在本地完成，不需要注册账号，也不依赖云端服务。
 
+## 项目来源与致谢
+
+SchemaCanvas 是基于 [drawDB](https://github.com/drawdb-io/drawdb) 开源项目优化重构后的项目。我们在原项目优秀的浏览器端数据库建模体验基础上，围绕隐私优先的本地使用模式、默认中文界面、SchemaCanvas 品牌化、多数据库类型建模、SQL / DBML / JSON / DDB 导入导出、Markdown / Mermaid / 图片 / PDF 导出、模型校验、自定义类型与枚举、可选分享与云端能力边界，以及 Vitest / Playwright / accessibility / build / bundle / audit 等验证门禁做了系统整理和增强。感谢 drawDB 原项目作者与贡献者提供的开源基础，SchemaCanvas 的持续演进建立在这份开放工作的价值之上。
+
 ## 核心功能
 
 - **可视化建模**：在画布中创建和编辑数据表、字段、主键、唯一约束、索引、关系、区域和备注。
