@@ -420,15 +420,33 @@ const lazyLocaleBackend = {
   },
 };
 
+const LANGUAGE_STORAGE_KEY = "i18nextLng";
+
+function readCachedLanguage() {
+  try {
+    return typeof localStorage !== "undefined"
+      ? localStorage.getItem(LANGUAGE_STORAGE_KEY)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+const cachedLanguage = readCachedLanguage();
+
 i18n
   .use(lazyLocaleBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: "zh",
+    lng: cachedLanguage || "zh",
     fallbackLng: "zh",
     supportedLngs: languages.map((language) => language.code),
     nonExplicitSupportedLngs: true,
+    detection: {
+      caches: ["localStorage"],
+      lookupLocalStorage: LANGUAGE_STORAGE_KEY,
+    },
     debug: false,
     interpolation: {
       escapeValue: false,

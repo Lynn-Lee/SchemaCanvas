@@ -33,6 +33,7 @@ export default function Area({
 }) {
   const ref = useRef(null);
   const isHovered = useHover(ref);
+  const { t } = useTranslation();
   const { layout } = useLayout();
   const { settings } = useSettings();
   const { setSaveState } = useSaveState();
@@ -179,7 +180,7 @@ export default function Area({
               <ButtonGroup
                 type="tertiary"
                 size="small"
-                aria-label="Area actions"
+                aria-label={t("area_actions")}
               >
                 <Button
                   size="small"

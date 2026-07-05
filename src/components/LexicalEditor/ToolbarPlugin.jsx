@@ -4,6 +4,7 @@
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
@@ -58,14 +59,14 @@ const blockTypeToIcon = {
   ul: "bi-list-ul",
 };
 
-const blockTypeToBlockName = {
-  paragraph: "段落",
-  h1: "大标题",
-  h2: "小标题",
-  ul: "项目符号列表",
-  ol: "编号列表",
-  code: "代码块",
-  quote: "引用",
+const blockTypeToBlockNameKey = {
+  paragraph: "lexical_block_paragraph",
+  h1: "lexical_block_h1",
+  h2: "lexical_block_h2",
+  ul: "lexical_block_ul",
+  ol: "lexical_block_ol",
+  code: "lexical_block_code",
+  quote: "lexical_block_quote",
 };
 
 function Divider() {
@@ -244,6 +245,7 @@ function getSelectedNode(selection) {
 }
 
 function BlockOptionsDropdownList({ editor, blockType }) {
+  const { t } = useTranslation();
   const formatParagraph = () => {
     if (blockType !== "paragraph") {
       editor.update(() => {
@@ -325,53 +327,53 @@ function BlockOptionsDropdownList({ editor, blockType }) {
             onClick={formatParagraph}
             icon={<i className={`bi ${blockTypeToIcon.paragraph}`} />}
           >
-            段落
+            {t(blockTypeToBlockNameKey.paragraph)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatLargeHeading}
             icon={<i className={`bi ${blockTypeToIcon.h1}`} />}
           >
-            大标题
+            {t(blockTypeToBlockNameKey.h1)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatSmallHeading}
             icon={<i className={`bi ${blockTypeToIcon.h2}`} />}
           >
-            小标题
+            {t(blockTypeToBlockNameKey.h2)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatBulletList}
             icon={<i className={`bi ${blockTypeToIcon.ul}`} />}
           >
-            项目符号列表
+            {t(blockTypeToBlockNameKey.ul)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatNumberedList}
             icon={<i className={`bi ${blockTypeToIcon.ol}`} />}
           >
-            编号列表
+            {t(blockTypeToBlockNameKey.ol)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatQuote}
             icon={<i className={`bi ${blockTypeToIcon.quote}`} />}
           >
-            引用
+            {t(blockTypeToBlockNameKey.quote)}
           </Dropdown.Item>
           <Dropdown.Item
             onClick={formatCode}
             icon={<i className={`bi ${blockTypeToIcon.code}`} />}
           >
-            代码块
+            {t(blockTypeToBlockNameKey.code)}
           </Dropdown.Item>
         </Dropdown.Menu>
       }
     >
       <button
         className="flex mx-2 justify-center items-center"
-        aria-label="格式选项"
+        aria-label={t("lexical_formatting_options")}
       >
         <i className={`bi ${blockTypeToIcon[blockType]} me-3`} />
-        <span className="me-3 text-sm">{blockTypeToBlockName[blockType]}</span>
+        <span className="me-3 text-sm">{t(blockTypeToBlockNameKey[blockType])}</span>
         <i className="bi bi-chevron-down" />
       </button>
     </Dropdown>
@@ -379,6 +381,7 @@ function BlockOptionsDropdownList({ editor, blockType }) {
 }
 
 export default function ToolbarPlugin() {
+  const { t } = useTranslation();
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
@@ -501,7 +504,7 @@ export default function ToolbarPlugin() {
         disabled={!canUndo}
         onClick={() => editor.dispatchCommand(UNDO_COMMAND)}
         className="toolbar-item spaced"
-        aria-label="撤销"
+        aria-label={t("lexical_undo")}
       >
         <i
           className={`bi bi-arrow-counterclockwise ${
@@ -513,7 +516,7 @@ export default function ToolbarPlugin() {
         disabled={!canRedo}
         onClick={() => editor.dispatchCommand(REDO_COMMAND)}
         className="toolbar-item"
-        aria-label="重做"
+        aria-label={t("lexical_redo")}
       >
         <i className={`bi bi-arrow-clockwise ${canRedo ? "" : "opacity-30"}`} />
       </button>
@@ -535,7 +538,7 @@ export default function ToolbarPlugin() {
           <button
             onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
             className={"toolbar-item spaced " + (isBold ? "active" : "")}
-            aria-label="加粗"
+            aria-label={t("lexical_format_bold")}
           >
             <i className="bi bi-type-bold" />
           </button>
@@ -544,7 +547,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
             }
             className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-            aria-label="斜体"
+            aria-label={t("lexical_format_italic")}
           >
             <i className="bi bi-type-italic" />
           </button>
@@ -553,7 +556,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")
             }
             className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
-            aria-label="下划线"
+            aria-label={t("lexical_format_underline")}
           >
             <i className="bi bi-type-underline" />
           </button>
@@ -564,21 +567,21 @@ export default function ToolbarPlugin() {
             className={
               "toolbar-item spaced " + (isStrikethrough ? "active" : "")
             }
-            aria-label="删除线"
+            aria-label={t("lexical_format_strikethrough")}
           >
             <i className="bi bi-type-strikethrough" />
           </button>
           <button
             onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code")}
             className={"toolbar-item spaced " + (isCode ? "active" : "")}
-            aria-label="插入代码"
+            aria-label={t("lexical_insert_code")}
           >
             <i className="bi bi-code-slash" />
           </button>
           <button
             onClick={insertLink}
             className={"toolbar-item spaced " + (isLink ? "active" : "")}
-            aria-label="插入链接"
+            aria-label={t("lexical_insert_link")}
           >
             <i className="bi bi-link" />
           </button>
@@ -593,7 +596,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left")
             }
             className="toolbar-item spaced"
-            aria-label="左对齐"
+            aria-label={t("lexical_align_left")}
           >
             <i className="bi bi-text-left" />
           </button>
@@ -602,7 +605,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center")
             }
             className="toolbar-item spaced"
-            aria-label="居中对齐"
+            aria-label={t("lexical_align_center")}
           >
             <i className="bi bi-text-center" />
           </button>
@@ -611,7 +614,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
             }}
             className="toolbar-item spaced"
-            aria-label="右对齐"
+            aria-label={t("lexical_align_right")}
           >
             <i className="bi bi-text-right" />
           </button>
@@ -620,7 +623,7 @@ export default function ToolbarPlugin() {
               editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
             }}
             className="toolbar-item"
-            aria-label="两端对齐"
+            aria-label={t("lexical_align_justify")}
           >
             <i className="bi bi-justify" />
           </button>

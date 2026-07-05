@@ -280,7 +280,7 @@ export default function Table({
                 <ButtonGroup
                   type="tertiary"
                   size="small"
-                  aria-label="Table actions"
+                  aria-label={t("table_actions")}
                 >
                   <Button
                     size="small"
@@ -368,7 +368,7 @@ export default function Table({
                       size="small"
                       type="tertiary"
                       icon={<IconMore size="small" />}
-                      title="See more"
+                      title={t("see_more")}
                     />
                   </Popover>
                 </ButtonGroup>

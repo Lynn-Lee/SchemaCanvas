@@ -283,7 +283,7 @@ export default function Modal({
           return (
             <>
               {modal === MODAL.IMG ? (
-                <Image src={exportData.data} alt="图表" height={280} />
+                <Image src={exportData.data} alt={t("diagram")} height={280} />
               ) : (
                 <CodeEditor
                   height={360}
