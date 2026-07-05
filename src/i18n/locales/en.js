@@ -83,7 +83,7 @@ const en = {
     storage_flushed: "Storage flushed",
     help: "Help",
     feedback: "Feedback",
-    no_changes: "No changes",
+    no_changes: "Saved",
     loading: "Loading...",
     last_saved: "Last saved",
     saving: "Saving...",
@@ -364,14 +364,9 @@ const en = {
     landing_product_summary:
       "Build diagrams with a few clicks, see the full picture, export SQL scripts, customize your editor, and more.",
     landing_screenshot_alt: "SchemaCanvas editor showing a database diagram",
-    landing_languages: "Languages",
     landing_design_for_database: "Design for your database",
     landing_features_eyebrow: "More than just an editor",
     landing_features_title: "What SchemaCanvas has to offer",
-    landing_contact_title: "Reach out to us",
-    landing_contact_description:
-      "We love hearing from you. Check out the code, open an issue, or send a pull request on GitHub.",
-    landing_source: "See the source",
     landing_browser_storage_warning:
       "Attention! The diagrams are saved in your browser. Before clearing the browser make sure to back up your data.",
     landing_rights_reserved: "All rights reserved.",

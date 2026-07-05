@@ -59,6 +59,18 @@ test.describe("app smoke", () => {
     await expect(page.locator('[data-testid^="landing-social"]')).toHaveCount(0);
   });
 
+  test("landing page omits contact and legacy language marketing blocks", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expect(page.getByText("联系我们")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "查看源码" })).toHaveCount(0);
+    await expect(page.getByText("语言")).toHaveCount(0);
+    await expect(page.getByText(/保留所有权利/)).toHaveCount(0);
+    await expect(page.getByText(/All rights reserved/)).toBeVisible();
+  });
+
   test("templates page renders the template library", async ({ page }) => {
     await page.goto("/templates");
 
@@ -74,6 +86,7 @@ test.describe("app smoke", () => {
     await expect(
       page.getByRole("heading", { name: "创建本地图表" }),
     ).toBeVisible();
+    await expect(page.getByText("没有更改")).toHaveCount(0);
     await page.getByRole("button", { name: "创建空白图表" }).click();
     await expect(page.getByText("文件").first()).toBeVisible();
     await expect(page.getByText("小屏编辑模式")).toBeHidden();

@@ -9,6 +9,8 @@ describe("i18n lazy resources", () => {
     expect(i18n.language).toBe("zh");
     expect(i18n.t("navbar_editor")).toBe("编辑器");
     expect(i18n.t("no_saved_diagrams")).toBe("暂无保存的图表");
+    expect(i18n.t("no_changes")).toBe("已保存");
+    expect(i18n.t("landing_rights_reserved")).toBe("All rights reserved.");
   });
 
   test("loads language resources on demand", async () => {

@@ -84,7 +84,7 @@ const zh = {
     storage_flushed: "存储已清空",
     help: "帮助",
     feedback: "反馈",
-    no_changes: "没有更改",
+    no_changes: "已保存",
     loading: "加载中...",
     last_saved: "上次保存",
     saving: "保存中...",
@@ -342,17 +342,12 @@ const zh = {
     landing_product_summary:
       "用几次点击构建图表、查看全局结构、导出 SQL 脚本、自定义编辑器等。",
     landing_screenshot_alt: "显示数据库图表的 SchemaCanvas 编辑器",
-    landing_languages: "语言",
     landing_design_for_database: "为你的数据库设计",
     landing_features_eyebrow: "不只是编辑器",
     landing_features_title: "SchemaCanvas 能提供什么",
-    landing_contact_title: "联系我们",
-    landing_contact_description:
-      "我们乐于听取反馈。欢迎在 GitHub 上查看源码或提交 issue。",
-    landing_source: "查看源码",
     landing_browser_storage_warning:
       "注意！图表保存在你的浏览器中。清理浏览器前请务必备份数据。",
-    landing_rights_reserved: "保留所有权利。",
+    landing_rights_reserved: "All rights reserved.",
     landing_feature_export_title: "导出",
     landing_feature_export_body:
       "导出可在数据库中运行的 DDL 脚本，或将图表导出为 JSON 或图片。",

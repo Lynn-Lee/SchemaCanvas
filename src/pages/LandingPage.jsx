@@ -10,18 +10,8 @@ import sqlite_icon from "../assets/sqlite.png";
 import mariadb_icon from "../assets/mariadb.png";
 import oraclesql_icon from "../assets/oraclesql.png";
 import sql_server_icon from "../assets/sql-server.png";
-import github from "../assets/github.png";
 import screenshot from "../assets/screenshot.png";
 import FadeIn from "../animations/FadeIn";
-import { languages } from "../i18n/i18n";
-import { socials } from "../data/socials";
-
-function shortenNumber(number) {
-  if (number < 1000) return number;
-
-  if (number >= 1000 && number < 1_000_000)
-    return `${(number / 1000).toFixed(1)}k`;
-}
 
 export default function LandingPage() {
   const { t } = useTranslation();
@@ -102,16 +92,6 @@ export default function LandingPage() {
               className="mx-auto"
             />
           </div>
-          <div className="flex justify-center items-center gap-28 md:block">
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(languages.length)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                {t("landing_languages")}
-              </div>
-            </div>
-          </div>
           <div className="text-lg font-medium text-center mt-12 mb-6">
             {t("landing_design_for_database")}
           </div>
@@ -166,45 +146,6 @@ export default function LandingPage() {
             ))}
           </div>
         </FadeIn>
-      </div>
-
-      {/* Contact us */}
-      <svg
-        viewBox="0 0 1440 54"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        className="bg-transparent -scale-100"
-      >
-        <path
-          d="M0 48 C0 48 320 0 720 0C1080 0 1440 48 1440 48V0H0V100Z"
-          fill="#f4f4f5"
-        />
-      </svg>
-      <div className="bg-zinc-100 py-8 px-32 md:px-8">
-        <div className="mt-4 mb-2 text-2xl font-bold text-center">
-          {t("landing_contact_title")}
-        </div>
-        <div className="text-lg text-center mb-4">
-          {t("landing_contact_description")}
-        </div>
-        <div className="px-36 text-center md:px-8">
-          <div className="md:block md:space-y-3 flex gap-3 justify-center">
-            <a
-              className="inline-block"
-              href={socials.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
-                <img src={github} alt="" className="h-8" />
-                <div className="text-lg text-white font-bold">
-                  {t("landing_source")}
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
       </div>
 
       <div className="bg-red-700 py-1 text-center text-white text-xs font-semibold px-3">
