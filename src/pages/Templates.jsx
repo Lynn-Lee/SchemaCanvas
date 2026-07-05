@@ -6,7 +6,7 @@ import { IconDeleteStroked } from "@douyinfe/semi-icons";
 import { db } from "../data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import Thumbnail from "../components/Thumbnail";
-import logo_light from "../assets/logo_light_160.png";
+import BrandLogo from "../components/BrandLogo";
 import template_screenshot from "../assets/template_screenshot.png";
 
 export default function Templates() {
@@ -37,11 +37,7 @@ export default function Templates() {
         <div className="sm:py-3 py-5 px-12 xl:px-20 sm:px-6 flex justify-between items-center select-none">
           <div className="flex items-center justify-start">
             <Link to="/">
-              <img
-                src={logo_light}
-                alt="logo"
-                className="me-2 sm:h-[28px] md:h-[46px] h-[48px]"
-              />
+              <BrandLogo />
             </Link>
             <div className="ms-4 sm:text-sm xl:text-xl text-xl font-semibold">
               {t("templates")}

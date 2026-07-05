@@ -1,6 +1,4 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import logo_light from "../assets/logo_light_160.png";
-import logo_dark from "../assets/logo_dark_160.png";
 import { Banner, Button, Input, Upload, Toast, Spin } from "@douyinfe/semi-ui";
 import { IconGithubLogo, IconPaperclip } from "@douyinfe/semi-icons";
 import RichEditor from "../components/LexicalEditor/RichEditor";
@@ -14,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { socials } from "../data/socials";
 import { send } from "../api/email";
 import { useThemedPage } from "../hooks";
+import BrandLogo from "../components/BrandLogo";
 
 function Form({ theme, t }) {
   const [editor] = useLexicalComposerContext();
@@ -146,11 +145,7 @@ export default function BugReport() {
       <div className="sm:py-3 py-5 px-20 sm:px-6 flex justify-between items-center">
         <div className="flex items-center justify-start">
           <Link to="/">
-            <img
-              src={theme === "dark" ? logo_dark : logo_light}
-              alt="logo"
-              className="me-2 sm:h-[28px] h-[42px]"
-            />
+            <BrandLogo theme={theme} size="sm" />
           </Link>
           <div className="ms-4 sm:text-sm xl:text-lg font-semibold">
             {t("report_bug")}
