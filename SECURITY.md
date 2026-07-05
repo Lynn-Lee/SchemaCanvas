@@ -78,7 +78,7 @@ npm audit --audit-level=high
 处理规则：
 
 - high 或 critical 漏洞默认阻断合并。
-- moderate 漏洞需要记录在 `docs/engineering/验证矩阵.md`，并说明是否有可行升级路径。
+- moderate 漏洞需要在安全政策、维护 issue 或 release note 中记录，并说明是否有可行升级路径。
 - 如果漏洞来自间接依赖且短期无法安全升级，需要记录风险接受原因和后续跟踪任务。
 - 不为了消除 audit 告警而盲目进行大版本依赖升级。
 
