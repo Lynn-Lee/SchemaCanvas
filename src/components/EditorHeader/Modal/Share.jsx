@@ -1,6 +1,7 @@
 import { Banner, Button, Input, Spin, Toast, Collapse, Tag, Space, Radio, RadioGroup, Typography } from "@douyinfe/semi-ui";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n/i18n";
 import { IdContext } from "../../Workspace";
 import { IconLink, IconCode } from "@douyinfe/semi-icons";
 import {
@@ -46,7 +47,7 @@ export default function Share({ title, setModal }) {
       if (currentError?.code === SHARE_BACKEND_NOT_CONFIGURED) {
         return currentError;
       }
-      const backendError = new Error("Sharing backend is not configured.");
+      const backendError = new Error(i18n.t("share_backend_not_configured"));
       backendError.code = SHARE_BACKEND_NOT_CONFIGURED;
       return backendError;
     });

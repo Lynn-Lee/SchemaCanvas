@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { DB } from "../data/constants";
+import { loadLanguageResources } from "../i18n/i18n";
 import {
   createDiagram,
   createEnum,
@@ -10,6 +11,8 @@ import {
   createType,
 } from "./diagramModel";
 import { validateDiagram } from "./validateDiagram";
+
+beforeAll(() => loadLanguageResources("zh"));
 
 const invalidDefaultIssues = (diagram) =>
   validateDiagram(diagram).filter(
@@ -54,8 +57,8 @@ describe("validateDiagram", () => {
       objectType: "table",
       objectId: "t2",
       messageKey: "duplicate_table_by_name",
-      message: "Duplicate table name: users",
-      fixHint: "Rename one of the duplicate tables.",
+      message: "重复声明了名为 'users' 的表",
+      fixHint: "请重命名其中一张重复的表。",
     });
   });
 
@@ -76,8 +79,8 @@ describe("validateDiagram", () => {
       objectType: "field",
       objectId: "f1",
       messageKey: "empty_field_name",
-      message: "Table users has a field without a name.",
-      fixHint: "Name the field before exporting or sharing the diagram.",
+      message: "表 'users' 中的字段 `name` 为空",
+      fixHint: "导出或分享图表前请先命名字段。",
     });
   });
 
@@ -98,8 +101,8 @@ describe("validateDiagram", () => {
       objectType: "table",
       objectId: "t1",
       messageKey: "no_primary_key",
-      message: "Table events has no primary key.",
-      fixHint: "Mark one stable field as the primary key.",
+      message: "表 'events' 没有主键",
+      fixHint: "请将一个稳定字段标记为主键。",
     });
   });
 

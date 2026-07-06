@@ -539,6 +539,158 @@ const en = {
     lexical_align_center: "Center Align",
     lexical_align_right: "Right Align",
     lexical_align_justify: "Justify Align",
+    index_field_missing:
+      "Index '{{indexName}}' in table '{{tableName}}' references a missing field: {{fieldReference}}.",
+    unique_constraint_field_missing:
+      "Unique constraint '{{constraintName}}' in table '{{tableName}}' references a missing field: {{fieldReference}}.",
+    duplicate_enum_values: "Duplicate value '{{value}}' in enum '{{enumName}}'",
+    relationship_table_missing:
+      "Relationship '{{refName}}' references a missing {{direction}} table: {{tableId}}.",
+    relationship_field_missing:
+      "Relationship '{{refName}}' references a missing {{direction}} field: {{fieldId}}.",
+    relationship_direction_start: "start",
+    relationship_direction_end: "end",
+    duplicate_table_by_name_fix_hint: "Rename one of the duplicate tables.",
+    table_w_no_name_fix_hint:
+      "Name the table before exporting or sharing the diagram.",
+    empty_field_name_fix_hint:
+      "Name the field before exporting or sharing the diagram.",
+    empty_field_type_fix_hint: "Choose a data type for the field.",
+    no_values_for_field_fix_hint: "Add at least one {{type}} value.",
+    default_doesnt_match_type_fix_hint:
+      "Update the default value or choose a compatible field type.",
+    not_null_is_null_fix_hint: "Remove the null default or allow null values.",
+    duplicate_fields_fix_hint: "Rename one of the duplicate fields.",
+    merging_column_w_inherited_definition_fix_hint:
+      "Rename the local field or remove the inherited duplicate.",
+    duplicate_index_fix_hint: "Rename one of the duplicate indexes.",
+    empty_index_name_fix_hint: "Name the index or remove it.",
+    empty_index_fix_hint: "Add at least one field to the index or remove it.",
+    index_field_missing_fix_hint:
+      "Remove the missing field reference or choose an existing field.",
+    duplicate_unique_constraint_fix_hint:
+      "Rename one of the duplicate unique constraints.",
+    empty_unique_constraint_fix_hint:
+      "Add at least one field to the unique constraint or remove it.",
+    no_primary_key_fix_hint: "Mark a stable field as the primary key.",
+    type_with_no_name_fix_hint:
+      "Name the type before exporting or sharing the diagram.",
+    duplicate_types_fix_hint: "Rename one of the duplicate types.",
+    type_w_no_fields_fix_hint: "Add at least one field to the type or remove it.",
+    empty_type_field_name_fix_hint: "Name the type field.",
+    empty_type_field_type_fix_hint: "Choose a data type for the type field.",
+    duplicate_type_fields_fix_hint:
+      "Rename one of the duplicate type fields.",
+    enum_w_no_name_fix_hint:
+      "Name the enum before exporting or sharing the diagram.",
+    duplicate_enums_fix_hint: "Rename one of the duplicate enums.",
+    enum_w_no_values_fix_hint: "Add at least one enum value or remove it.",
+    duplicate_enum_values_fix_hint:
+      "Remove or rename one of the duplicate enum values.",
+    duplicate_reference_fix_hint: "Rename one of the duplicate relationships.",
+    relationship_table_missing_fix_hint:
+      "Reconnect the relationship to an existing table, or remove it.",
+    relationship_field_missing_fix_hint:
+      "Reconnect the relationship to an existing field, or remove it.",
+    circular_dependency_fix_hint:
+      "Break the circular reference, or confirm this is intended.",
+    import_file_default_name: "Import file",
+    import_file_too_large: "{{fileName}} is larger than the {{limit}} import limit.",
+    import_default_label: "Import",
+    import_text_too_large: "{{label}} input is larger than the {{limit}} text limit.",
+    import_too_many_tables:
+      "Diagram import has {{count}} tables, above the {{limit}} table limit.",
+    import_too_many_fields:
+      "Diagram import has {{count}} fields, above the {{limit}} field limit.",
+    import_too_many_relationships:
+      "Diagram import has {{count}} relationships, above the {{limit}} relationship limit.",
+    import_string_too_long:
+      "Diagram import contains a string longer than the {{limit}} character limit.",
+    sql_statement_not_imported:
+      "SQL statement type \"{{type}}\" is not imported yet.",
+    sql_statement_not_imported_fix_hint:
+      "Only table, index, and supported foreign key statements are imported in this phase.",
+    sql_input_empty: "SQL input is empty.",
+    sql_input_empty_fix_hint:
+      "Paste SQL text or upload a .sql file before importing.",
+    sql_syntax_fix_hint:
+      "Fix the SQL syntax or remove unsupported statements before importing.",
+    sql_import_failed:
+      "Please check for syntax errors or let us know about the error.",
+    sql_import_failed_fix_hint:
+      "Try importing a smaller SQL file or remove unsupported statements.",
+    import_invalid_json: "The file contains an error.",
+    import_relationship_missing_table:
+      "Relationship {{name}} references a table that does not exist.",
+    import_relationship_missing_field:
+      "Relationship {{name}} references a field that does not exist.",
+    import_invalid_diagram_shape:
+      "The file is missing necessary properties for a diagram.",
+    import_database_mismatch:
+      "The imported diagram and the open diagram don't use matching databases.",
+    export_unsupported_sql_database:
+      "SQL export is not supported for this diagram database.",
+    export_unsupported_format: "The requested export format is not supported.",
+    export_unsupported_image_format:
+      "The requested image export format is not supported.",
+    export_missing_canvas_image:
+      "Canvas element is required before exporting an image.",
+    export_image_failed: "Image export failed.",
+    export_missing_canvas_pdf:
+      "Canvas element is required before exporting a PDF.",
+    export_pdf_failed: "PDF export failed.",
+    share_invalid_json: "Shared diagram payload is not valid JSON.",
+    share_diagram_validation_failed:
+      "Shared diagram payload failed diagram validation.",
+    cloud_features_not_configured:
+      "Cloud features are not configured for this SchemaCanvas instance.",
+    local_diagram_storage_failed: "Local diagram storage operation failed.",
+    cloud_upload_not_configured:
+      "Cloud upload is not configured for this SchemaCanvas instance.",
+    cloud_save_not_configured: "Cloud save is not configured.",
+    share_backend_request_failed: "Sharing backend request failed.",
+    share_backend_invalid_response:
+      "Sharing backend returned an invalid response.",
+    email_backend_not_configured: "Email backend is not configured.",
+    email_backend_request_failed: "Email request failed.",
+    untitled_diagram: "Untitled diagram",
+    loading_editor: "Loading editor...",
+    lock_table: "Lock table",
+    unlock_table: "Unlock table",
+    expand_unlinked_fields: "Expand unlinked fields",
+    collapse_unlinked_fields: "Collapse unlinked fields",
+    import_sql_failed: "SQL import failed.",
+    import_sql_preview_warning:
+      "Preview: {{tables}} tables, {{relationships}} relationships, {{warnings}} warnings.",
+    import_sql_preview_ok:
+      "Preview: {{tables}} tables, {{relationships}} relationships.",
+    import_file_read_failed: "Failed to read the selected file.",
+    import_check_passed: "Everything looks good. You can now import.",
+    import_diagram_not_empty:
+      "The current diagram is not empty. Choose an import mode before confirming.",
+    load_failed: "Failed to load",
+    import_failed: "Import failed.",
+    local_diagrams_load_failed: "Failed to load local diagrams.",
+    diagram_not_found: "Diagram not found",
+    template_blog_title: "Blog database schema",
+    template_blog_description:
+      "A blog database including tables such as posts, users, comments, and tags to facilitate the storage and retrieval of blog-related information.",
+    template_hr_title: "Human resources schema",
+    template_hr_description:
+      "A Human Resources (HR) schema designed to manage employee and project related information within an organization.",
+    template_ecommerce_title: "E-commerce schema",
+    template_ecommerce_description:
+      "An e-commerce schema designed to manage various aspects of an online store, including products, orders, and customers.",
+    template_library_title: "Library schema",
+    template_library_description:
+      "A library schema designed to manage the books, genres, reservations, and other aspects of a library system",
+    template_bank_title: "Bank schema",
+    template_bank_description:
+      "A financial schema designed to manage financial transactions, accounts, customers, and other aspects of financial data.",
+    template_university_title: "University schema",
+    template_university_description:
+      "A university schema designed to manage information about students, courses, instructors, and other aspects of university-related data.",
+    brand_logo_alt: "SchemaCanvas logo",
   },
 };
 

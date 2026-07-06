@@ -1,3 +1,5 @@
+import i18n from "../../i18n/i18n";
+
 const MB = 1024 * 1024;
 
 export const IMPORT_LIMITS = {
@@ -22,21 +24,23 @@ export function validateImportFile(file) {
 
   if (file.size > IMPORT_LIMITS.maxFileBytes) {
     return error(
-      `${file.name || "Import file"} is larger than the ${formatMB(
-        IMPORT_LIMITS.maxFileBytes,
-      )} import limit.`,
+      i18n.t("import_file_too_large", {
+        fileName: file.name || i18n.t("import_file_default_name"),
+        limit: formatMB(IMPORT_LIMITS.maxFileBytes),
+      }),
     );
   }
 
   return ok();
 }
 
-export function validateImportText(text, { label = "Import" } = {}) {
+export function validateImportText(text, { label = i18n.t("import_default_label") } = {}) {
   if (byteLength(text) > IMPORT_LIMITS.maxTextBytes) {
     return error(
-      `${label} input is larger than the ${formatMB(
-        IMPORT_LIMITS.maxTextBytes,
-      )} text limit.`,
+      i18n.t("import_text_too_large", {
+        label,
+        limit: formatMB(IMPORT_LIMITS.maxTextBytes),
+      }),
     );
   }
 
@@ -71,25 +75,36 @@ export function validateDiagramImportObject(diagram) {
 
   if (tables.length > IMPORT_LIMITS.maxTables) {
     return error(
-      `Diagram import has ${tables.length} tables, above the ${IMPORT_LIMITS.maxTables} table limit.`,
+      i18n.t("import_too_many_tables", {
+        count: tables.length,
+        limit: IMPORT_LIMITS.maxTables,
+      }),
     );
   }
 
   if (fieldCount > IMPORT_LIMITS.maxFields) {
     return error(
-      `Diagram import has ${fieldCount} fields, above the ${IMPORT_LIMITS.maxFields} field limit.`,
+      i18n.t("import_too_many_fields", {
+        count: fieldCount,
+        limit: IMPORT_LIMITS.maxFields,
+      }),
     );
   }
 
   if (relationships.length > IMPORT_LIMITS.maxRelationships) {
     return error(
-      `Diagram import has ${relationships.length} relationships, above the ${IMPORT_LIMITS.maxRelationships} relationship limit.`,
+      i18n.t("import_too_many_relationships", {
+        count: relationships.length,
+        limit: IMPORT_LIMITS.maxRelationships,
+      }),
     );
   }
 
   if (hasLongString(diagram)) {
     return error(
-      `Diagram import contains a string longer than the ${IMPORT_LIMITS.maxStringLength} character limit.`,
+      i18n.t("import_string_too_long", {
+        limit: IMPORT_LIMITS.maxStringLength,
+      }),
     );
   }
 

@@ -1,3 +1,5 @@
+import i18n from "../i18n/i18n";
+
 export const CLOUD_UNAVAILABLE_REASON = "unavailable";
 
 export const CLOUD_REPOSITORY_METHODS = Object.freeze([
@@ -18,7 +20,7 @@ function createUnavailableResult(operation) {
     ok: false,
     reason: CLOUD_UNAVAILABLE_REASON,
     operation,
-    message: "Cloud features are not configured for this SchemaCanvas instance.",
+    message: i18n.t("cloud_features_not_configured"),
   };
 }
 

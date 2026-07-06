@@ -8,6 +8,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import Thumbnail from "../components/Thumbnail";
 import BrandLogo from "../components/BrandLogo";
 import template_screenshot from "../assets/template_screenshot.png";
+import { getTemplateDisplayCopy } from "../templates/templateCopy";
 
 export default function Templates() {
   const { t } = useTranslation();
@@ -60,38 +61,42 @@ export default function Templates() {
               itemKey="1"
             >
               <div className="grid xl:grid-cols-3 grid-cols-2 sm:grid-cols-1 gap-10 my-6">
-                {defaultTemplates?.map((template, i) => (
-                  <div
-                    key={template.id}
-                    className="bg-gray-100 hover:translate-y-[-6px] transition-all duration-300 border rounded-md"
-                  >
-                    <div className="h-48">
-                      <Thumbnail
-                        diagram={template}
-                        i={"1" + i}
-                        zoom={0.3}
-                        theme="light"
-                      />
-                    </div>
-                    <div className="px-4 py-3">
-                      <div className="flex justify-between">
-                        <div className="text-lg font-bold text-zinc-700">
-                          {template.title}
-                        </div>
-                        <button
-                          aria-label={t("templates_fork_template", {
-                            title: template.title,
-                          })}
-                          className="border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
-                          onClick={() => forkTemplate(template.templateId)}
-                        >
-                          <i className="bi bi-diagram-3"></i>
-                        </button>
+                {defaultTemplates?.map((template, i) => {
+                  const displayCopy = getTemplateDisplayCopy(template);
+
+                  return (
+                    <div
+                      key={template.id}
+                      className="bg-gray-100 hover:translate-y-[-6px] transition-all duration-300 border rounded-md"
+                    >
+                      <div className="h-48">
+                        <Thumbnail
+                          diagram={template}
+                          i={"1" + i}
+                          zoom={0.3}
+                          theme="light"
+                        />
                       </div>
-                      <div>{template.description}</div>
+                      <div className="px-4 py-3">
+                        <div className="flex justify-between">
+                          <div className="text-lg font-bold text-zinc-700">
+                            {displayCopy.title}
+                          </div>
+                          <button
+                            aria-label={t("templates_fork_template", {
+                              title: displayCopy.title,
+                            })}
+                            className="border rounded-sm px-2 py-1 bg-white hover:bg-gray-200 transition-all duration-300"
+                            onClick={() => forkTemplate(template.templateId)}
+                          >
+                            <i className="bi bi-diagram-3"></i>
+                          </button>
+                        </div>
+                        <div>{displayCopy.description}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </TabPane>
             <TabPane

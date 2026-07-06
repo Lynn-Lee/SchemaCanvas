@@ -285,7 +285,7 @@ export default function Table({
                   <Button
                     size="small"
                     type="tertiary"
-                    title={tableData.locked ? "Unlock table" : "Lock table"}
+                    title={tableData.locked ? t("unlock_table") : t("lock_table")}
                     icon={
                       tableData.locked ? (
                         <IconLock size="small" />
@@ -309,13 +309,13 @@ export default function Table({
                     disabled={layout.readOnly}
                     aria-label={
                       tableData.collapsed
-                        ? "Expand unlinked fields"
-                        : "Collapse unlinked fields"
+                        ? t("expand_unlinked_fields")
+                        : t("collapse_unlinked_fields")
                     }
                     title={
                       tableData.collapsed
-                        ? "Expand unlinked fields"
-                        : "Collapse unlinked fields"
+                        ? t("expand_unlinked_fields")
+                        : t("collapse_unlinked_fields")
                     }
                     onClick={toggleTableCollapse}
                     onPointerDown={(e) => e.stopPropagation()}

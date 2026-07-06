@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { DB, IMPORT_FROM } from "../../data/constants";
+import { loadLanguageResources } from "../../i18n/i18n";
 import { importDiagramFileContent } from "./importDiagramService";
+
+beforeAll(() => loadLanguageResources("zh"));
 
 const createField = (id, name = "id") => ({
   id,
@@ -155,7 +158,7 @@ describe("importDiagramFileContent", () => {
     expect(result.diagram).toBeNull();
     expect(result.issues[0]).toMatchObject({
       severity: "error",
-      message: "The file contains an error.",
+      message: "文件内容有错误。",
     });
   });
 
@@ -170,7 +173,7 @@ describe("importDiagramFileContent", () => {
 
     expect(result.ok).toBe(false);
     expect(result.issues[0].message).toBe(
-      "The imported diagram and the open diagram don't use matching databases.",
+      "导入图表与当前打开图表使用的数据库不一致。",
     );
   });
 
@@ -195,7 +198,7 @@ describe("importDiagramFileContent", () => {
     expect(result.ok).toBe(false);
     expect(result.issues[0]).toMatchObject({
       objectType: "relationship",
-      message: "Relationship fk_users_organizations references a field that does not exist.",
+      message: "关系 fk_users_organizations 引用了不存在的字段。",
     });
   });
 });

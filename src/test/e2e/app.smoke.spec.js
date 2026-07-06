@@ -8,6 +8,8 @@ test.describe("app smoke", () => {
       page.getByRole("heading", { name: "绘制、复制、粘贴" })
     ).toBeVisible();
     await expect(page.getByRole("link", { name: "编辑器" }).first()).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh");
+    await expect(page).toHaveTitle(/在线数据库图表编辑器与 SQL 生成器/);
   });
 
   test("landing page fits a 390px mobile viewport", async ({ page }) => {
@@ -67,8 +69,8 @@ test.describe("app smoke", () => {
     await expect(page.getByText("联系我们")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "查看源码" })).toHaveCount(0);
     await expect(page.getByText("语言")).toHaveCount(0);
-    await expect(page.getByText(/保留所有权利/)).toHaveCount(0);
-    await expect(page.getByText(/All rights reserved/)).toBeVisible();
+    await expect(page.getByText(/保留所有权利/)).toBeVisible();
+    await expect(page.getByText(/All rights reserved/)).toHaveCount(0);
   });
 
   test("templates page renders the template library", async ({ page }) => {
@@ -76,6 +78,11 @@ test.describe("app smoke", () => {
 
     await expect(page.getByText("模板").first()).toBeVisible();
     await expect(page.getByText("数据库 schema 模板")).toBeVisible();
+    await expect(page.getByText("博客数据库 schema")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "复用博客数据库 schema" }),
+    ).toBeVisible();
+    await expect(page.getByText("Blog database schema")).toHaveCount(0);
   });
 
   test("editor route renders without requiring an account", async ({ page }) => {
@@ -89,6 +96,8 @@ test.describe("app smoke", () => {
     await expect(page.getByText("没有更改")).toHaveCount(0);
     await page.getByRole("button", { name: "创建空白图表" }).click();
     await expect(page.getByText("文件").first()).toBeVisible();
+    await expect(page.getByText("未命名图表")).toBeVisible();
+    await expect(page.getByText("Untitled Diagram")).toHaveCount(0);
     await expect(page.getByText("小屏编辑模式")).toBeHidden();
   });
 

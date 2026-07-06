@@ -24,13 +24,15 @@ describe("gist sharing api configuration", () => {
     vi.stubEnv("VITE_BACKEND_URL", "");
 
     const { create, SHARE_BACKEND_NOT_CONFIGURED } = await import("./gists");
+    const { loadLanguageResources } = await import("../i18n/i18n");
+    await loadLanguageResources("zh");
 
     const result = await create("share.json", "{}");
 
     expect(result).toEqual({
       ok: false,
       reason: SHARE_BACKEND_NOT_CONFIGURED,
-      message: "Sharing backend is not configured.",
+      message: "分享后端未配置。请设置 VITE_BACKEND_URL 后再创建上传型分享链接。",
     });
     expect(axios.post).not.toHaveBeenCalled();
   });
@@ -55,13 +57,15 @@ describe("gist sharing api configuration", () => {
     axios.post.mockResolvedValue({ data: { data: {} } });
 
     const { create, SHARE_BACKEND_INVALID_RESPONSE } = await import("./gists");
+    const { loadLanguageResources } = await import("../i18n/i18n");
+    await loadLanguageResources("zh");
 
     const result = await create("share.json", "{}");
 
     expect(result).toEqual({
       ok: false,
       reason: SHARE_BACKEND_INVALID_RESPONSE,
-      message: "Sharing backend returned an invalid response.",
+      message: "分享后端返回了无效响应。",
     });
   });
 });

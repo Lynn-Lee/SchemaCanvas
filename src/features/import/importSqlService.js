@@ -2,6 +2,7 @@ import { DB } from "../../data/constants";
 import { normalizeDiagram } from "../../domain/normalizeDiagram";
 import { validateDiagram } from "../../domain/validateDiagram";
 import { importSQL } from "../../utils/importSQL";
+import i18n from "../../i18n/i18n";
 import {
   validateDiagramImportObject,
   validateImportText,
@@ -54,8 +55,10 @@ const unsupportedStatementIssue = (statement) =>
   issue({
     id: `unsupported-sql-statement:${statement?.type ?? "unknown"}`,
     severity: "warning",
-    message: `SQL statement type "${statement?.type ?? "unknown"}" is not imported yet.`,
-    fixHint: "Only table, index, and supported foreign key statements are imported in this phase.",
+    message: i18n.t("sql_statement_not_imported", {
+      type: statement?.type ?? "unknown",
+    }),
+    fixHint: i18n.t("sql_statement_not_imported_fix_hint"),
   });
 
 const formatParserError = (error) => {
@@ -140,8 +143,8 @@ export async function importSqlText({ sql, dialect, diagramDatabase }) {
     return failed(
       issue({
         id: "empty-sql",
-        message: "SQL input is empty.",
-        fixHint: "Paste SQL text or upload a .sql file before importing.",
+        message: i18n.t("sql_input_empty"),
+        fixHint: i18n.t("sql_input_empty_fix_hint"),
       }),
     );
   }
@@ -164,7 +167,7 @@ export async function importSqlText({ sql, dialect, diagramDatabase }) {
       issue({
         id: "invalid-sql",
         message: formatParserError(error),
-        fixHint: "Fix the SQL syntax or remove unsupported statements before importing.",
+        fixHint: i18n.t("sql_syntax_fix_hint"),
       }),
     );
   }
@@ -186,8 +189,8 @@ export async function importSqlText({ sql, dialect, diagramDatabase }) {
     return failed(
       issue({
         id: "sql-import-failed",
-        message: "Please check for syntax errors or let us know about the error.",
-        fixHint: "Try importing a smaller SQL file or remove unsupported statements.",
+        message: i18n.t("sql_import_failed"),
+        fixHint: i18n.t("sql_import_failed_fix_hint"),
       }),
     );
   }

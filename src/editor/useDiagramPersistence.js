@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { State } from "../data/constants";
 import { databases } from "../data/databases";
 import { isLocalRepositoryError } from "../persistence/localDiagramRepository";
+import i18n from "../i18n/i18n";
 
 function createDiagramId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
@@ -145,7 +146,7 @@ export function useDiagramPersistence({
       conflictResolution,
     }) => {
       if (typeof cloudRepository?.saveCloudDiagram !== "function") {
-        const error = new Error("Cloud save is not configured.");
+        const error = new Error(i18n.t("cloud_save_not_configured"));
         setSaveState(State.ERROR);
         throw error;
       }

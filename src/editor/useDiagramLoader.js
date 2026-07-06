@@ -5,6 +5,7 @@ import { databases } from "../data/databases";
 import { normalizeDiagram } from "../domain/normalizeDiagram";
 import { getCloudPermissionState } from "../features/cloud/cloudPermissions";
 import { isLocalRepositoryError } from "../persistence/localDiagramRepository";
+import i18n from "../i18n/i18n";
 
 function valueOrDefault(value, fallback) {
   return value === undefined || value === null ? fallback : value;
@@ -28,7 +29,7 @@ function applyDiagramToState(diagram, setters) {
   setters.setDatabase(loadedDatabase);
   setters.setGistId(valueOrDefault(diagram.gistId, ""));
   setters.setLoadedFromGistId(valueOrDefault(diagram.loadedFromGistId, ""));
-  setters.setTitle(diagram.name ?? "Untitled Diagram");
+  setters.setTitle(diagram.name ?? i18n.t("untitled_diagram"));
   setters.setTables(diagram.tables ?? []);
   setters.setRelationships(diagram.relationships ?? diagram.references ?? []);
   setters.setNotes(diagram.notes ?? []);

@@ -2,6 +2,7 @@ import { Banner, Button, Input, Spin, Toast } from "@douyinfe/semi-ui";
 import { saveAs } from "file-saver";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18nSingleton from "../../i18n/i18n";
 
 import { databases } from "../../data/databases";
 import {
@@ -66,7 +67,7 @@ export default function LocalDiagramList({
       }
       setDiagrams(result);
     } catch (err) {
-      setError(err?.message || "Failed to load local diagrams.");
+      setError(err?.message || i18nSingleton.t("local_diagrams_load_failed"));
     } finally {
       setLoading(false);
     }
@@ -107,7 +108,7 @@ export default function LocalDiagramList({
     try {
       const fullDiagram = await localRepository.getDiagramById(diagram.diagramId);
       if (isLocalRepositoryError(fullDiagram)) throw new Error(fullDiagram.message);
-      if (!fullDiagram) throw new Error("Diagram not found");
+      if (!fullDiagram) throw new Error(t("diagram_not_found"));
       const blob = new Blob([JSON.stringify(fullDiagram, null, 2)], {
         type: "application/json",
       });

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { lazy, Suspense, useLayoutEffect } from "react";
+import { useTranslation } from "react-i18next";
 import SettingsContextProvider from "./context/SettingsContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -41,9 +42,10 @@ function normalizeBaseName(baseUrl) {
 }
 
 function RouteLoading() {
+  const { t } = useTranslation();
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-950 text-sm text-zinc-200">
-      Loading...
+      {t("loading")}
     </main>
   );
 }

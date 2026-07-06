@@ -25,8 +25,6 @@ export default function LandingPage() {
   return (
     <div>
       <div className="flex flex-col h-screen bg-zinc-100">
-        <div className="text-white font-semibold py-1 text-sm text-center bg-linear-to-r from-[#12495e] from-10% via-slate-500 to-[#12495e]" />
-
         <FadeIn duration={0.6}>
           <Navbar />
         </FadeIn>
@@ -40,7 +38,7 @@ export default function LandingPage() {
           <div className="absolute left-12 w-[45%] top-[50%] translate-y-[-54%] md:left-[50%] md:translate-x-[-50%] p-8 md:p-3 md:w-full text-zinc-800">
             <FadeIn duration={0.75}>
               <div className="md:px-3">
-                <h1 className="text-[42px] md:text-3xl font-bold tracking-wide bg-linear-to-r from-sky-900 from-10% via-slate-500 to-[#12495e] inline-block text-transparent bg-clip-text">
+                <h1 className="text-[42px] md:text-3xl font-bold bg-linear-to-r from-sky-900 from-10% via-slate-500 to-[#12495e] inline-block text-transparent bg-clip-text">
                   {t("landing_hero_title")}
                 </h1>
                 <div className="text-lg font-medium mt-1 sliding-vertical">

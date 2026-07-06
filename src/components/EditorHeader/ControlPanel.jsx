@@ -1061,7 +1061,7 @@ export default function ControlPanel({
                 .equals(diagramId)
                 .delete();
             }
-            setTitle("Untitled diagram");
+            setTitle(t("untitled_diagram"));
             setTables([]);
             setRelationships([]);
             setAreas([]);

@@ -1,6 +1,7 @@
 import { normalizeDiagram } from "../../domain/normalizeDiagram";
 import { validateDiagram } from "../../domain/validateDiagram";
 import { validateDiagramImportObject } from "../import/importLimits";
+import i18n from "../../i18n/i18n";
 
 const error = (reason, message, extra = {}) => ({
   ok: false,
@@ -21,7 +22,7 @@ export function validateSharedDiagramContent(content) {
   try {
     parsedDiagram = JSON.parse(content);
   } catch (parseError) {
-    return error("invalid-json", "Shared diagram payload is not valid JSON.", {
+    return error("invalid-json", i18n.t("share_invalid_json"), {
       cause: parseError,
     });
   }
@@ -40,7 +41,7 @@ export function validateSharedDiagramContent(content) {
   if (blockingIssues.length > 0) {
     return error(
       "diagram-validation",
-      "Shared diagram payload failed diagram validation.",
+      i18n.t("share_diagram_validation_failed"),
       { issues: blockingIssues },
     );
   }

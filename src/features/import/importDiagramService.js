@@ -6,6 +6,7 @@ import {
   jsonDiagramIsValid,
 } from "../../utils/validateSchema";
 import { fromDBML } from "../../utils/importFrom/dbml";
+import i18n from "../../i18n/i18n";
 import {
   validateDiagramImportObject,
   validateImportText,
@@ -58,7 +59,7 @@ const parseJsonContent = (content) => {
       ok: false,
       issue: errorIssue({
         id: "invalid-json",
-        message: "The file contains an error.",
+        message: i18n.t("import_invalid_json"),
       }),
     };
   }
@@ -90,7 +91,9 @@ const findRelationshipReferenceIssue = (diagram) => {
         id: `missing-relationship-table:${relationship.id}`,
         objectType: "relationship",
         objectId: relationship.id,
-        message: `Relationship ${relationship.name} references a table that does not exist.`,
+        message: i18n.t("import_relationship_missing_table", {
+          name: relationship.name,
+        }),
       });
     }
 
@@ -102,7 +105,9 @@ const findRelationshipReferenceIssue = (diagram) => {
         id: `missing-relationship-field:${relationship.id}`,
         objectType: "relationship",
         objectId: relationship.id,
-        message: `Relationship ${relationship.name} references a field that does not exist.`,
+        message: i18n.t("import_relationship_missing_field", {
+          name: relationship.name,
+        }),
       });
     }
   }
@@ -124,7 +129,7 @@ const importJsonDiagram = ({ content, fileName, fileType, currentDatabase }) => 
     return failed(
       errorIssue({
         id: "invalid-diagram-shape",
-        message: "The file is missing necessary properties for a diagram.",
+        message: i18n.t("import_invalid_diagram_shape"),
       }),
     );
   }
@@ -148,8 +153,7 @@ const importJsonDiagram = ({ content, fileName, fileType, currentDatabase }) => 
     return failed(
       errorIssue({
         id: "database-mismatch",
-        message:
-          "The imported diagram and the open diagram don't use matching databases.",
+        message: i18n.t("import_database_mismatch"),
       }),
     );
   }

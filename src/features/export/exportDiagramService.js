@@ -4,6 +4,7 @@ import { toDBML } from "../../utils/exportAs/dbml";
 import { jsonToDocumentation } from "../../utils/exportAs/documentation";
 import { jsonToMermaid } from "../../utils/exportAs/mermaid";
 import { exportSQL } from "../../utils/exportSQL";
+import i18n from "../../i18n/i18n";
 
 const SQL_DATABASES = new Set([
   DB.MYSQL,
@@ -69,7 +70,7 @@ export function exportDiagram({ diagram, format }) {
         issues: [
           issue(
             "unsupported-sql-export-database",
-            "SQL export is not supported for this diagram database.",
+            i18n.t("export_unsupported_sql_database"),
           ),
         ],
       };
@@ -122,7 +123,7 @@ export function exportDiagram({ diagram, format }) {
     issues: [
       issue(
         "unsupported-export-format",
-        "The requested export format is not supported.",
+        i18n.t("export_unsupported_format"),
       ),
     ],
   };
@@ -165,7 +166,7 @@ export async function exportCanvasImage({
       format: normalizedFormat,
       extension: "",
       issueId: "unsupported-image-export-format",
-      message: "The requested image export format is not supported.",
+      message: i18n.t("export_unsupported_image_format"),
     });
   }
 
@@ -174,7 +175,7 @@ export async function exportCanvasImage({
       format: normalizedFormat,
       extension: normalizedFormat,
       issueId: "missing-export-canvas",
-      message: "Canvas element is required before exporting an image.",
+      message: i18n.t("export_missing_canvas_image"),
     });
   }
 
@@ -202,7 +203,7 @@ export async function exportCanvasImage({
       format: normalizedFormat,
       extension: normalizedFormat,
       issueId: "image-export-failed",
-      message: error?.message ?? "Image export failed.",
+      message: error?.message ?? i18n.t("export_image_failed"),
     });
   }
 }
@@ -222,7 +223,7 @@ export async function exportCanvasPdf({
       extension: "pdf",
       content: null,
       issueId: "missing-export-canvas",
-      message: "Canvas element is required before exporting a PDF.",
+      message: i18n.t("export_missing_canvas_pdf"),
     });
   }
 
@@ -261,7 +262,7 @@ export async function exportCanvasPdf({
       extension: "pdf",
       content: null,
       issueId: "pdf-export-failed",
-      message: error?.message ?? "PDF export failed.",
+      message: error?.message ?? i18n.t("export_pdf_failed"),
     });
   }
 }

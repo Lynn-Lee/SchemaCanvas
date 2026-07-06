@@ -33,8 +33,8 @@ describe("FileReader error handling boundary", () => {
     );
 
     expect(importDiagramSource).toContain("setImportData(null)");
-    expect(importDiagramSource).toContain("Failed to read the selected file.");
-    expect(importSourceSource).toContain("Failed to read the selected file.");
+    expect(importDiagramSource).toContain('t("import_file_read_failed")');
+    expect(importSourceSource).toContain('t("import_file_read_failed")');
   });
 
   test("bug report attachments notify users when a file cannot be read", async () => {

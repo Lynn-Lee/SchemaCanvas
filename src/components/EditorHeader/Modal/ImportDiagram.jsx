@@ -51,7 +51,7 @@ export default function ImportDiagram({
       setImportData(null);
       setError({
         type: STATUS.ERROR,
-        message: result.issues[0]?.message ?? "The file contains an error.",
+        message: result.issues[0]?.message ?? t("import_invalid_json"),
       });
       return;
     }
@@ -65,13 +65,12 @@ export default function ImportDiagram({
     if (diagramIsEmpty()) {
       setError({
         type: STATUS.OK,
-        message: "Everything looks good. You can now import.",
+        message: t("import_check_passed"),
       });
     } else {
       setError({
         type: STATUS.WARNING,
-        message:
-          "The current diagram is not empty. Choose an import mode before confirming.",
+        message: t("import_diagram_not_empty"),
       });
     }
   };
@@ -128,7 +127,7 @@ export default function ImportDiagram({
             setImportData(null);
             setError({
               type: STATUS.ERROR,
-              message: "Failed to read the selected file.",
+              message: t("import_file_read_failed"),
             });
           };
           reader.readAsText(f);

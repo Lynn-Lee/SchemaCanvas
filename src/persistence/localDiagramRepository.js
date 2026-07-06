@@ -1,5 +1,6 @@
 import { db } from "../data/db";
 import { normalizeDiagram } from "../domain/normalizeDiagram";
+import i18n from "../i18n/i18n";
 
 const DEFAULT_RECENT_LIMIT = 10;
 const LOCAL_REPOSITORY_ERROR_REASON = "dexie-error";
@@ -13,7 +14,7 @@ function repositoryError(operation, error) {
     ok: false,
     reason: LOCAL_REPOSITORY_ERROR_REASON,
     operation,
-    message: error?.message || "Local diagram storage operation failed.",
+    message: error?.message || i18n.t("local_diagram_storage_failed"),
   };
 }
 

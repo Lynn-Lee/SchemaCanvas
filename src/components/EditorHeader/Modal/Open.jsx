@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Banner, Spin, Tag } from "@douyinfe/semi-ui";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n/i18n";
 import { db } from "../../../data/db";
 import { databases } from "../../../data/databases";
 import { useExtensions } from "../../../context/ExtensionsContext";
@@ -44,7 +45,7 @@ function useDiagramList() {
         if (cancelled) return;
         setCloudState({
           loading: false,
-          error: err?.response?.data?.error || err?.message || "Failed to load",
+          error: err?.response?.data?.error || err?.message || i18n.t("load_failed"),
           items: null,
         });
       });

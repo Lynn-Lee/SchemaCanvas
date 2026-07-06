@@ -47,7 +47,7 @@ export default function ImportSource({
     if (!result.ok) {
       setError({
         type: STATUS.ERROR,
-        message: result.issues[0]?.message ?? "SQL import failed.",
+        message: result.issues[0]?.message ?? t("import_sql_failed"),
       });
       return;
     }
@@ -55,14 +55,21 @@ export default function ImportSource({
     if (result.preview.warningCount > 0) {
       setError({
         type: STATUS.WARNING,
-        message: `Preview: ${result.preview.tableCount} tables, ${result.preview.relationshipCount} relationships, ${result.preview.warningCount} warnings.`,
+        message: t("import_sql_preview_warning", {
+          tables: result.preview.tableCount,
+          relationships: result.preview.relationshipCount,
+          warnings: result.preview.warningCount,
+        }),
       });
       return;
     }
 
     setError({
       type: STATUS.OK,
-      message: `Preview: ${result.preview.tableCount} tables, ${result.preview.relationshipCount} relationships.`,
+      message: t("import_sql_preview_ok", {
+        tables: result.preview.tableCount,
+        relationships: result.preview.relationshipCount,
+      }),
     });
   };
 
@@ -123,7 +130,7 @@ export default function ImportSource({
                 }));
                 setError({
                   type: STATUS.ERROR,
-                  message: "Failed to read the selected file.",
+                  message: t("import_file_read_failed"),
                 });
               };
               reader.readAsText(f);

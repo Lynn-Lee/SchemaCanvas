@@ -1,4 +1,5 @@
 import { normalizeDiagram } from "../../domain/normalizeDiagram";
+import i18n from "../../i18n/i18n";
 
 function normalizeUploadSuccess(result) {
   const diagram = result.diagram ?? result.cloudDiagram ?? result;
@@ -15,7 +16,7 @@ export async function uploadLocalDiagram({ repository, diagram }) {
     return {
       ok: false,
       reason: "unavailable",
-      message: "Cloud upload is not configured for this SchemaCanvas instance.",
+      message: i18n.t("cloud_upload_not_configured"),
     };
   }
 

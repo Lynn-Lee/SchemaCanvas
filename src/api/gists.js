@@ -1,9 +1,10 @@
 import axios from "axios";
+import i18n from "../i18n/i18n";
 
 export const SHARE_FILENAME = "share.json";
 export const VERSION_FILENAME = "versionned.json";
 
-const description = "SchemaCanvas diagram";
+const description = "SchemaCanvas 图表";
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const SHARE_BACKEND_NOT_CONFIGURED = "SHARE_BACKEND_NOT_CONFIGURED";
@@ -23,7 +24,7 @@ function getErrorMessage(error) {
   return (
     error?.response?.data?.message ||
     error?.message ||
-    "Sharing backend request failed."
+    i18n.t("share_backend_request_failed")
   );
 }
 
@@ -31,7 +32,7 @@ function requireSharingBackendConfigured() {
   if (!baseUrl) {
     return apiError(
       SHARE_BACKEND_NOT_CONFIGURED,
-      "Sharing backend is not configured.",
+      i18n.t("share_backend_not_configured"),
     );
   }
   return null;
@@ -40,7 +41,7 @@ function requireSharingBackendConfigured() {
 function invalidResponseError() {
   return apiError(
     SHARE_BACKEND_INVALID_RESPONSE,
-    "Sharing backend returned an invalid response.",
+    i18n.t("share_backend_invalid_response"),
   );
 }
 

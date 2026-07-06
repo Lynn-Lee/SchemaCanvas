@@ -1,10 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
+import { loadLanguageResources } from "../../i18n/i18n";
 import {
   IMPORT_LIMITS,
   validateDiagramImportObject,
   validateImportFile,
   validateImportText,
 } from "./importLimits";
+
+beforeAll(() => loadLanguageResources("zh"));
 
 const createDiagram = (overrides = {}) => ({
   tables: [],
@@ -25,7 +28,7 @@ describe("importLimits", () => {
 
     expect(result).toEqual({
       ok: false,
-      message: "large-schema.json is larger than the 5 MB import limit.",
+      message: "large-schema.json 超过 5 MB 导入限制。",
     });
   });
 
@@ -38,9 +41,9 @@ describe("importLimits", () => {
     });
 
     expect(sql.ok).toBe(false);
-    expect(sql.message).toBe("SQL input is larger than the 2 MB text limit.");
+    expect(sql.message).toBe("SQL 超过 2 MB 文本限制。");
     expect(dbml.ok).toBe(false);
-    expect(dbml.message).toBe("DBML input is larger than the 2 MB text limit.");
+    expect(dbml.message).toBe("DBML 超过 2 MB 文本限制。");
   });
 
   it("rejects diagram objects with too many tables, fields, or relationships", () => {
@@ -72,16 +75,16 @@ describe("importLimits", () => {
 
     expect(validateDiagramImportObject(tooManyTables)).toEqual({
       ok: false,
-      message: "Diagram import has 501 tables, above the 500 table limit.",
+      message: "导入图表包含 501 张表，超过 500 张表限制。",
     });
     expect(validateDiagramImportObject(tooManyFields)).toEqual({
       ok: false,
-      message: "Diagram import has 10001 fields, above the 10000 field limit.",
+      message: "导入图表包含 10001 个字段，超过 10000 个字段限制。",
     });
     expect(validateDiagramImportObject(tooManyRelationships)).toEqual({
       ok: false,
       message:
-        "Diagram import has 5001 relationships, above the 5000 relationship limit.",
+        "导入图表包含 5001 个关系，超过 5000 个关系限制。",
     });
   });
 
@@ -95,7 +98,7 @@ describe("importLimits", () => {
     expect(result).toEqual({
       ok: false,
       message:
-        "Diagram import contains a string longer than the 10000 character limit.",
+        "导入图表包含超过 10000 字符限制的字符串。",
     });
   });
 

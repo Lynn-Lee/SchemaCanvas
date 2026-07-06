@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import { useTranslation } from "react-i18next";
 
 export const LazyMonacoEditor = lazy(() =>
   import("@monaco-editor/react").then((module) => ({
@@ -13,6 +14,7 @@ export const LazyMonacoDiffEditor = lazy(() =>
 );
 
 export function MonacoLoadingFallback({ height = "100%" }) {
+  const { t } = useTranslation();
   return (
     <div
       className="flex items-center justify-center text-xs opacity-60 border border-dashed border-gray-300 rounded"
@@ -20,7 +22,7 @@ export function MonacoLoadingFallback({ height = "100%" }) {
       role="status"
       aria-live="polite"
     >
-      Loading editor...
+      {t("loading_editor")}
     </div>
   );
 }

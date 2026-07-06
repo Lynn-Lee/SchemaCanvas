@@ -421,6 +421,7 @@ const lazyLocaleBackend = {
 };
 
 const LANGUAGE_STORAGE_KEY = "i18nextLng";
+const EXPLICIT_LANGUAGE_STORAGE_KEY = "schemacanvasExplicitLanguage";
 
 function readCachedLanguage() {
   try {
@@ -432,14 +433,33 @@ function readCachedLanguage() {
   }
 }
 
+function readExplicitLanguagePreference() {
+  try {
+    return typeof localStorage !== "undefined"
+      ? localStorage.getItem(EXPLICIT_LANGUAGE_STORAGE_KEY)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+export function resolveInitialLanguage(cachedLanguage, explicitPreference) {
+  if (!explicitPreference && normalizeLanguageCode(cachedLanguage) === "en") {
+    return "zh";
+  }
+
+  return cachedLanguage || "zh";
+}
+
 const cachedLanguage = readCachedLanguage();
+const explicitLanguagePreference = readExplicitLanguagePreference();
 
 i18n
   .use(lazyLocaleBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: cachedLanguage || "zh",
+    lng: resolveInitialLanguage(cachedLanguage, explicitLanguagePreference),
     fallbackLng: "zh",
     supportedLngs: languages.map((language) => language.code),
     nonExplicitSupportedLngs: true,
@@ -456,6 +476,11 @@ i18n
 const changeLanguage = i18n.changeLanguage.bind(i18n);
 i18n.changeLanguage = async (language, callback) => {
   const languageCode = await loadLanguageResources(language);
+  try {
+    localStorage.setItem(EXPLICIT_LANGUAGE_STORAGE_KEY, "1");
+  } catch {
+    // Language persistence is best-effort when storage is unavailable.
+  }
   return changeLanguage(languageCode, callback);
 };
 

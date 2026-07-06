@@ -1,10 +1,18 @@
 import { dbToTypes } from "../data/datatypes";
 import { isFunction } from "../utils/utils";
+import i18n from "../i18n/i18n";
 
 const normalizeName = (value) => String(value ?? "").trim().toLowerCase();
 
 const objectId = (value, fallback) => String(value ?? fallback);
 const MAX_DEFAULT_VALUE_LENGTH = 1000;
+
+const directionLabel = (direction) =>
+  i18n.t(
+    direction === "start"
+      ? "relationship_direction_start"
+      : "relationship_direction_end",
+  );
 
 const issue = ({
   id,
@@ -12,16 +20,17 @@ const issue = ({
   objectType,
   objectId,
   messageKey,
-  message,
-  fixHint,
+  messageParams,
+  fixHintKey,
+  fixHintParams,
 }) => ({
   id,
   severity,
   objectType,
   objectId,
   messageKey,
-  message,
-  fixHint,
+  message: i18n.t(messageKey, messageParams),
+  fixHint: i18n.t(fixHintKey, fixHintParams),
 });
 
 function checkDefault(field, database) {
@@ -80,8 +89,8 @@ export function validateDiagram(diagram) {
             objectType: "table",
             objectId: tableId,
             messageKey: "duplicate_table_by_name",
-            message: `Duplicate table name: ${tableName}`,
-            fixHint: "Rename one of the duplicate tables.",
+            messageParams: { tableName },
+            fixHintKey: "duplicate_table_by_name_fix_hint",
           }),
         );
       } else {
@@ -96,8 +105,7 @@ export function validateDiagram(diagram) {
           objectType: "table",
           objectId: tableId,
           messageKey: "table_w_no_name",
-          message: "Table is missing a name.",
-          fixHint: "Name the table before exporting or sharing the diagram.",
+          fixHintKey: "table_w_no_name_fix_hint",
         }),
       );
     }
@@ -128,8 +136,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "empty_field_name",
-            message: `Table ${tableName} has a field without a name.`,
-            fixHint: "Name the field before exporting or sharing the diagram.",
+            messageParams: { tableName },
+            fixHintKey: "empty_field_name_fix_hint",
           }),
         );
       }
@@ -141,8 +149,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "empty_field_type",
-            message: `Field ${fieldName || fieldId} in table ${tableName} has no type.`,
-            fixHint: "Choose a data type for the field.",
+            messageParams: { tableName },
+            fixHintKey: "empty_field_type_fix_hint",
           }),
         );
       } else if (
@@ -155,8 +163,9 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "no_values_for_field",
-            message: `Field ${fieldName} in table ${tableName} has no ${field.type} values.`,
-            fixHint: `Add at least one ${field.type} value.`,
+            messageParams: { tableName, fieldName, type: field.type },
+            fixHintKey: "no_values_for_field_fix_hint",
+            fixHintParams: { type: field.type },
           }),
         );
       }
@@ -168,8 +177,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "default_doesnt_match_type",
-            message: `Default value for ${tableName}.${fieldName} does not match its type.`,
-            fixHint: "Update the default value or choose a compatible field type.",
+            messageParams: { tableName, fieldName },
+            fixHintKey: "default_doesnt_match_type_fix_hint",
           }),
         );
       }
@@ -185,8 +194,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "not_null_is_null",
-            message: `Field ${tableName}.${fieldName} is not null but defaults to null.`,
-            fixHint: "Remove the null default or allow null values.",
+            messageParams: { tableName, fieldName },
+            fixHintKey: "not_null_is_null_fix_hint",
           }),
         );
       }
@@ -200,8 +209,8 @@ export function validateDiagram(diagram) {
               objectType: "field",
               objectId: fieldId,
               messageKey: "duplicate_fields",
-              message: `Duplicate field name in table ${tableName}: ${fieldName}`,
-              fixHint: "Rename one of the duplicate fields.",
+              messageParams: { tableName, fieldName },
+              fixHintKey: "duplicate_fields_fix_hint",
             }),
           );
         } else {
@@ -216,8 +225,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "merging_column_w_inherited_definition",
-            message: `Field ${fieldName} in table ${tableName} conflicts with an inherited field.`,
-            fixHint: "Rename the local field or remove the inherited duplicate.",
+            messageParams: { tableName, fieldName },
+            fixHintKey: "merging_column_w_inherited_definition_fix_hint",
           }),
         );
       }
@@ -237,8 +246,8 @@ export function validateDiagram(diagram) {
             objectType: "index",
             objectId: indexId,
             messageKey: "duplicate_index",
-            message: `Duplicate index name in table ${tableName}: ${indexName}`,
-            fixHint: "Rename one of the duplicate indexes.",
+            messageParams: { tableName, indexName },
+            fixHintKey: "duplicate_index_fix_hint",
           }),
         );
       } else {
@@ -252,8 +261,8 @@ export function validateDiagram(diagram) {
             objectType: "index",
             objectId: indexId,
             messageKey: "empty_index_name",
-            message: `Table ${tableName} has an index without a name.`,
-            fixHint: "Name the index or remove it.",
+            messageParams: { tableName },
+            fixHintKey: "empty_index_name_fix_hint",
           }),
         );
       }
@@ -265,8 +274,8 @@ export function validateDiagram(diagram) {
             objectType: "index",
             objectId: indexId,
             messageKey: "empty_index",
-            message: `Index ${indexName || indexId} in table ${tableName} has no fields.`,
-            fixHint: "Add at least one field to the index or remove it.",
+            messageParams: { tableName },
+            fixHintKey: "empty_index_fix_hint",
           }),
         );
       } else {
@@ -278,8 +287,12 @@ export function validateDiagram(diagram) {
                 objectType: "index",
                 objectId: indexId,
                 messageKey: "index_field_missing",
-                message: `Index ${indexName || indexId} in table ${tableName} references a missing field: ${fieldReference}.`,
-                fixHint: "Remove the missing field reference or choose an existing field.",
+                messageParams: {
+                  tableName,
+                  indexName: indexName || indexId,
+                  fieldReference,
+                },
+                fixHintKey: "index_field_missing_fix_hint",
               }),
             );
           }
@@ -306,8 +319,8 @@ export function validateDiagram(diagram) {
             objectType: "index",
             objectId: constraintId,
             messageKey: "duplicate_index",
-            message: `Duplicate unique constraint in table ${tableName}: ${constraintName}`,
-            fixHint: "Rename one of the duplicate unique constraints.",
+            messageParams: { tableName, indexName: constraintName },
+            fixHintKey: "duplicate_unique_constraint_fix_hint",
           }),
         );
       } else {
@@ -321,8 +334,8 @@ export function validateDiagram(diagram) {
             objectType: "index",
             objectId: constraintId,
             messageKey: "empty_index",
-            message: `Unique constraint ${constraintName || constraintId} in table ${tableName} has no fields.`,
-            fixHint: "Add at least one field to the unique constraint or remove it.",
+            messageParams: { tableName },
+            fixHintKey: "empty_unique_constraint_fix_hint",
           }),
         );
       } else {
@@ -334,8 +347,12 @@ export function validateDiagram(diagram) {
                 objectType: "index",
                 objectId: constraintId,
                 messageKey: "unique_constraint_field_missing",
-                message: `Unique constraint ${constraintName || constraintId} in table ${tableName} references a missing field: ${fieldReference}.`,
-                fixHint: "Remove the missing field reference or choose an existing field.",
+                messageParams: {
+                  tableName,
+                  constraintName: constraintName || constraintId,
+                  fieldReference,
+                },
+                fixHintKey: "index_field_missing_fix_hint",
               }),
             );
           }
@@ -351,8 +368,8 @@ export function validateDiagram(diagram) {
           objectType: "table",
           objectId: tableId,
           messageKey: "no_primary_key",
-          message: `Table ${tableName} has no primary key.`,
-          fixHint: "Mark one stable field as the primary key.",
+          messageParams: { tableName },
+          fixHintKey: "no_primary_key_fix_hint",
         }),
       );
     }
@@ -371,8 +388,7 @@ export function validateDiagram(diagram) {
           objectType: "type",
           objectId: typeId,
           messageKey: "type_with_no_name",
-          message: "Type is missing a name.",
-          fixHint: "Name the type before exporting or sharing the diagram.",
+          fixHintKey: "type_with_no_name_fix_hint",
         }),
       );
     }
@@ -386,8 +402,8 @@ export function validateDiagram(diagram) {
             objectType: "type",
             objectId: typeId,
             messageKey: "duplicate_types",
-            message: `Duplicate type name: ${typeName}`,
-            fixHint: "Rename one of the duplicate types.",
+            messageParams: { typeName },
+            fixHintKey: "duplicate_types_fix_hint",
           }),
         );
       } else {
@@ -403,8 +419,8 @@ export function validateDiagram(diagram) {
           objectType: "type",
           objectId: typeId,
           messageKey: "type_w_no_fields",
-          message: `Type ${typeName} has no fields.`,
-          fixHint: "Add at least one field to the type or remove it.",
+          messageParams: { typeName },
+          fixHintKey: "type_w_no_fields_fix_hint",
         }),
       );
       return;
@@ -422,8 +438,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "empty_type_field_name",
-            message: `Type ${typeName} has a field without a name.`,
-            fixHint: "Name the type field.",
+            messageParams: { typeName },
+            fixHintKey: "empty_type_field_name_fix_hint",
           }),
         );
       }
@@ -435,8 +451,8 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "empty_type_field_type",
-            message: `Field ${fieldName || fieldId} in type ${typeName} has no type.`,
-            fixHint: "Choose a data type for the type field.",
+            messageParams: { typeName },
+            fixHintKey: "empty_type_field_type_fix_hint",
           }),
         );
       } else if (
@@ -449,8 +465,9 @@ export function validateDiagram(diagram) {
             objectType: "field",
             objectId: fieldId,
             messageKey: "no_values_for_type_field",
-            message: `Field ${fieldName} in type ${typeName} has no ${field.type} values.`,
-            fixHint: `Add at least one ${field.type} value.`,
+            messageParams: { typeName, fieldName, type: field.type },
+            fixHintKey: "no_values_for_field_fix_hint",
+            fixHintParams: { type: field.type },
           }),
         );
       }
@@ -464,8 +481,8 @@ export function validateDiagram(diagram) {
               objectType: "field",
               objectId: fieldId,
               messageKey: "duplicate_type_fields",
-              message: `Duplicate field name in type ${typeName}: ${fieldName}`,
-              fixHint: "Rename one of the duplicate type fields.",
+              messageParams: { typeName, fieldName },
+              fixHintKey: "duplicate_type_fields_fix_hint",
             }),
           );
         } else {
@@ -488,8 +505,7 @@ export function validateDiagram(diagram) {
           objectType: "enum",
           objectId: enumId,
           messageKey: "enum_w_no_name",
-          message: "Enum is missing a name.",
-          fixHint: "Name the enum before exporting or sharing the diagram.",
+          fixHintKey: "enum_w_no_name_fix_hint",
         }),
       );
     }
@@ -503,8 +519,8 @@ export function validateDiagram(diagram) {
             objectType: "enum",
             objectId: enumId,
             messageKey: "duplicate_enums",
-            message: `Duplicate enum name: ${enumName}`,
-            fixHint: "Rename one of the duplicate enums.",
+            messageParams: { enumName },
+            fixHintKey: "duplicate_enums_fix_hint",
           }),
         );
       } else {
@@ -519,8 +535,8 @@ export function validateDiagram(diagram) {
           objectType: "enum",
           objectId: enumId,
           messageKey: "enum_w_no_values",
-          message: `Enum ${enumName} has no values.`,
-          fixHint: "Add at least one enum value or remove it.",
+          messageParams: { enumName },
+          fixHintKey: "enum_w_no_values_fix_hint",
         }),
       );
     } else {
@@ -535,8 +551,8 @@ export function validateDiagram(diagram) {
               objectType: "enum",
               objectId: enumId,
               messageKey: "duplicate_enum_values",
-              message: `Duplicate enum value in ${enumName}: ${value}`,
-              fixHint: "Remove or rename one of the duplicate enum values.",
+              messageParams: { enumName, value },
+              fixHintKey: "duplicate_enum_values_fix_hint",
             }),
           );
         } else {
@@ -559,8 +575,8 @@ export function validateDiagram(diagram) {
           objectType: "relationship",
           objectId: relationshipId,
           messageKey: "duplicate_reference",
-          message: `Duplicate relationship name: ${relationshipName}`,
-          fixHint: "Rename one of the duplicate relationships.",
+          messageParams: { refName: relationshipName },
+          fixHintKey: "duplicate_reference_fix_hint",
         }),
       );
     } else {
@@ -583,6 +599,7 @@ export function validateDiagram(diagram) {
     relationshipTables.forEach(({ direction, tableId, fieldId }) => {
       const normalizedTableId = String(tableId ?? "");
       const table = tablesById.get(normalizedTableId);
+      const refName = relationshipName || relationshipId;
 
       if (!table) {
         issues.push(
@@ -592,8 +609,12 @@ export function validateDiagram(diagram) {
             objectType: "relationship",
             objectId: relationshipId,
             messageKey: "relationship_table_missing",
-            message: `Relationship ${relationshipName || relationshipId} references a missing ${direction} table: ${normalizedTableId}.`,
-            fixHint: "Reconnect the relationship to an existing table or remove it.",
+            messageParams: {
+              refName,
+              direction: directionLabel(direction),
+              tableId: normalizedTableId,
+            },
+            fixHintKey: "relationship_table_missing_fix_hint",
           }),
         );
         return;
@@ -608,8 +629,12 @@ export function validateDiagram(diagram) {
             objectType: "relationship",
             objectId: relationshipId,
             messageKey: "relationship_field_missing",
-            message: `Relationship ${relationshipName || relationshipId} references a missing ${direction} field: ${normalizedFieldId}.`,
-            fixHint: "Reconnect the relationship to an existing field or remove it.",
+            messageParams: {
+              refName,
+              direction: directionLabel(direction),
+              fieldId: normalizedFieldId,
+            },
+            fixHintKey: "relationship_field_missing_fix_hint",
           }),
         );
       }
@@ -619,6 +644,7 @@ export function validateDiagram(diagram) {
       relationship.fields.forEach((field, index) => {
         const startTable = tablesById.get(String(relationship.startTableId));
         const endTable = tablesById.get(String(relationship.endTableId));
+        const refName = relationshipName || relationshipId;
 
         if (
           startTable &&
@@ -631,8 +657,12 @@ export function validateDiagram(diagram) {
               objectType: "relationship",
               objectId: relationshipId,
               messageKey: "relationship_field_missing",
-              message: `Relationship ${relationshipName || relationshipId} references a missing start field: ${field.startFieldId}.`,
-              fixHint: "Reconnect the relationship to an existing field or remove it.",
+              messageParams: {
+                refName,
+                direction: directionLabel("start"),
+                fieldId: field.startFieldId,
+              },
+              fixHintKey: "relationship_field_missing_fix_hint",
             }),
           );
         }
@@ -645,8 +675,12 @@ export function validateDiagram(diagram) {
               objectType: "relationship",
               objectId: relationshipId,
               messageKey: "relationship_field_missing",
-              message: `Relationship ${relationshipName || relationshipId} references a missing end field: ${field.endFieldId}.`,
-              fixHint: "Reconnect the relationship to an existing field or remove it.",
+              messageParams: {
+                refName,
+                direction: directionLabel("end"),
+                fieldId: field.endFieldId,
+              },
+              fixHintKey: "relationship_field_missing_fix_hint",
             }),
           );
         }
@@ -665,8 +699,8 @@ export function validateDiagram(diagram) {
           objectType: "table",
           objectId: String(tableId),
           messageKey: "circular_dependency",
-          message: `Circular relationship detected at table ${table?.name ?? tableId}.`,
-          fixHint: "Break the circular reference or confirm it is intentional.",
+          messageParams: { refName: table?.name ?? tableId },
+          fixHintKey: "circular_dependency_fix_hint",
         }),
       );
       return;

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 export default function Issues() {
   const { types } = useTypes();
-  const { t } = useTranslation();
+  const { t, i18n, ready } = useTranslation();
   const { settings } = useSettings();
   const { enums } = useEnums();
   const { tables, relationships, database } = useDiagram();
@@ -29,7 +29,7 @@ export default function Issues() {
     };
 
     findIssues();
-  }, [tables, relationships, issues, types, database, enums]);
+  }, [tables, relationships, issues, types, database, enums, i18n.language, ready]);
 
   return (
     <Collapse lazyRender keepDOM={false} style={{ width: "100%" }}>

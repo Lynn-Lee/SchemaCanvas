@@ -33,6 +33,7 @@ import FloatingControls from "./FloatingControls";
 import { Button, Modal, Tag } from "@douyinfe/semi-ui";
 import { IconAlertTriangle } from "@douyinfe/semi-icons";
 import { useTranslation } from "react-i18next";
+import i18nSingleton from "../i18n/i18n";
 import { databases } from "../data/databases";
 import { isRtl } from "../i18n/utils/rtl";
 import {
@@ -47,6 +48,7 @@ import { createLocalDiagramRepository } from "../persistence/localDiagramReposit
 import NewDiagramWizard from "../features/onboarding/NewDiagramWizard";
 import CloudConflictDialog from "../features/cloud/CloudConflictDialog";
 import { validateSharedDiagramContent } from "../features/share/validateSharedDiagram";
+import { getTemplateDisplayCopy } from "../templates/templateCopy";
 
 export const IdContext = createContext({
   gistId: "",
@@ -61,7 +63,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
   const [gistId, setGistId] = useState("");
   const [version, setVersion] = useState("");
   const [loadedFromGistId, setLoadedFromGistId] = useState("");
-  const [title, setTitle] = useState("Untitled Diagram");
+  const [title, setTitle] = useState(i18nSingleton.t("untitled_diagram"));
   const [resize, setResize] = useState(false);
   const [toolbarContainer, setToolbarContainer] = useState(null);
   const [width, setWidth] = useState(SIDEPANEL_MIN_WIDTH);
@@ -397,7 +399,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
         } else {
           setDatabase(DB.GENERIC);
         }
-        setTitle(template.title);
+        setTitle(getTemplateDisplayCopy(template).title);
         setTables(template.tables);
         setRelationships(template.relationships);
         setAreas(template.subjectAreas);
@@ -547,7 +549,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
           setUndoStack([]);
           setRedoStack([]);
           setTransform({ zoom: 1, pan: { x: 0, y: 0 } });
-          setTitle("Untitled diagram");
+          setTitle(i18nSingleton.t("untitled_diagram"));
           setGistId("");
           setLoadedFromGistId("");
           setLayout((prev) => ({ ...prev, readOnly: false }));
@@ -604,7 +606,7 @@ export default function WorkSpace({ forcedDiagramId } = {}) {
 
   const createBlankDiagram = useCallback(
     async (nextDatabase) => {
-      const nextTitle = "Untitled Diagram";
+      const nextTitle = i18nSingleton.t("untitled_diagram");
       const emptyTransform = { zoom: 1, pan: { x: 0, y: 0 } };
 
       setDatabase(nextDatabase);

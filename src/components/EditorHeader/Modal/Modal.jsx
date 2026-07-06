@@ -111,7 +111,7 @@ export default function Modal({
     if (!importedDiagram) {
       setError({
         type: STATUS.ERROR,
-        message: "Import failed.",
+        message: t("import_failed"),
       });
       return;
     }
